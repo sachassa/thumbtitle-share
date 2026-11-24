@@ -1,15 +1,139 @@
-<!DOCTYPE html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>썸네일 제목 글자 재현 — 비교 화면</title>
-<style>body{font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif;background:#F5F7FC;color:#17213A;margin:0}
-.w{max-width:880px;margin:40px auto;padding:0 20px}h1{font-size:24px;margin:0 0 6px}.note{color:#6B7690;font-size:14px;margin:0 0 24px}
-a.c{display:block;background:#fff;border:1px solid #E3E8F2;border-radius:12px;padding:18px 20px;margin:0 0 12px;text-decoration:none;color:inherit}
-a.c:hover{border-color:#246BFD}.t{font-weight:700;font-size:17px}.s{color:#6B7690;font-size:14px;margin-top:6px}.b{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;background:#FDECEC;color:#D93B3B;margin-left:6px}
-ul{color:#3A4560;font-size:14px;line-height:1.7}</style></head><body><div class="w">
-<h1>썸네일 제목 글자 재현 — 비교 화면</h1>
-<p class="note">내부 연구용 비교 자료 · 썸네일 저작권은 각 채널에</p>
-<a class="c" href="타이틀재현_3판/최종.html"><div class="t">최종 비교 화면 — 2편<span class="b">일치 안 됨</span></div>
-<div class="s">벼랑 끝에 몰린 조니 뎁, 260억 대반격이 가능했던 이유 · 캐나다 이웃집에 스팸 듬뿍 들어간 부대찌개를 냄비째 들고 갔더니ㅋㅋㅋ</div></a>
-<ul><li>「일치」는 잰 값이 모두 원본과 100% 같을 때만 씁니다. 봐주는 범위가 없어서 두 편 모두 「일치 안 됨」입니다.</li>
-<li>방법·쓴 도구·글꼴은 <a href="README.md">README</a>, 찾은 것은 <a href="결과.md">결과</a>, 일하는 순서는 <a href="작업순서.md">작업순서</a>, 거쳐 온 길은 <a href="지나온_길.md">지나온 길</a>에 있습니다.</li></ul>
-</div></body></html>
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>폰트 재현 검수 시스템 — 최종 2편</title><style>
+/* ── variables ── */
+:root{--bg:#F5F7FC;--card:#FFFFFF;--sub:#F8FAFF;--tx:#17213A;--tx2:#64718B;--tx3:#9AA5B7;--blue:#246BFD;--blueh:#1457E5;--bluel:#EAF1FF;
+--violet:#6548ED;--ok:#16A34A;--warn:#F59E0B;--err:#EF4444;--line:#E3E9F3;--line2:#D5E1FA;--in:#DCE4F1;
+--s4:4px;--s8:8px;--s12:12px;--s16:16px;--s20:20px;--s24:24px;--s32:32px;--r:12px}
+/* ── reset / typography ── */
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font:400 14px/1.5 Pretendard,"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif}
+h1{font-size:22px;font-weight:700;margin:0}h2{font-size:20px;font-weight:700;margin:0}h3{font-size:16px;font-weight:700;margin:0}
+.small{font-size:12px;color:var(--tx2)}.muted{color:var(--tx3)}
+/* ── layout ── */
+.wrap{padding:var(--s16) var(--s24) var(--s32);max-width:1536px;margin:0 auto}
+.sec{margin-top:var(--s16)}
+.secttl{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-weight:700;font-size:16px;padding:6px 16px;border-radius:999px;margin:var(--s8) 0}
+/* ── components ── */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 2px 8px rgba(31,51,90,.04)}
+.pad{padding:var(--s16) var(--s20)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--tx);font:600 14px inherit;font-family:inherit;cursor:pointer}
+.btn:hover{border-color:var(--line2);background:var(--sub)}.btn:active{transform:translateY(1px)}.btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.btn:disabled{pointer-events:auto;color:var(--tx3);background:#fff;cursor:not-allowed;border-color:var(--line)}
+.btn.pri{background:var(--blue);color:#fff;border-color:var(--blue)}.btn.pri:hover{background:var(--blueh);border-color:var(--blueh)}
+.btn.sm{height:34px;padding:0 12px;font-size:13px}
+.btn.on{background:var(--bluel);border-color:var(--line2);color:var(--blue)}
+.inp{background:#fff;border:1px solid var(--in);border-radius:10px;height:40px;padding:0 12px;font-size:14px;font-family:inherit;color:var(--tx)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.b-ok{background:#E8F7EE;color:var(--ok)}.b-warn{background:#FEF3DC;color:#B45309}.b-err{background:#FDECEC;color:var(--err)}.b-wait{background:#EEF1F6;color:var(--tx2)}
+.b-blue{background:var(--blue);color:#fff}.b-bl{background:var(--bluel);color:var(--blue)}
+table.t{width:100%;border-collapse:collapse;font-size:13px}table.t th,table.t td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+table.t th{color:var(--tx2);font-weight:600;background:var(--sub)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid rgba(0,0,0,.15);vertical-align:-1px;margin-right:4px}
+[data-tip]{position:relative}
+[data-tip]:hover::after,[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);z-index:50;
+ width:max-content;max-width:280px;white-space:normal;text-align:left;background:#17213A;color:#fff;font-size:12px;font-weight:500;line-height:1.45;padding:7px 10px;border-radius:8px;box-shadow:0 6px 18px rgba(23,33,58,.22);pointer-events:none}
+[data-tip]:hover::before,[data-tip]:focus-visible::before{content:"";position:absolute;left:50%;top:calc(100% + 3px);transform:translateX(-50%);border:5px solid transparent;border-bottom-color:#17213A;z-index:50;pointer-events:none}
+/* ── dashboard ── */
+.top{display:flex;align-items:center;gap:var(--s12)}.logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;font-weight:800;display:grid;place-items:center;font-size:18px}
+.top .sp{flex:1}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--s12);margin-top:var(--s16)}
+.stat{display:flex;align-items:center;gap:var(--s12);padding:var(--s16) var(--s20)}
+.stat .ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:18px}
+.stat .n{font-size:28px;font-weight:700;line-height:1.1}.stat .l{font-size:13px;color:var(--tx2)}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s8);margin-top:var(--s16)}
+.chip{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font:600 13px inherit;font-family:inherit;color:var(--tx);cursor:pointer}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.vsep{width:1px;height:24px;background:var(--line);margin:0 4px}
+.tog{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:13px;cursor:pointer}
+.tog input{appearance:none;width:36px;height:20px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:.15s}
+.tog input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s}
+.tog input:checked{background:var(--blue)}.tog input:checked::after{left:18px}
+.search{margin-left:auto;width:280px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s12);margin-top:var(--s12)}
+.vcard{padding:var(--s12);cursor:pointer;transition:.12s}.vcard:hover{border-color:var(--line2)}.vcard.sel{border:2px solid var(--blue)}
+.vcard .vt{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:var(--s8)}
+.vcard .th{aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:var(--sub);display:grid;place-items:center}
+.vcard .th img{width:100%;height:100%;object-fit:cover;object-position:top}
+.vcard .ft{display:flex;align-items:center;gap:6px;margin-top:var(--s8)}
+.empty{padding:var(--s24);text-align:center;color:var(--tx2)}
+/* ── detail ── */
+.dbar{display:flex;align-items:center;gap:var(--s12);padding:var(--s12) var(--s16)}
+.dbar .vt{font-size:17px;font-weight:700}.dbar .mini{width:46px;height:30px;border-radius:6px;object-fit:cover;object-position:top;border:1px solid var(--line)}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s8);padding:var(--s12) var(--s16);border-top:1px solid var(--line)}
+.tools input[type=range]{width:140px;accent-color:var(--blue)}
+.dmain{display:grid;grid-template-columns:1fr 260px;gap:var(--s12);padding:0 var(--s16) var(--s16)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:var(--s12);align-content:start}
+.cmp.single,.cmp.stack{grid-template-columns:1fr}
+.pane{position:relative;border-radius:10px;overflow:hidden;background:#0d1220;border:1px solid var(--line);height:560px;cursor:grab}
+.pane.drag{cursor:grabbing}
+.pane .lab{position:absolute;left:8px;top:8px;z-index:3;background:rgba(255,255,255,.92);color:var(--tx);font-weight:700;font-size:13px;padding:3px 10px;border-radius:6px}
+.pane .dim{position:absolute;right:8px;bottom:8px;z-index:3;background:rgba(0,0,0,.65);color:#fff;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px}
+.pane .stage{position:absolute;left:0;top:0;transform-origin:0 0}
+.pane .stage img{position:absolute;left:0;top:0;display:block;image-rendering:auto}
+.pane .stage img.pix{image-rendering:pixelated}
+.pane .gridov{position:absolute;inset:0;z-index:2;pointer-events:none;display:none;
+ background-image:linear-gradient(rgba(36,107,253,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(36,107,253,.35) 1px,transparent 1px);background-size:var(--gs,40px) var(--gs,40px)}
+.showgrid .pane .gridov{display:block}
+.pane .err{position:absolute;inset:0;display:none;place-items:center;color:#fff}
+.fpanel{grid-column:1/-1}.finfo{display:flex;flex-wrap:wrap;gap:6px 24px;margin:8px 0 10px;font-size:13px;color:var(--tx2)}.finfo b{color:var(--tx)}.ftab td,.ftab th{white-space:nowrap}.ftab td:first-child{font-weight:600}
+.verdict{background:#FFF5F5;border-color:#F8D4D4;text-align:center}
+.verdict .big{font-size:36px;font-weight:700;color:var(--err);line-height:1.1;margin:var(--s8) 0}
+.verdict .why{text-align:left;font-size:13px;color:#B42318;margin-top:var(--s12)}
+.verdict .why li{margin:2px 0}
+/* ── analysis ── */
+.tabs{display:flex;gap:var(--s4);border-bottom:1px solid var(--line);padding:0 var(--s16)}
+.tab{background:none;border:0;border-bottom:2px solid transparent;padding:10px 14px;font:600 14px inherit;font-family:inherit;color:var(--tx2);cursor:pointer}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.tpanel{display:none;padding:var(--s16)}.tpanel.on{display:block}
+.acc{display:flex;align-items:center;justify-content:space-between;padding:var(--s12) var(--s16);cursor:pointer;user-select:none}
+.collapsed .tabs,.collapsed .tpanels{display:none}
+.gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:var(--s8)}
+.gc{padding:var(--s8);text-align:center}.gc .ch{font-size:20px;font-weight:700}
+.gc .imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:6px 0}.gc .imgs figure{margin:0;min-width:0}.gc .imgs img{width:100%;aspect-ratio:1/1.1;object-fit:contain;image-rendering:pixelated;border-radius:4px;border:1px solid var(--line);background:#000}
+.gc figcaption{font-size:11px;color:var(--tx2)}
+.lineh{font-weight:700;margin:var(--s16) 0 var(--s8)}
+.legend{font-size:12px;color:var(--tx2)}.legend b{font-weight:700}
+.note{background:var(--sub);border:1px solid var(--line);border-radius:10px;padding:var(--s12);font-size:13px;color:var(--tx2)}
+.embed .dash{display:none}.embed body{background:transparent}
+/* ── responsive ── */
+@media (max-width:1439px){.dmain{grid-template-columns:1fr 240px}.stats{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:1023px){.dmain{grid-template-columns:1fr}.ftab{display:block;overflow-x:auto}.grid{grid-template-columns:repeat(2,1fr)}.search{width:100%;margin-left:0}}
+@media (max-width:767px){.cmp{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.pane{height:420px}.dbar{flex-wrap:wrap}}
+
+#dframe{width:100%;border:0;display:block;min-height:600px}</style></head><body><div class="wrap">
+<div class="secttl">1. 대시보드 화면 (전체 현황 및 작업 목록)</div>
+<div class="card pad">
+ <div class="top"><div class="logo">Aa</div><div><h1>폰트 재현 검수 시스템</h1><div class="small">원본과 재현 이미지를 비교하고, 폰트 일치 여부를 확인하세요 · 내부 연구용 비교 자료 · 썸네일 저작권은 각 채널에</div></div>
+  <div class="sp"></div><span class="small">🕒 마지막 업데이트 11-24 23:47</span><button class="btn sm" id="guideBtn" data-tip="이 화면에 무엇이 들어 있는지 설명을 열고 닫습니다" aria-label="이 화면에 무엇이 들어 있는지 설명을 열고 닫습니다">작업 가이드 ?</button></div>
+ <div id="guide" class="note" style="margin-top:12px;display:none">최종 결과 2편입니다. 카드를 누르면 아래에 그 영상의 비교 화면이 열립니다. 「일치」는 모든 잰 값이 원본과 100% 같을 때만 붙습니다. 문서: <a href="README.md">README(방법·도구·글꼴)</a> · <a href="작업순서.md">작업순서</a> · <a href="결과.md">결과</a> · <a href="지나온_길.md">지나온 길</a></div>
+ <div class="stats">
+  <div class="card stat"><div class="ic" style="background:var(--bluel);color:var(--blue)">▶</div><div><div class="l">전체 영상</div><div class="n">2개</div></div></div><div class="card stat"><div class="ic" style="background:var(--bluel);color:var(--blue)">⟳</div><div><div class="l">진행 중</div><div class="n">0개</div></div></div><div class="card stat"><div class="ic" style="background:#EEF1F6;color:var(--tx2)">◷</div><div><div class="l">대기</div><div class="n">0개</div></div></div>
+  <div class="card stat"><div class="ic" style="background:#E8F7EE;color:var(--ok)">✓</div><div><div class="l">폰트 일치</div><div class="n">0개</div></div></div><div class="card stat"><div class="ic" style="background:#FEF3DC;color:var(--warn)">?</div><div><div class="l">폰트 미확인</div><div class="n">2개</div></div></div><div class="card stat"><div class="ic" style="background:var(--bluel);color:var(--blue)">%</div><div><div class="l">전체 통과율</div><div class="n">0%</div></div></div>
+ </div>
+ <div class="filters">
+  <button class="chip on" data-st="all" data-tip="거르기를 모두 풀고 모든 영상을 보입니다" aria-label="거르기를 모두 풀고 모든 영상을 보입니다">전체 (2)</button><span class="vsep"></span>
+  <button class="chip" data-type="쇼츠" data-tip="쇼츠 영상만 — 다시 누르면 풀림" aria-label="쇼츠 영상만 — 다시 누르면 풀림">쇼츠 (1)</button><button class="chip" data-type="롱폼" data-tip="롱폼 영상만 — 다시 누르면 풀림" aria-label="롱폼 영상만 — 다시 누르면 풀림">롱폼 (1)</button><span class="vsep"></span>
+  <label class="tog" data-tip="원본과 일치하지 않는 영상만 보입니다">불일치만 보기 <input type="checkbox" id="fBad" aria-label="원본과 일치하지 않는 영상만 보입니다"></label>
+  <span class="search" data-tip="영상 제목으로 찾습니다(글자를 치는 대로 바로 걸러짐)"><input class="inp" style="width:100%" id="q" aria-label="영상 제목으로 찾습니다(글자를 치는 대로 바로 걸러짐)" placeholder="🔍 영상 제목을 검색하세요..."></span>
+ </div>
+ <div class="grid"><div class="card vcard sel" data-i="0" data-kind="쇼츠" data-match="no" data-title="벼랑 끝에 몰린 조니 뎁, 260억 대반격이 가능했던 이유" tabindex="0" role="button" aria-label="벼랑 끝에 몰린 조니 뎁, 260억 대반격이 가능했던 이유 — 누르면 아래에 상세 비교 화면이 열립니다" data-tip="누르면 아래에 이 영상의 상세 비교 화면이 열립니다"><div class="vt">▶ 벼랑 끝에 몰린 조니 뎁, 260억 대반격이 가능했던 이유</div><div class="th"><img src="타이틀재현_3판/새화면_조니뎁/그림/03JG-F0BEdU_원본.png" alt="썸네일"></div><div class="ft"><span class="badge b-blue">쇼츠</span><span class="badge b-ok">● 완료</span><span class="badge b-err">✕ 일치 안 됨</span><span class="sp" style="flex:1"></span><span class="small">겹침 0.980</span></div></div><div class="card vcard" data-i="1" data-kind="롱폼" data-match="no" data-title="캐나다 이웃집에 스팸 듬뿍 들어간 부대찌개를 냄비째 들고 갔더니ㅋㅋㅋ" tabindex="0" role="button" aria-label="캐나다 이웃집에 스팸 듬뿍 들어간 부대찌개를 냄비째 들고 갔더니ㅋㅋㅋ — 누르면 아래에 상세 비교 화면이 열립니다" data-tip="누르면 아래에 이 영상의 상세 비교 화면이 열립니다"><div class="vt">▶ 캐나다 이웃집에 스팸 듬뿍 들어간 부대찌개를 냄비째 들고 갔더니ㅋㅋㅋ</div><div class="th"><img src="타이틀재현_3판/롱폼시험/새화면/그림/IKLsXd5_30Y_원본.png" alt="썸네일"></div><div class="ft"><span class="badge b-blue">롱폼</span><span class="badge b-ok">● 완료</span><span class="badge b-err">✕ 일치 안 됨</span><span class="sp" style="flex:1"></span><span class="small">겹침 0.996</span></div></div></div>
+ <div id="emptyF" class="empty" style="display:none">조건에 맞는 영상이 없습니다.</div>
+</div>
+<div class="secttl" style="margin-top:24px" id="detail">2. 상세 검수 화면 (비교 및 분석)</div>
+<iframe id="dframe" title="고른 영상의 상세 비교 화면"></iframe>
+</div>
+<script>const PAGES=["타이틀재현_3판/새화면_조니뎁/새화면.html?embed", "타이틀재현_3판/롱폼시험/새화면/새화면.html?embed"];
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];let cur=0;
+const fr=$('#dframe');
+function show(i,scroll){cur=(i+PAGES.length)%PAGES.length;$$('.vcard').forEach(c=>c.classList.toggle('sel',+c.dataset.i===cur));fr.src=PAGES[cur];if(scroll)$('#detail').scrollIntoView({behavior:'smooth'});}
+window.ttGo=d=>show(cur+d,true);
+setInterval(()=>{try{const h=fr.contentDocument.documentElement.scrollHeight;if(h&&Math.abs(fr.offsetHeight-h)>2)fr.style.height=h+'px';}catch(e){}},300);
+$$('.vcard').forEach(c=>{c.onclick=()=>show(+c.dataset.i,true);c.onkeydown=e=>{if(e.key==='Enter')show(+c.dataset.i,true)}});
+const F={type:null,bad:false,q:''};
+function applyF(){let n=0;$$('.vcard').forEach(c=>{const d=c.dataset;let ok=true;if(F.type&&d.kind!==F.type)ok=false;if(F.bad&&d.match!=='no')ok=false;if(F.q&&!d.title.includes(F.q))ok=false;c.style.display=ok?'':'none';if(ok)n++;});$('#emptyF').style.display=n?'none':'';}
+$$('button[data-type]').forEach(b=>b.onclick=()=>{const on=!b.classList.contains('on');$$('button[data-type]').forEach(x=>x.classList.remove('on'));if(on)b.classList.add('on');F.type=on?b.dataset.type:null;applyF()});
+$('[data-st=all]').onclick=()=>{$$('button[data-type]').forEach(x=>x.classList.remove('on'));F.type=null;$('#fBad').checked=false;F.bad=false;$('#q').value='';F.q='';applyF()};
+$('#fBad').onchange=e=>{F.bad=e.target.checked;applyF()};$('#q').oninput=e=>{F.q=e.target.value.trim().toLowerCase();applyF()};
+$('#guideBtn').onclick=()=>{const g=$('#guide');g.style.display=g.style.display==='none'?'':'none'};
+show(0,false);
+</script></body></html>
