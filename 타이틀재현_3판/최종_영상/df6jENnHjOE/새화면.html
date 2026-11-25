@@ -1,0 +1,338 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>폰트 재현 검수 시스템 — 케리아 금빛섬광 스트리머 반응</title><style>
+/* ── variables ── */
+:root{--bg:#F5F7FC;--card:#FFFFFF;--sub:#F8FAFF;--tx:#17213A;--tx2:#64718B;--tx3:#9AA5B7;--blue:#246BFD;--blueh:#1457E5;--bluel:#EAF1FF;
+--violet:#6548ED;--ok:#16A34A;--warn:#F59E0B;--err:#EF4444;--line:#E3E9F3;--line2:#D5E1FA;--in:#DCE4F1;
+--s4:4px;--s8:8px;--s12:12px;--s16:16px;--s20:20px;--s24:24px;--s32:32px;--r:12px}
+/* ── reset / typography ── */
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font:400 14px/1.5 Pretendard,"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif}
+h1{font-size:22px;font-weight:700;margin:0}h2{font-size:20px;font-weight:700;margin:0}h3{font-size:16px;font-weight:700;margin:0}
+.small{font-size:12px;color:var(--tx2)}.muted{color:var(--tx3)}
+/* ── layout ── */
+.wrap{padding:var(--s16) var(--s24) var(--s32);max-width:1536px;margin:0 auto}
+.sec{margin-top:var(--s16)}
+.secttl{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-weight:700;font-size:16px;padding:6px 16px;border-radius:999px;margin:var(--s8) 0}
+/* ── components ── */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 2px 8px rgba(31,51,90,.04)}
+.pad{padding:var(--s16) var(--s20)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--tx);font:600 14px inherit;font-family:inherit;cursor:pointer}
+.btn:hover{border-color:var(--line2);background:var(--sub)}.btn:active{transform:translateY(1px)}.btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.btn:disabled{pointer-events:auto;color:var(--tx3);background:#fff;cursor:not-allowed;border-color:var(--line)}
+.btn.pri{background:var(--blue);color:#fff;border-color:var(--blue)}.btn.pri:hover{background:var(--blueh);border-color:var(--blueh)}
+.btn.sm{height:34px;padding:0 12px;font-size:13px}
+.btn.on{background:var(--bluel);border-color:var(--line2);color:var(--blue)}
+.inp{background:#fff;border:1px solid var(--in);border-radius:10px;height:40px;padding:0 12px;font-size:14px;font-family:inherit;color:var(--tx)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.b-ok{background:#E8F7EE;color:var(--ok)}.b-warn{background:#FEF3DC;color:#B45309}.b-err{background:#FDECEC;color:var(--err)}.b-wait{background:#EEF1F6;color:var(--tx2)}
+.b-blue{background:var(--blue);color:#fff}.b-bl{background:var(--bluel);color:var(--blue)}
+table.t{width:100%;border-collapse:collapse;font-size:13px}table.t th,table.t td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+table.t th{color:var(--tx2);font-weight:600;background:var(--sub)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid rgba(0,0,0,.15);vertical-align:-1px;margin-right:4px}
+[data-tip]{position:relative}
+[data-tip]:hover::after,[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);z-index:50;
+ width:max-content;max-width:min(280px,80vw);white-space:normal;text-align:left;background:#17213A;color:#fff;font-size:12px;font-weight:500;line-height:1.45;padding:7px 10px;border-radius:8px;box-shadow:0 6px 18px rgba(23,33,58,.22);pointer-events:none}
+[data-tip]:hover::before,[data-tip]:focus-visible::before{content:"";position:absolute;left:50%;top:calc(100% + 3px);transform:translateX(-50%);border:5px solid transparent;border-bottom-color:#17213A;z-index:50;pointer-events:none}
+/* ── dashboard ── */
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s12)}.logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;font-weight:800;display:grid;place-items:center;font-size:18px}
+.top .sp{flex:1}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--s12);margin-top:var(--s16)}
+.stat{display:flex;align-items:center;gap:var(--s12);padding:var(--s16) var(--s20)}
+.stat .ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:18px}
+.stat .n{font-size:28px;font-weight:700;line-height:1.1}.stat .l{font-size:13px;color:var(--tx2)}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s8);margin-top:var(--s16)}
+.chip{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font:600 13px inherit;font-family:inherit;color:var(--tx);cursor:pointer}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.vsep{width:1px;height:24px;background:var(--line);margin:0 4px}
+.tog{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:13px;cursor:pointer}
+.tog input{appearance:none;width:36px;height:20px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:.15s}
+.tog input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s}
+.tog input:checked{background:var(--blue)}.tog input:checked::after{left:18px}
+.search{margin-left:auto;width:280px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s12);margin-top:var(--s12)}
+.vcard{padding:var(--s12);cursor:pointer;transition:.12s}.vcard:hover{border-color:var(--line2)}.vcard.sel{border:2px solid var(--blue)}
+.vcard .vt{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:var(--s8)}
+.vcard .th{aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:var(--sub);display:grid;place-items:center}
+.vcard .th img{width:100%;height:100%;object-fit:cover;object-position:top}
+.vcard .ft{display:flex;align-items:center;gap:6px;margin-top:var(--s8)}
+.empty{padding:var(--s24);text-align:center;color:var(--tx2)}
+/* ── detail ── */
+.dbar{display:flex;align-items:center;gap:var(--s12);padding:var(--s12) var(--s16)}
+.dbar .vt{font-size:17px;font-weight:700}.dbar .mini{width:46px;height:30px;border-radius:6px;object-fit:cover;object-position:top;border:1px solid var(--line)}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s8);padding:var(--s12) var(--s16);border-top:1px solid var(--line)}
+.tools input[type=range]{width:140px;accent-color:var(--blue)}
+.dmain{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:var(--s12);padding:0 var(--s16) var(--s16)}
+.cmp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s12);align-content:start}
+.cmp.single,.cmp.stack{grid-template-columns:minmax(0,1fr)}
+.pane{position:relative;border-radius:10px;overflow:hidden;background:#0d1220;border:1px solid var(--line);height:560px;cursor:grab}
+.pane.drag{cursor:grabbing}
+.pane .lab{position:absolute;left:8px;top:8px;z-index:3;background:rgba(255,255,255,.92);color:var(--tx);font-weight:700;font-size:13px;padding:3px 10px;border-radius:6px}
+.pane .dim{position:absolute;right:8px;bottom:8px;z-index:3;background:rgba(0,0,0,.65);color:#fff;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px}
+.pane .stage{position:absolute;left:0;top:0;transform-origin:0 0}
+.pane .stage img{position:absolute;left:0;top:0;display:block;image-rendering:auto}
+.pane .stage img.pix{image-rendering:pixelated}
+.pane .gridov{position:absolute;inset:0;z-index:2;pointer-events:none;display:none;
+ background-image:linear-gradient(rgba(36,107,253,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(36,107,253,.35) 1px,transparent 1px);background-size:var(--gs,40px) var(--gs,40px)}
+.showgrid .pane .gridov{display:block}
+.pane .err{position:absolute;inset:0;display:none;place-items:center;color:#fff}
+.fpanel{grid-column:1/-1}.finfo{display:flex;flex-wrap:wrap;gap:6px 24px;margin:8px 0 10px;font-size:13px;color:var(--tx2)}.finfo b{color:var(--tx)}.ftab td,.ftab th{white-space:nowrap}.ftab td:first-child{font-weight:600}
+.verdict{background:#FFF5F5;border-color:#F8D4D4;text-align:center}
+.verdict .big{font-size:36px;font-weight:700;color:var(--err);line-height:1.1;margin:var(--s8) 0}
+.verdict .why{text-align:left;font-size:13px;color:#B42318;margin-top:var(--s12)}
+.verdict .why li{margin:2px 0}
+/* ── analysis ── */
+.tabs{display:flex;gap:var(--s4);overflow-x:auto;border-bottom:1px solid var(--line);padding:0 var(--s16)}
+.tab{flex:none;white-space:nowrap;background:none;border:0;border-bottom:2px solid transparent;padding:10px 14px;font:600 14px inherit;font-family:inherit;color:var(--tx2);cursor:pointer}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.tpanel{display:none;padding:var(--s16)}.tpanel.on{display:block}
+.acc{display:flex;align-items:center;justify-content:space-between;padding:var(--s12) var(--s16);cursor:pointer;user-select:none}
+.collapsed .tabs,.collapsed .tpanels{display:none}
+.gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:var(--s8)}
+.gc{padding:var(--s8);text-align:center}.gc .ch{font-size:20px;font-weight:700}
+.gc .imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:6px 0}.gc .imgs figure{margin:0;min-width:0}.gc .imgs img{width:100%;aspect-ratio:1/1.1;object-fit:contain;image-rendering:pixelated;border-radius:4px;border:1px solid var(--line);background:#000}
+.gc figcaption{font-size:11px;color:var(--tx2)}
+.lineh{font-weight:700;margin:var(--s16) 0 var(--s8)}
+.legend{font-size:12px;color:var(--tx2)}.legend b{font-weight:700}
+.note{background:var(--sub);border:1px solid var(--line);border-radius:10px;padding:var(--s12);font-size:13px;color:var(--tx2)}
+.embed .dash{display:none}.embed body{background:transparent}
+/* ── responsive ── */
+/* 표는 감싸개 안에서 가로로 밀어 본다(화면 전체가 옆으로 넘치지 않게) · 그림은 칸 폭을 넘지 않게 */
+.tscroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.wrap img{max-width:100%;height:auto}.pane .stage img{max-width:none}
+.dmain>*,.cmp>*,.grid>*,.stats>*,.gcards>*{min-width:0}
+.finfo>span{min-width:0;overflow-wrap:anywhere}.dbar .vt{min-width:0;overflow-wrap:anywhere}
+@media (max-width:1439px){.dmain{grid-template-columns:minmax(0,1fr) 240px}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:1023px){.dmain{grid-template-columns:minmax(0,1fr)}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.search{width:100%;margin-left:0}}
+@media (max-width:767px){.wrap{padding:var(--s12) var(--s12) var(--s24)}.cmp,.cmp.stack{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s8)}
+ .grid{grid-template-columns:minmax(0,1fr)}.pane{height:420px}.dbar{flex-wrap:wrap}.pad{padding:var(--s12)}
+ h1{font-size:18px}h2{font-size:17px}.secttl{font-size:14px;padding:5px 12px}.stat{padding:var(--s12);gap:var(--s8)}.stat .ic{width:32px;height:32px;font-size:15px}.stat .n{font-size:22px}
+ .verdict .big{font-size:30px}.tools,.dbar{padding:var(--s8) var(--s12)}.dmain{padding:0 var(--s8) var(--s12)}.tabs{padding:0 var(--s8)}.tpanel{padding:var(--s12) var(--s8)}
+ .gcards{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.vsep{display:none}}
+</style></head><body><div class="wrap">
+
+<div class="secttl dash">1. 대시보드 화면 (전체 현황 및 작업 목록)</div>
+<div class="card pad dash">
+ <div class="top"><div class="logo">Aa</div><div><h1>폰트 재현 검수 시스템</h1><div class="small">원본과 재현 이미지를 비교하고, 폰트 일치 여부를 확인하세요</div></div>
+  <div class="sp"></div><span class="small">🕒 마지막 업데이트 11-25 12:49</span><button class="btn sm" id="guideBtn" data-tip="이 화면에 무엇이 들어 있는지 설명을 열고 닫습니다" aria-label="이 화면에 무엇이 들어 있는지 설명을 열고 닫습니다">작업 가이드 ?</button><button class="btn pri" id="newBtn" data-tip="새 영상(YouTube 주소나 썸네일 그림)을 등록합니다 — 아직 만들지 않음" aria-label="새 영상(YouTube 주소나 썸네일 그림)을 등록합니다 — 아직 만들지 않음">＋ 신규 영상 등록</button></div>
+ <div id="guide" class="note" style="margin-top:12px;display:none"><div>이 화면에는 운영자 지시(2026-11-24 「이번에 만든 것만 … 이것만 넣어봐」)대로 <b>조니 뎁 영상 한 편</b>만 들어 있습니다. 제목 글꼴을 페이퍼로지 한 집안으로 다시 맞춘 결과입니다. 「일치」는 모든 잰 값이 원본과 100% 같을 때만 붙습니다.</div></div>
+ <div class="stats">
+  <div class="card stat"><div class="ic" style="background:var(--bluel);color:var(--blue)">▶</div><div><div class="l">전체 영상</div><div class="n">1개</div></div></div>
+  <div class="card stat"><div class="ic" style="background:var(--bluel);color:var(--blue)">⟳</div><div><div class="l">진행 중</div><div class="n">0개</div></div></div>
+  <div class="card stat"><div class="ic" style="background:#EEF1F6;color:var(--tx2)">◷</div><div><div class="l">대기</div><div class="n">0개</div></div></div>
+  <div class="card stat"><div class="ic" style="background:#E8F7EE;color:var(--ok)">✓</div><div><div class="l">폰트 일치</div><div class="n">0개</div></div></div>
+  <div class="card stat"><div class="ic" style="background:#FEF3DC;color:var(--warn)">?</div><div><div class="l">폰트 미확인</div><div class="n">1개</div></div></div>
+  <div class="card stat"><div class="ic" style="background:var(--bluel);color:var(--blue)">%</div><div><div class="l">전체 통과율</div><div class="n">0%</div></div></div>
+ </div>
+ <div class="filters">
+  <button class="chip on" data-st="all" data-tip="모든 영상을 보입니다" aria-label="모든 영상을 보입니다">전체 (1)</button><button class="chip" data-st="run" data-tip="지금 재현을 돌리는 중인 영상만 보입니다" aria-label="지금 재현을 돌리는 중인 영상만 보입니다">진행 중 (0)</button><button class="chip" data-st="wait" data-tip="다시 돌리려고 줄 세운 영상만 보입니다" aria-label="다시 돌리려고 줄 세운 영상만 보입니다">대기 (0)</button>
+  <span class="vsep"></span><button class="chip" data-type="쇼츠" data-tip="세로 썸네일(쇼츠) 영상만 — 다시 누르면 풀림" aria-label="세로 썸네일(쇼츠) 영상만 — 다시 누르면 풀림">쇼츠</button><button class="chip" data-type="롱폼" data-tip="가로 썸네일(롱폼) 영상만 — 다시 누르면 풀림" aria-label="가로 썸네일(롱폼) 영상만 — 다시 누르면 풀림">롱폼</button><span class="vsep"></span>
+  <label class="tog" data-tip="원본과 일치하지 않는 영상만 보입니다">불일치만 보기 <input type="checkbox" id="fBad" aria-label="원본과 일치하지 않는 영상만 보입니다"></label><span class="vsep"></span><label class="tog" data-tip="원본 글꼴을 확정하지 못한 영상만 보입니다">폰트 미확인만 보기 <input type="checkbox" id="fUnk" aria-label="원본 글꼴을 확정하지 못한 영상만 보입니다"></label>
+  <span class="search" data-tip="영상 제목으로 찾습니다(글자를 치는 대로 바로 걸러짐)"><input class="inp" style="width:100%" id="q" aria-label="영상 제목으로 찾습니다(글자를 치는 대로 바로 걸러짐)" placeholder="🔍 영상 제목을 검색하세요..."></span>
+ </div>
+ <div class="grid">
+  <div class="card vcard sel" data-state="완료" data-type="쇼츠" data-match="no" data-font="unk" data-title="케리아 금빛섬광 스트리머 반응">
+   <div class="vt">▶ 케리아 금빛섬광 스트리머 반응</div><div class="th"><img src="그림/df6jENnHjOE_원본.png" alt="썸네일" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'썸네일 없음',className:'small'}))"></div>
+   <div class="ft"><span class="badge b-blue">쇼츠</span><span class="badge b-ok">● 완료</span><span class="badge b-err">✕ 일치 안 됨</span><span class="sp" style="flex:1"></span><span class="small">겹침 0.885</span></div>
+  </div>
+ </div>
+ <div id="emptyF" class="empty" style="display:none">조건에 맞는 영상이 없습니다.</div>
+</div>
+
+<div class="secttl dash" style="margin-top:24px">2. 상세 검수 화면 (비교 및 분석)</div>
+<div class="card" id="detail">
+ <div class="dbar"><button class="btn sm" onclick="window.scrollTo({top:0,behavior:'smooth'})" data-tip="위쪽 대시보드(영상 목록)로 올라갑니다" aria-label="위쪽 대시보드(영상 목록)로 올라갑니다">← 대시보드로 돌아가기</button>
+  <img class="mini" src="그림/df6jENnHjOE_원본.png" alt=""><span class="vt">케리아 금빛섬광 스트리머 반응</span><span class="badge b-bl">쇼츠</span><span style="flex:1"></span>
+  <span class="badge b-ok">● 완료</span><span class="badge b-err">✕ 일치 안 됨</span><button class="btn sm" disabled data-tip="앞 영상으로 — 지금은 영상이 1편이라 꺼 둠" aria-label="앞 영상으로 — 지금은 영상이 1편이라 꺼 둠">‹ 이전</button><button class="btn sm" disabled data-tip="다음 영상으로 — 지금은 영상이 1편이라 꺼 둠" aria-label="다음 영상으로 — 지금은 영상이 1편이라 꺼 둠">다음 ›</button></div>
+ <div class="tools">
+  <button class="btn sm on" data-mode="cmp" data-tip="원본과 재현을 나란히(가로로 긴 그림은 위아래로) 봅니다" aria-label="원본과 재현을 나란히(가로로 긴 그림은 위아래로) 봅니다">▣ 비교 보기</button><button class="btn sm" data-mode="blink" id="bBlink" data-tip="원본과 재현을 0.6초마다 번갈아 보여 줍니다 — 다시 누르면 멈춤" aria-label="원본과 재현을 0.6초마다 번갈아 보여 줍니다 — 다시 누르면 멈춤">◐ 깜빡이기</button><button class="btn sm" data-mode="overlay" data-tip="원본 위에 재현을 같은 자리에 겹칩니다 — 투명도 막대로 진하기 조절" aria-label="원본 위에 재현을 같은 자리에 겹칩니다 — 투명도 막대로 진하기 조절">⧉ 겹쳐보기</button>
+  <button class="btn sm" id="bGrid" data-tip="그림 위에 칸 줄을 그어 글자 자리·기준선을 비교합니다 — 다시 누르면 끔" aria-label="그림 위에 칸 줄을 그어 글자 자리·기준선을 비교합니다 — 다시 누르면 끔">▦ 격자 표시</button><span class="vsep"></span>
+  <span class="small">투명도</span><span data-tip="겹쳐보기에서 위에 얹은 재현 그림의 진하기(0~100%) — 움직이면 겹쳐보기로 바뀜" style="display:inline-flex;align-items:center"><input type="range" id="op" min="0" max="100" value="50" aria-label="겹쳐보기에서 위에 얹은 재현 그림의 진하기(0~100%) — 움직이면 겹쳐보기로 바뀜"></span><b id="opv" style="width:40px">50%</b><span class="vsep"></span>
+  <button class="btn sm" id="zIn" data-tip="그림을 1.25배 키웁니다 — 그림 위에서 마우스 휠로도 됨, 끌어서 옮기기" aria-label="그림을 1.25배 키웁니다 — 그림 위에서 마우스 휠로도 됨, 끌어서 옮기기">＋ 확대</button><button class="btn sm" id="zOut" data-tip="그림을 0.8배 줄입니다" aria-label="그림을 0.8배 줄입니다">－ 축소</button><b id="zl" class="small" style="width:46px;text-align:center">100%</b>
+  <button class="btn sm" id="zFit" data-tip="그림 전체가 칸 안에 들어오게 맞춥니다" aria-label="그림 전체가 칸 안에 들어오게 맞춥니다">화면 맞춤</button><button class="btn sm" id="z1" data-tip="그림을 원래 화소 크기(100%)로 봅니다" aria-label="그림을 원래 화소 크기(100%)로 봅니다">원래 크기</button><button class="btn sm" id="bReset" data-tip="확대·위치·투명도(50%)·격자·깜빡이기를 처음 상태로 되돌립니다(결과 값은 안 바뀜)" aria-label="확대·위치·투명도(50%)·격자·깜빡이기를 처음 상태로 되돌립니다(결과 값은 안 바뀜)">↺ 초기화</button>
+  <span class="vsep"></span><button class="btn sm on" data-view="title" data-tip="썸네일에서 제목 두 줄 부분만 잘라 크게 봅니다" aria-label="썸네일에서 제목 두 줄 부분만 잘라 크게 봅니다">제목 부분</button><button class="btn sm" data-view="full" data-tip="썸네일 전체(1080×1920)를 봅니다" aria-label="썸네일 전체(1080×1920)를 봅니다">전체 썸네일</button><button class="btn sm" data-view="col" data-tip="흰색=둘 다 글자 · 자홍=원본에만 · 초록=재현에만 인 그림으로 봅니다" aria-label="흰색=둘 다 글자 · 자홍=원본에만 · 초록=재현에만 인 그림으로 봅니다">색 겹침</button>
+ </div>
+ <div class="dmain">
+  <div class="cmp" id="cmp">
+   <div class="pane" id="paneL"><span class="lab">원본 이미지</span><div class="stage"><img class="base" alt="원본"><img class="top" alt="재현"></div><div class="gridov"></div><span class="dim"></span><div class="err">그림을 불러오지 못했습니다</div></div>
+   <div class="pane" id="paneR"><span class="lab">재현 이미지</span><div class="stage"><img class="base" alt="재현"></div><div class="gridov"></div><span class="dim"></span><div class="err">그림을 불러오지 못했습니다</div></div>
+  <div class="card fpanel pad"><h3>◇ 폰트 정보</h3>
+   <div class="finfo"><span>원본 폰트 <b style="color:var(--warn)">미확인</b> <span class="small">(글자 겹침이 1.00이 아님)</span></span>
+    <span>최유사 후보 <b>프리젠테이션</b> <span class="small">(집안 하나 — 굵기만 줄마다 다름)</span></span>
+    <span>기울기 <b>0°</b> <span class="small">(맞추지 않음)</span></span><span>테두리·그림자 <b>1.5px #555555 (바깥쪽은 점점 옅어짐 — 부드러운 그림자 함께)</b></span></div>
+   <div class="tscroll"><table class="t ftab"><tr><th>줄</th><th>글꼴</th><th>크기</th><th>가로</th><th>세로</th><th>굵기 조절</th><th>글자 색</th><th>맞춤 겹침<br>최소 / 평균</th><th>독립 검수 겹침<br>최소 / 평균</th></tr>
+   <tr><td>「역전 ‘금빛섬광’」</td><td><b>프리젠테이션 8 ExtraBold</b></td><td>117.65px</td><td>102.2%</td><td>101.8%</td><td>+0px</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td>0.8590 / 0.8999</td><td>0.9592 / 0.9674</td></tr><tr><td>「스트리머 반응」</td><td><b>프리젠테이션 8 ExtraBold</b></td><td>117.65px</td><td>102.1%</td><td>102.6%</td><td>+0px</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF</td><td>0.8480 / 0.8645</td><td>0.9834 / 0.9902</td></tr></table></div>
+   <div class="small" style="margin-top:8px">굵기 조절 = 원본 화소의 진하기(배경→글자색 사이 0~1)와 같아지도록 0.05px 단위로 맞춘 값 · 자간 = 글자마다 1/8px 자리로 맞춤(줄 하나의 값으로 재지 않음)</div></div>
+  </div>
+  <div class="card verdict pad"><h3 style="color:var(--err)">ⓘ 검수 결과</h3>
+   <div class="small" style="margin-top:8px">제목 글자 겹침 평균(맞춤 · 글자 14자)</div><div class="big">88.5%</div>
+   <div class="small">독립 검수 글자 겹침 평균 97.7% (글자 14자만)</div>
+   <span class="badge b-err">✕ 일치 안 됨</span>
+   <div class="small" style="margin-top:8px">검수 항목 44개 중 <b>25개 다름</b></div>
+   <ul class="why"><li>글자 형태 차이 — 글자 14/14자 겹침이 1.00 아님</li><li>자간 차이 — 14개 항목</li><li>자리(줄 위·아래) 차이 — 7개 항목</li><li>크기(높이) 차이 — 2개 항목</li><li>가로 비율·너비 차이 — 2개 항목</li></ul>
+   
+   <div class="small" style="text-align:left;margin-top:8px">Claude 눈 확인: 원래 크기 원본·재현 위아래 비교(2026-11-25 09:50): 두 줄 흰 글자 모양·자리·따옴표 눈으로 거의 같음. 검수 최소 0.9592/0.9834 — 100% 아님</div></div>
+ </div>
+ <div id="ana">
+  <div class="acc" id="accH" style="border-top:1px solid var(--line)"><h3>상세 분석</h3><span class="btn sm" id="accA">접기 ▴</span></div>
+  <div class="tabs"><button class="tab on" data-t="t1" data-tip="원본과 재현의 색 겹침 그림" aria-label="원본과 재현의 색 겹침 그림">비교 이미지</button><button class="tab" data-t="t2" data-tip="화소 수와 줄 자리·크기 값(독립 검수)" aria-label="화소 수와 줄 자리·크기 값(독립 검수)">픽셀 분석</button><button class="tab" data-t="t3" data-tip="원본 색과 재현 색(HEX·RGB)과 차이" aria-label="원본 색과 재현 색(HEX·RGB)과 차이">색상 비교</button><button class="tab" data-t="t4" data-tip="글자마다 원본·재현·겹침 그림과 겹침 값" aria-label="글자마다 원본·재현·겹침 그림과 겹침 값">글자별 비교</button><button class="tab" data-t="t5" data-tip="독립 검수가 잰 모든 값을 표로" aria-label="독립 검수가 잰 모든 값을 표로">수치 데이터</button></div>
+  <div class="tpanels">
+   <div class="tpanel on" id="t1"><div class="legend" style="margin-bottom:8px"><b>흰색</b> = 둘 다 글자 · <b style="color:#d0d">자홍</b> = 원본에만 · <b style="color:#0a0">초록</b> = 재현에만</div>
+    <img src="그림/제목칸_색겹침.png" alt="색 겹침" style="max-width:100%;border-radius:10px;border:1px solid var(--line)"></div>
+   <div class="tpanel" id="t2"><div class="tscroll"><table class="t" style="max-width:640px"><tr><th>항목</th><th>값</th></tr>
+    <tr><td>그림 크기</td><td>1062 × 1889</td></tr><tr><td>비교 범위(제목 칸)</td><td>x 186~881, y 133~401</td></tr>
+    <tr><td>둘 다 글자인 화소</td><td>59855</td></tr><tr><td>원본에만 있는 화소(자홍)</td><td>6885</td></tr>
+    <tr><td>재현에만 있는 화소(초록)</td><td>30</td></tr></table></div>
+    <div class="lineh">자리·크기 (독립 검수)</div><div class="tscroll"><table class="t"><tr><th>줄</th><th>항목</th><th>원본</th><th>재현</th><th>차이</th><th>판정</th></tr><tr><td>「역전 ‘금빛섬광’」</td><td>글자 수</td><td>8.0</td><td>8.0</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>줄 위</td><td>153.81</td><td>154.63</td><td>0.82</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>줄 아래</td><td>256.35</td><td>255.38</td><td>-0.97</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>기준선(글자 아래 중앙값)</td><td>255.25</td><td>255.0</td><td>-0.25</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>글자 높이(중앙값)</td><td>101.37</td><td>100.1</td><td>-1.27</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>글자 너비(평균)</td><td>76.6</td><td>75.88</td><td>-0.72</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 평균(낱말 사이 뺌)</td><td>1.03</td><td>1.71</td><td>0.68</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>행간(다음 줄 위 - 이 줄 아래)</td><td>22.44</td><td>23.62</td><td>1.18</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>획 굵기</td><td>13.0</td><td>13.0</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>기울기(가로밀림/높이)</td><td>0.2</td><td>0.2</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>테두리 굵기</td><td>None</td><td>None</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 1</td><td>0.54</td><td>1.56</td><td>1.02</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 2</td><td>35.71</td><td>36.72</td><td>1.01</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 3</td><td>-0.88</td><td>-0.5</td><td>0.38</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 4</td><td>4.44</td><td>5.66</td><td>1.22</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 5</td><td>2.27</td><td>2.95</td><td>0.68</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 6</td><td>0.34</td><td>0.77</td><td>0.43</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 7</td><td>-0.51</td><td>-0.19</td><td>0.32</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>글자 수</td><td>6.0</td><td>6.0</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>줄 위</td><td>278.78</td><td>279.0</td><td>0.22</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>줄 아래</td><td>381.38</td><td>381.0</td><td>-0.38</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>기준선(글자 아래 중앙값)</td><td>380.36</td><td>380.06</td><td>-0.3</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>글자 높이(중앙값)</td><td>100.54</td><td>99.75</td><td>-0.79</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>글자 너비(평균)</td><td>93.53</td><td>93.69</td><td>0.16</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 평균(낱말 사이 뺌)</td><td>1.4</td><td>1.17</td><td>-0.23</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>행간(다음 줄 위 - 이 줄 아래)</td><td>None</td><td>None</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>획 굵기</td><td>13.0</td><td>13.0</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>기울기(가로밀림/높이)</td><td>0.2</td><td>0.2</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>테두리 굵기</td><td>None</td><td>None</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 1</td><td>-0.86</td><td>-0.44</td><td>0.42</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 2</td><td>6.38</td><td>6.0</td><td>-0.38</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 3</td><td>0.65</td><td>-0.64</td><td>-1.29</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 4</td><td>28.6</td><td>28.42</td><td>-0.18</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 5</td><td>-0.58</td><td>-0.24</td><td>0.34</td><td><span class="badge b-err">다름</span></td></tr></table></div></div>
+   <div class="tpanel" id="t3"><div class="tscroll"><table class="t"><tr><th>줄</th><th>항목</th><th>원본 색</th><th>재현 색</th><th>차이</th><th>판정</th></tr><tr><td>「역전 ‘금빛섬광’」</td><td>테두리 색</td><td>None<br><span class="small">RGB —</span></td><td>None<br><span class="small">RGB —</span></td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>색 덩어리 나뉨</td><td>[[0, 1, 2, 3, 4, 5, 6, 7]]<br><span class="small">RGB —</span></td><td>[[0, 1, 2, 3, 4, 5, 6, 7]]<br><span class="small">RGB —</span></td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>채움색 1</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>위쪽 색 1</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>아래쪽 색 1</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>테두리 색</td><td>None<br><span class="small">RGB —</span></td><td>None<br><span class="small">RGB —</span></td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>색 덩어리 나뉨</td><td>[[0, 1, 2, 3, 4, 5]]<br><span class="small">RGB —</span></td><td>[[0, 1, 2, 3, 4, 5]]<br><span class="small">RGB —</span></td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>채움색 1</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>위쪽 색 1</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>아래쪽 색 1</td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td><span class="sw" style="background:#FFFFFF"></span>#FFFFFF<br><span class="small">RGB 255,255,255</span></td><td>None</td><td><span class="badge b-ok">같음</span></td></tr></table></div></div>
+   <div class="tpanel" id="t4"><div class="lineh">「역전 ‘금빛섬광’」 — 프리젠테이션 8 ExtraBold</div><div class="gcards"><div class="card gc"><div class="ch">역</div>
+<div class="imgs"><figure><img src="그림/글자/1_0_o.png" alt="원본 역"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/1_0_r.png" alt="재현 역"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/1_0_c.png" alt="색 겹침 역"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.9000<br>검수 겹침 0.9694<br>상자 어긋남 +0.3, +1.2, -0.3, -1.0px</div></div><div class="card gc"><div class="ch">전</div>
+<div class="imgs"><figure><img src="그림/글자/1_1_o.png" alt="원본 전"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/1_1_r.png" alt="재현 전"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/1_1_c.png" alt="색 겹침 전"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.8980<br>검수 겹침 0.9717<br>상자 어긋남 +0.7, +1.1, -0.9, -1.1px</div></div><div class="card gc"><div class="ch">‘</div>
+<div class="imgs"><figure><img src="그림/글자/1_2_o.png" alt="원본 ‘"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/1_2_r.png" alt="재현 ‘"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/1_2_c.png" alt="색 겹침 ‘"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.8590<br>검수 겹침 0.9644<br>상자 어긋남 +0.1, +0.0, -0.2, -0.2px</div></div><div class="card gc"><div class="ch">금</div>
+<div class="imgs"><figure><img src="그림/글자/1_3_o.png" alt="원본 금"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/1_3_r.png" alt="재현 금"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/1_3_c.png" alt="색 겹침 금"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.9380<br>검수 겹침 0.9713<br>상자 어긋남 +0.2, +0.3, -0.4, -0.2px</div></div><div class="card gc"><div class="ch">빛</div>
+<div class="imgs"><figure><img src="그림/글자/1_4_o.png" alt="원본 빛"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/1_4_r.png" alt="재현 빛"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/1_4_c.png" alt="색 겹침 빛"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.9140<br>검수 겹침 0.9689<br>상자 어긋남 +0.8, +1.2, -0.3, -0.9px</div></div><div class="card gc"><div class="ch">섬</div>
+<div class="imgs"><figure><img src="그림/글자/1_5_o.png" alt="원본 섬"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/1_5_r.png" alt="재현 섬"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/1_5_c.png" alt="색 겹침 섬"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.9030<br>검수 겹침 0.9716<br>상자 어긋남 +0.4, +1.2, -0.3, -0.3px</div></div><div class="card gc"><div class="ch">광</div>
+<div class="imgs"><figure><img src="그림/글자/1_6_o.png" alt="원본 광"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/1_6_r.png" alt="재현 광"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/1_6_c.png" alt="색 겹침 광"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.9140<br>검수 겹침 0.9631<br>상자 어긋남 +0.1, +1.2, -0.1, -0.9px</div></div><div class="card gc"><div class="ch">’</div>
+<div class="imgs"><figure><img src="그림/글자/1_7_o.png" alt="원본 ’"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/1_7_r.png" alt="재현 ’"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/1_7_c.png" alt="색 겹침 ’"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.8730<br>검수 겹침 0.9592<br>상자 어긋남 +0.2, +0.8, -0.4, -1.1px</div></div></div><div class="lineh">「스트리머 반응」 — 프리젠테이션 8 ExtraBold</div><div class="gcards"><div class="card gc"><div class="ch">스</div>
+<div class="imgs"><figure><img src="그림/글자/2_0_o.png" alt="원본 스"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/2_0_r.png" alt="재현 스"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/2_0_c.png" alt="색 겹침 스"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.8740<br>검수 겹침 0.9922<br>상자 어긋남 +0.0, +0.3, +0.0, +0.1px</div></div><div class="card gc"><div class="ch">트</div>
+<div class="imgs"><figure><img src="그림/글자/2_1_o.png" alt="원본 트"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/2_1_r.png" alt="재현 트"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/2_1_c.png" alt="색 겹침 트"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.8640<br>검수 겹침 0.9969<br>상자 어긋남 +0.4, +0.1, -0.2, -0.2px</div></div><div class="card gc"><div class="ch">리</div>
+<div class="imgs"><figure><img src="그림/글자/2_2_o.png" alt="원본 리"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/2_2_r.png" alt="재현 리"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/2_2_c.png" alt="색 겹침 리"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.8660<br>검수 겹침 0.9874<br>상자 어긋남 -0.6, +1.0, +0.1, -0.4px</div></div><div class="card gc"><div class="ch">머</div>
+<div class="imgs"><figure><img src="그림/글자/2_3_o.png" alt="원본 머"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/2_3_r.png" alt="재현 머"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/2_3_c.png" alt="색 겹침 머"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.8720<br>검수 겹침 0.9913<br>상자 어긋남 -1.2, +0.2, +0.2, -0.4px</div></div><div class="card gc"><div class="ch">반</div>
+<div class="imgs"><figure><img src="그림/글자/2_4_o.png" alt="원본 반"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/2_4_r.png" alt="재현 반"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/2_4_c.png" alt="색 겹침 반"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.8480<br>검수 겹침 0.9900<br>상자 어긋남 -0.0, +0.2, -0.2, -0.3px</div></div><div class="card gc"><div class="ch">응</div>
+<div class="imgs"><figure><img src="그림/글자/2_5_o.png" alt="원본 응"><figcaption>원본</figcaption></figure>
+<figure><img src="그림/글자/2_5_r.png" alt="재현 응"><figcaption>재현</figcaption></figure>
+<figure><img src="그림/글자/2_5_c.png" alt="색 겹침 응"><figcaption>겹침</figcaption></figure></div>
+<span class="badge b-err">불일치</span>
+<div class="small" style="margin-top:4px">맞춤 겹침 0.8630<br>검수 겹침 0.9834<br>상자 어긋남 +0.2, +0.8, -0.1, -0.3px</div></div></div></div>
+   <div class="tpanel" id="t5"><div class="tscroll"><table class="t"><tr><th>줄</th><th>항목</th><th>원본</th><th>재현</th><th>차이</th><th>판정</th></tr><tr><td>「역전 ‘금빛섬광’」</td><td>글자 수</td><td>8.0</td><td>8.0</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>줄 위</td><td>153.81</td><td>154.63</td><td>0.82</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>줄 아래</td><td>256.35</td><td>255.38</td><td>-0.97</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>기준선(글자 아래 중앙값)</td><td>255.25</td><td>255.0</td><td>-0.25</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>글자 높이(중앙값)</td><td>101.37</td><td>100.1</td><td>-1.27</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>글자 너비(평균)</td><td>76.6</td><td>75.88</td><td>-0.72</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 평균(낱말 사이 뺌)</td><td>1.03</td><td>1.71</td><td>0.68</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>행간(다음 줄 위 - 이 줄 아래)</td><td>22.44</td><td>23.62</td><td>1.18</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>획 굵기</td><td>13.0</td><td>13.0</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>기울기(가로밀림/높이)</td><td>0.2</td><td>0.2</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>테두리 색</td><td>None</td><td>None</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>테두리 굵기</td><td>None</td><td>None</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 1</td><td>0.54</td><td>1.56</td><td>1.02</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 2</td><td>35.71</td><td>36.72</td><td>1.01</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 3</td><td>-0.88</td><td>-0.5</td><td>0.38</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 4</td><td>4.44</td><td>5.66</td><td>1.22</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 5</td><td>2.27</td><td>2.95</td><td>0.68</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 6</td><td>0.34</td><td>0.77</td><td>0.43</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>자간 7</td><td>-0.51</td><td>-0.19</td><td>0.32</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>색 덩어리 나뉨</td><td>[[0, 1, 2, 3, 4, 5, 6, 7]]</td><td>[[0, 1, 2, 3, 4, 5, 6, 7]]</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>채움색 1</td><td>#FFFFFF</td><td>#FFFFFF</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>위쪽 색 1</td><td>#FFFFFF</td><td>#FFFFFF</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「역전 ‘금빛섬광’」</td><td>아래쪽 색 1</td><td>#FFFFFF</td><td>#FFFFFF</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>글자 수</td><td>6.0</td><td>6.0</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>줄 위</td><td>278.78</td><td>279.0</td><td>0.22</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>줄 아래</td><td>381.38</td><td>381.0</td><td>-0.38</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>기준선(글자 아래 중앙값)</td><td>380.36</td><td>380.06</td><td>-0.3</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>글자 높이(중앙값)</td><td>100.54</td><td>99.75</td><td>-0.79</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>글자 너비(평균)</td><td>93.53</td><td>93.69</td><td>0.16</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 평균(낱말 사이 뺌)</td><td>1.4</td><td>1.17</td><td>-0.23</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>행간(다음 줄 위 - 이 줄 아래)</td><td>None</td><td>None</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>획 굵기</td><td>13.0</td><td>13.0</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>기울기(가로밀림/높이)</td><td>0.2</td><td>0.2</td><td>0.0</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>테두리 색</td><td>None</td><td>None</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>테두리 굵기</td><td>None</td><td>None</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 1</td><td>-0.86</td><td>-0.44</td><td>0.42</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 2</td><td>6.38</td><td>6.0</td><td>-0.38</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 3</td><td>0.65</td><td>-0.64</td><td>-1.29</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 4</td><td>28.6</td><td>28.42</td><td>-0.18</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>자간 5</td><td>-0.58</td><td>-0.24</td><td>0.34</td><td><span class="badge b-err">다름</span></td></tr><tr><td>「스트리머 반응」</td><td>색 덩어리 나뉨</td><td>[[0, 1, 2, 3, 4, 5]]</td><td>[[0, 1, 2, 3, 4, 5]]</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>채움색 1</td><td>#FFFFFF</td><td>#FFFFFF</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>위쪽 색 1</td><td>#FFFFFF</td><td>#FFFFFF</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr><tr><td>「스트리머 반응」</td><td>아래쪽 색 1</td><td>#FFFFFF</td><td>#FFFFFF</td><td>None</td><td><span class="badge b-ok">같음</span></td></tr></table></div></div>
+  </div>
+ </div>
+</div>
+</div>
+<script>window.SRC={"title": {"o": "그림/제목칸_원본.png", "r": "그림/제목칸_재현.png", "w": 695, "h": 268}, "full": {"o": "그림/df6jENnHjOE_원본.png", "r": "그림/df6jENnHjOE_재현.png", "w": 1062, "h": 1889}, "col": {"o": "그림/제목칸_원본.png", "r": "그림/제목칸_색겹침.png", "w": 695, "h": 268}};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+/* 묶음 화면(최종.html) 안에 넣어 보일 때(?embed): 이 화면의 대시보드는 숨기고, 돌아가기·이전·다음은 바깥 화면이 처리 */
+const EMB=new URLSearchParams(location.search).has('embed');if(EMB)document.documentElement.classList.add('embed');
+/* 대시보드 필터·검색 — 카드의 data-* 로 거른다 */
+const F={st:'all',type:null,bad:false,unk:false,q:''};
+function applyF(){let n=0;$$('.vcard').forEach(c=>{const d=c.dataset;let ok=true;
+ if(F.st==='run'&&d.state!=='진행 중')ok=false; if(F.st==='wait'&&d.state!=='대기')ok=false;
+ if(F.type&&d.type!==F.type)ok=false; if(F.bad&&d.match!=='no')ok=false; if(F.unk&&d.font!=='unk')ok=false;
+ if(F.q&&!d.title.toLowerCase().includes(F.q))ok=false; c.style.display=ok?'':'none'; if(ok)n++;});
+ $('#emptyF').style.display=n?'none':'';}
+$$('[data-st]').forEach(b=>b.onclick=()=>{$$('[data-st]').forEach(x=>x.classList.remove('on'));b.classList.add('on');F.st=b.dataset.st;applyF()});
+$$('[data-type]').forEach(b=>b.onclick=()=>{const on=!b.classList.contains('on');$$('[data-type]').forEach(x=>x.classList.remove('on'));if(on)b.classList.add('on');F.type=on?b.dataset.type:null;applyF()});
+$('#fBad').onchange=e=>{F.bad=e.target.checked;applyF()};$('#fUnk').onchange=e=>{F.unk=e.target.checked;applyF()};
+$('#q').oninput=e=>{F.q=e.target.value.trim().toLowerCase();applyF()};
+$$('.vcard').forEach(c=>c.onclick=e=>{if(e.target.closest('button'))return;$$('.vcard').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');$('#detail').scrollIntoView({behavior:'smooth'})});
+$('#newBtn').onclick=()=>alert('영상 등록은 아직 만들지 않았습니다(이번에는 조니 뎁 한 편만 넣으라는 지시).');
+$('#guideBtn').onclick=()=>{const g=$('#guide');g.style.display=g.style.display==='none'?'':'none'};
+
+/* 상세 비교 도구 */
+const V={mode:'cmp',view:'title',z:1,fit:1,x:0,y:0,op:50,grid:false,blink:null,phase:0};
+const SRC=window.SRC;
+const panes=()=>$$('.pane');
+function setImgs(){const s=SRC[V.view];const two=V.mode==='cmp';
+ $('#cmp').classList.toggle('single',!two);$('#cmp').classList.toggle('stack',two&&s.w/s.h>2);
+ $('#paneR').style.display=two?'':'none';requestAnimationFrame(()=>{sizePanes();});
+ const L=$('#paneL');L.querySelector('.lab').textContent=two?'원본 이미지':(V.mode==='blink'?(V.phase?'재현 이미지':'원본 이미지'):'원본 + 재현 겹침');
+ L.querySelector('.base').src=s.o; L.querySelector('.top').src=s.r;
+ L.querySelector('.top').style.display=two?'none':'';
+ L.querySelector('.top').style.opacity=V.mode==='overlay'?V.op/100:(V.mode==='blink'?(V.phase?1:0):0);
+ $('#paneR .base').src=s.r;
+ $$('.pane .dim').forEach((d,i)=>d.textContent=(i===0&&two?'원본 크기: ':(two?'재현 크기: ':'크기: '))+s.w+' × '+s.h);
+ $$('.pane .stage').forEach(st=>{st.style.width=s.w+'px';st.style.height=s.h+'px';st.querySelectorAll('img').forEach(im=>{im.width=s.w;im.height=s.h})});}
+function fitZ(){const p=$('#paneL'),s=SRC[V.view];return Math.min(p.clientWidth/s.w,p.clientHeight/s.h);}
+function draw(){const s=SRC[V.view];$$('.pane .stage').forEach(st=>{st.style.transform=`translate(${V.x}px,${V.y}px) scale(${V.z})`;
+ st.querySelectorAll('img').forEach(im=>im.classList.toggle('pix',V.z>=2))});
+ document.documentElement.style.setProperty('--gs',Math.max(8,40*V.z/ (V.fit||1))+'px');
+ $('#zl').textContent=Math.round(V.z*100)+'%';}
+function center(){const p=$('#paneL'),s=SRC[V.view];V.x=(p.clientWidth-s.w*V.z)/2;V.y=(p.clientHeight-s.h*V.z)/2;}
+function clampXY(){const p=$('#paneL'),s=SRC[V.view],w=s.w*V.z,h=s.h*V.z;
+ V.x=w<=p.clientWidth?(p.clientWidth-w)/2:Math.min(0,Math.max(p.clientWidth-w,V.x));
+ V.y=h<=p.clientHeight?(p.clientHeight-h)/2:Math.min(0,Math.max(p.clientHeight-h,V.y));}
+function zoomAt(f,cx,cy){const nz=Math.min(16,Math.max(V.fit*0.5,V.z*f));V.x=cx-(cx-V.x)*nz/V.z;V.y=cy-(cy-V.y)*nz/V.z;V.z=nz;clampXY();draw();}
+function stopBlink(){if(V.blink){clearInterval(V.blink);V.blink=null;}$('#bBlink').classList.remove('on');}
+function setMode(m){stopBlink();V.mode=m;$$('[data-mode]').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));
+ if(m==='blink'){V.phase=0;$('#bBlink').classList.add('on');V.blink=setInterval(()=>{V.phase^=1;setImgs();},600);} setImgs();requestAnimationFrame(fitView);}
+function sizePanes(){const s=SRC[V.view],p=$('#paneL');const h=Math.max(200,Math.min(620,Math.round(p.clientWidth*s.h/s.w)));$$('.pane').forEach(x=>x.style.height=h+'px');}
+function fitView(){sizePanes();V.fit=fitZ();V.z=V.fit;center();draw();}
+function reset(){stopBlink();V.mode='cmp';V.op=50;$('#op').value=50;$('#opv').textContent='50%';V.grid=false;document.body.classList.remove('showgrid');$('#bGrid').classList.remove('on');
+ $$('[data-mode]').forEach(b=>b.classList.toggle('on',b.dataset.mode==='cmp'));setImgs();requestAnimationFrame(fitView);}
+$$('[data-mode]').forEach(b=>b.onclick=()=>{if(b.dataset.mode==='blink'&&V.blink){setMode('overlay');return;}setMode(b.dataset.mode)});
+$('#bGrid').onclick=()=>{V.grid=!V.grid;document.body.classList.toggle('showgrid',V.grid);$('#bGrid').classList.toggle('on',V.grid)};
+$('#op').oninput=e=>{V.op=+e.target.value;$('#opv').textContent=V.op+'%';if(V.mode!=='overlay')setMode('overlay');else setImgs();};
+$('#zIn').onclick=()=>{const p=$('#paneL');zoomAt(1.25,p.clientWidth/2,p.clientHeight/2)};
+$('#zOut').onclick=()=>{const p=$('#paneL');zoomAt(0.8,p.clientWidth/2,p.clientHeight/2)};
+$('#zFit').onclick=fitView;
+$('#z1').onclick=()=>{const p=$('#paneL');zoomAt(1/V.z,p.clientWidth/2,p.clientHeight/2)};
+$('#bReset').onclick=reset;
+$$('[data-view]').forEach(b=>b.onclick=()=>{$$('[data-view]').forEach(x=>x.classList.toggle('on',x===b));V.view=b.dataset.view;setImgs();requestAnimationFrame(fitView)});
+panes().forEach(p=>{p.addEventListener('wheel',e=>{e.preventDefault();const r=p.getBoundingClientRect();zoomAt(e.deltaY<0?1.15:1/1.15,e.clientX-r.left,e.clientY-r.top)},{passive:false});
+ p.addEventListener('pointerdown',e=>{p.setPointerCapture(e.pointerId);p.classList.add('drag');const sx=e.clientX-V.x,sy=e.clientY-V.y;
+  const mv=ev=>{V.x=ev.clientX-sx;V.y=ev.clientY-sy;clampXY();draw()};const up=()=>{p.classList.remove('drag');p.removeEventListener('pointermove',mv);p.removeEventListener('pointerup',up)};
+  p.addEventListener('pointermove',mv);p.addEventListener('pointerup',up)});});
+$$('.pane img').forEach(im=>im.onerror=()=>{im.closest('.pane').querySelector('.err').style.display='grid'});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopBlink()});
+window.addEventListener('resize',()=>{const was=V.z===V.fit;V.fit=fitZ();if(was){V.z=V.fit;center()}clampXY();draw()});
+/* 상세 분석 탭·접기 */
+$$('.tab').forEach(t=>t.onclick=()=>{$$('.tab').forEach(x=>x.classList.toggle('on',x===t));$$('.tpanel').forEach(p=>p.classList.toggle('on',p.id===t.dataset.t))});
+$('#accH').onclick=()=>{$('#ana').classList.toggle('collapsed');$('#accA').textContent=$('#ana').classList.contains('collapsed')?'펼치기 ▾':'접기 ▴'};
+setImgs();requestAnimationFrame(fitView);
+
+if(EMB){const bar=$('.dbar');const bs=[...bar.querySelectorAll('button')];
+ bs[0].onclick=()=>parent.scrollTo({top:0,behavior:'smooth'});
+ const pv=bs.find(b=>b.textContent.includes('이전')),nx=bs.find(b=>b.textContent.includes('다음'));
+ for(const [b,d,t] of [[pv,-1,'앞 영상으로 갑니다'],[nx,1,'다음 영상으로 갑니다']]){b.disabled=false;b.dataset.tip=t;b.setAttribute('aria-label',t);b.onclick=()=>parent.ttGo&&parent.ttGo(d);}}
+</script></body></html>
