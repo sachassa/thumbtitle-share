@@ -35,12 +35,22 @@ def fonts_by_name():
     return _FN
 
 def titles(root):
-    p = os.path.join(os.path.dirname(root.rstrip("/\\")), "영상목록.json")
+    """영상 번호 → 제목. 결과 폴더 옆 영상목록.json, 입구 작업 폴더면 그 안의 영상목록.json·입구_진행.json(2026-11-25 외부 설치 시험: 작업 폴더로 켜면 제목이 빈칸 — 실측)."""
+    out = {}
+    for p in (os.path.join(os.path.dirname(root.rstrip("/\\")), "영상목록.json"), os.path.join(root, "영상목록.json")):
+        try:
+            L = json.load(open(p, encoding="utf-8")); L = L if isinstance(L, list) else (L.get("vids") or L.get("videos") or [])
+            for x in L:
+                k = x.get("id") or x.get("video_id"); t = x.get("t") or x.get("title") or ""
+                if k and t: out[k] = t
+        except Exception:
+            pass
     try:
-        L = json.load(open(p, encoding="utf-8")); L = L if isinstance(L, list) else (L.get("vids") or L.get("videos") or [])
-        return {(x.get("id") or x.get("video_id")): (x.get("t") or x.get("title") or "") for x in L}
+        j = json.load(open(os.path.join(root, "입구_진행.json"), encoding="utf-8"))
+        if j.get("영상") and j.get("제목"): out.setdefault(j["영상"], j["제목"])
     except Exception:
-        return {}
+        pass
+    return out
 
 def ai_wait(jobs):
     """입구 작업 중 「끝」인데 눈 확인 기록(값/눈확인.json 에 그 영상)이 없는 것."""

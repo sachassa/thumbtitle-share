@@ -55,7 +55,8 @@ def auto_titles(lines):
     """「제목줄」이 없는 새 영상: 글자 높이가 가장 큰 줄의 55% 이상인 줄을 제목 줄로(로고·출처·작은 이름표를 뺌).
     2026-11-25 입구 시험(조니 뎁 쇼츠)에서 짐작 규칙이 로고 「또 다른 시선」(11.7px)까지 제목으로 넣고 줄마다 글꼴이 갈림(실측).
     크기가 비슷한 장면 자막은 이 규칙으로 못 거름 — AI 눈 확인에서 「제목줄」을 적어 다시 돌림."""
-    hs = [(r, r["ink"][3] - r["ink"][1]) for r in lines if r.get("ink") and r.get("text") and sum(ch.isalnum() for ch in r["text"]) >= 1]
+    hs = [(r, r["ink"][3] - r["ink"][1]) for r in lines if r.get("ink") and r.get("text") and sum(ch.isalnum() for ch in r["text"]) >= 1
+          and "자막" not in (r.get("role") or "")]   # 자리로 자막(아래 글)이라 본 줄은 빼기 — 2026-11-25 재시험에서 「전무후무한」(아래 글(자막))이 제목으로 들어감(실측)
     if not hs: return []
     m = max(h for _, h in hs)
     return [r["text"] for r, h in hs if h >= 0.55 * m]

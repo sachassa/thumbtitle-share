@@ -67,7 +67,12 @@ Copy-Item config.example.json tt_config.json   # 그리고 tt_config.json 의 �
 
 두 번째 글자 읽기 프로그램입니다. 확인:
 ```powershell
-powershell.exe -NoProfile -Command "Add-Type -AssemblyName System.Runtime.WindowsRuntime; $null=[Windows.Media.Ocr.OcrEngine,Windows.Foundation,ContentType=WindowsRuntime]; [Windows.Media.Ocr.OcrEngine]::AvailableRecognizerLanguages | % LanguageTag"
+powershell.exe -NoProfile -Command 'Add-Type -AssemblyName System.Runtime.WindowsRuntime; $null=[Windows.Media.Ocr.OcrEngine,Windows.Foundation,ContentType=WindowsRuntime]; [Windows.Media.Ocr.OcrEngine]::AvailableRecognizerLanguages | % LanguageTag'
+```
+(PowerShell 에 그대로 붙여도 됩니다 — 바깥을 작은따옴표로 감싸 `$null` 이 미리 풀리지 않게 함. 2026-11-25 외부 설치 시험에서 큰따옴표 판이 ParserError 로 실패해 고침 — 실측.)
+```powershell
+# 또는 같은 것을 tt_setup 으로:
+.\.venv\Scripts\python.exe -X utf8 tools/tt_setup.py check   # 「Windows 글자 인식(한국어)」 줄
 ```
 기대 결과: 목록에 `ko` 또는 `ko-KR` 이 있음. 없으면(관리자 PowerShell 에서, 사람에게 관리자 승인을 부탁):
 ```powershell
@@ -77,14 +82,14 @@ Add-WindowsCapability -Online -Name "Language.OCR~~~ko-KR~0.0.1.0"
 
 ## 5. 글꼴 받기
 
-글꼴 파일은 이 저장소에 없습니다. **무료이고 다시 받아도 되는 공개 주소에서만** 자동으로 받고, 파일마다 sha256 이 만든 사람 PC의 파일과 같은지 확인합니다(같지 않으면 버림).
+글꼴 파일은 이 저장소에 없습니다. **무료이고 다시 받아도 되는 공개 주소에서만** 자동으로 받습니다. **5-1·5-2 는 파일마다 sha256 이 만든 사람 PC의 파일과 같은지 확인합니다(같지 않으면 버림). 5-3 눈누 묶음은 sha256 확인 없이 판(저장소@판)만 고정해 받습니다** — 같은 판이면 jsDelivr 가 같은 파일을 줍니다.
 
 | 순서 | 명령 | 무엇 | 크기·시간(실측) |
 |---|---|---|---|
 | 5-1 | `.\.venv\Scripts\python.exe -X utf8 tools/tt_setup.py fonts-free` | 빠른 후보 글꼴 61개 — 목록 `fonts/free_fonts.json` (눈누 웹폰트 저장소 jsDelivr, Google Fonts 저장소, Pretendard npm, SUIT, 네이버 한글 글꼴, 원티드·배민·고도 공식 배포) | 약 88MB · 몇 분 |
 | 5-2 | `.\.venv\Scripts\python.exe -X utf8 tools/tt_setup.py fonts-base` | 기본 후보 글꼴(검은고딕·도현·주아·나눔명조·나눔고딕·Noto Sans KR) — Windows에 없을 때 쓰려고 받아 둠. 목록 `fonts/base_fonts.json` | 약 30MB |
-| 5-3 | `.\.venv\Scripts\python.exe -X utf8 tools/tt_setup.py fonts-noonnu` | 눈누(noonnu.cc) 공개 글꼴 묶음 — GitHub `projectnoonnu` 저장소 138곳, 판 고정(`fonts/noonnu_repos.json`) | 약 1,760개 · 1.7GB · 30분 넘게(인터넷 빠르기에 따라) |
-| 5-4 | `.\.venv\Scripts\python.exe -X utf8 tools/tt_setup.py fonts-index` | 눈누 묶음의 글꼴 목록 만들기(`_cmap.json` 글자표, `_이름.json` 이름) — 글꼴을 더 넣었으면 다시 돌림 | 몇 분 |
+| 5-3 | `.\.venv\Scripts\python.exe -X utf8 tools/tt_setup.py fonts-noonnu` | 눈누(noonnu.cc) 공개 글꼴 묶음 — GitHub `projectnoonnu` 저장소 138곳, 판 고정(`fonts/noonnu_repos.json`) | 약 1,760개 · 1.6GB · 실측 약 11분(외부 설치 시험 10분 44초 — 인터넷 빠르기에 따라 더 걸림) |
+| 5-4 | `.\.venv\Scripts\python.exe -X utf8 tools/tt_setup.py fonts-index` | 눈누 묶음의 글꼴 목록 만들기(`_cmap.json` 글자표, `_이름.json` 이름) — 글꼴을 더 넣었으면 다시 돌림 | 실측 약 4분(255초) |
 
 확인: `.\.venv\Scripts\python.exe -X utf8 tools/tt_setup.py check` → 「무료 글꼴 61개 / 61」, 「눈누 글꼴 묶음 1,7xx개」.
 
@@ -131,7 +136,11 @@ Add-WindowsCapability -Online -Name "Language.OCR~~~ko-KR~0.0.1.0"
 ```
 그리고 브라우저로 **http://127.0.0.1:8765/최종.html** 을 엽니다. 메인 화면을 이렇게 `tt_editor.py <결과 폴더>` 로 켜고 이 주소로 열어야 「+ 신규 영상 등록」(그림 끌어 놓기·주소 칸·시작 단추·진행 상태)이 동작합니다. `비교.html` 파일을 그냥 더블클릭해 열면 보기만 되고 등록은 안 됩니다.
 `<결과 폴더>` = `최종.html` 이 있는 폴더. 이 저장소에 든 예: `.\.venv\Scripts\python.exe -X utf8 tools/tt_editor.py 타이틀재현_3판` → http://127.0.0.1:8765/최종.html . 입구 작업 폴더 하나(`~/ThumbTitle_입구/<날짜시각>_<번호>`)를 주면 그 결과를 고쳐 보는 편집 화면(http://127.0.0.1:8765/)이 됩니다. 결과 폴더 없이 `tools/tt_editor.py` 만 쳐도 켜지며, 이때는 입구 작업 폴더(`jobs_dir`)를 봅니다.
+8765 가 이미 쓰이고 있으면(다른 프로그램·이미 켜 둔 화면) 포트를 바꿉니다: `.\.venv\Scripts\python.exe -X utf8 tools/tt_editor.py 타이틀재현_3판 --port 8799` → http://127.0.0.1:8799/최종.html (아래 주소의 8765 도 같이 바꿔 읽음).
+첫 화면: 결과 폴더(`최종.html` 있는 곳)로 켜면 **/최종.html**, 입구 작업 폴더 하나로 켜면 **/** (편집 화면 — 이때 /최종.html 은 없음).
 확인: `curl http://127.0.0.1:8765/jobs` → `[...]`(입구로 돌린 작업 목록, JSON). 끄기 = Ctrl+C. 이 화면은 이 PC 안(127.0.0.1)에서만 열립니다.
+
+참고: 이 저장소에 실린 예전 결과(`타이틀재현_3판`)는 만든 사람이 줄 글자·글꼴을 직접 정해 준(`값/글자고르기.json`) 판입니다. 같은 영상을 지시 없이 새로 돌리면 글꼴이 다르게 나올 수 있습니다(예: 조니 뎁 썸네일 — 실린 결과는 지마켓 산스, 지시 없이 돌리면 두 PC 모두 페이퍼로지로 나옴 — 실측).
 
 ## 9. DB·수집 자료
 
@@ -151,17 +160,26 @@ Add-WindowsCapability -Online -Name "Language.OCR~~~ko-KR~0.0.1.0"
 - 글꼴은 각 이용 조건대로. 글꼴 파일을 다시 나눠 주지 않습니다.
 - 비밀값(API 키·토큰)·`tt_config.json`(자기 PC 경로)을 저장소에 올리지 않습니다(`.gitignore` 에 있음).
 
-## 12. 이 안내가 어디까지 시험됐나(2026-11-25, 만든 사람 PC의 빈 폴더에서)
+## 12. 이 안내가 어디까지 시험됐나(2026-11-25)
+
+시험 두 가지: ① 만든 사람 PC의 빈 폴더(새 venv·새 글꼴 폴더) ② **외부 설치 시험** — 새 AI 에이전트가 깃 주소만 받고 이 안내만 보고 다른 폴더에 설치·사용.
 
 | 단계 | 상태 | 근거 |
 |---|---|---|
-| 1. venv·패키지 설치(Python 3.11, requirements.txt) | 확인됨 | 실측 — 설치 뒤 import 6개 됨. 처음엔 requirements.txt 의 한글 주석을 pip 가 cp949 로 읽어 실패 → 주석을 영어로 고침 |
-| 2. 설정(tt_config.json 으로 폴더 옮기기) | 확인됨 | 실측 — tt_config.py 가 바꾼 폴더를 찍음 |
-| 3. 글자 인식 모델 받기 | 확인됨 | 실측 — 2개 파일 sha256 일치 |
-| 5-1·5-2 무료 글꼴 61개·기본 글꼴 7개 받기 | 확인됨 | 실측 — 실패 0. 61개는 만든 사람 PC 파일과 sha256 같음, 기본 글꼴 중 3개(나눔고딕 Bold·ExtraBold, Noto Sans KR)는 판이 다름 |
-| 5-3 눈누 묶음 받기(1.7GB) | 진행 중이었음(끝까지 확인 안 됨) | 실측 — 138곳 가운데 59곳까지 실패 없이 받음 |
-| 5-4 글꼴 목록 만들기 | 아직 확인 안 됨 | 5-3 이 끝나야 돌림 |
-| 8. 화면 켜기(tt_editor.py) | 확인됨 | 실측 — 결과 폴더 없이 켜서 `/`·`/jobs` 응답 200 |
-| 8. 최종.html 의 「+ 신규 영상 등록」 | 아직 확인 안 됨 | 화면 쪽을 막 고치는 중이었음 |
-| 7. 입구 시험 3건(그림·쇼츠 주소·롱폼 주소) | 아직 확인 안 됨 | 글꼴 묶음이 다 받아진 뒤 돌릴 차례였음 |
-| 같은 결과가 나오는지(최종 2편 중 한 장) | 아직 확인 안 됨 | 위와 같음 |
+| 0. 클론·준비물 | 확인됨(②) | 실측 |
+| 1. venv·패키지(Python 3.11) | 확인됨(①②) | 실측 — import 6개 됨. requirements.txt 한글 주석을 pip 가 cp949 로 읽어 실패하던 것은 고침. rapidocr 가 opencv-python(화면 있는 판)도 같이 깔아 cv2 가 두 벌 깔림 — 돌아가는 데는 문제 없었음 |
+| 2. 설정(tt_config.json) | 확인됨(①②) | 실측 |
+| 3. 글자 인식 모델 | 확인됨(①②) | 실측 — sha256 일치 |
+| 4. Windows 글자 인식 확인 명령 | 고침 | 실측(②) — 큰따옴표 판이 그대로 붙이면 실패 → 작은따옴표로 바꿈 |
+| 5-1·5-2 무료 글꼴 61개·기본 7개 | 확인됨(①②) | 실측 — 실패 0. 기본 3개(나눔고딕 Bold·ExtraBold, Noto Sans KR)는 판이 다름 |
+| 5-3 눈누 묶음 | 확인됨(①②) | 실측 — 138곳·1,763개(만든 사람 PC와 같은 개수)·실패 0, ② 10분 44초 |
+| 5-4 글꼴 목록 | 확인됨(①②) | 실측 — 1,763개, 255초 |
+| 6. 설치 점검 | 확인됨(①②) | 실측 — 남은 메모리 줄 말고 모두 「됨」 |
+| 7. 입구 — 쇼츠 주소(조니 뎁 썸네일) | 됨 · 일치 안 됨(②) | 실측 — 받기~화면 만들기까지 끝(333초). 「뎁」을 「덥」으로 읽고 자막 「전무후무한」이 제목에 들어감 → 글자고르기.json 으로 고쳐 다시(176초). 글꼴은 모두 「못 찾음」(가장 가까운 것 페이퍼로지 3·5·6). 그 뒤 도구를 고침: 자막 자리 줄은 자동 제목에서 뺌 |
+| 7. 입구 — 그림 파일·롱폼 주소 | 아직 확인 안 됨 | — |
+| 눈 확인 뒤 비교.html | 고침 | 실측(②) — 전에는 다시 만들지 않았음 → 이제 `tt_status.py eye` 가 비교.html·_AI_확인대기.json 을 다시 만듦(시험함) |
+| 8. 화면(결과 폴더 → /최종.html, 작업 폴더 → /) | 확인됨(①②) | 실측 — 응답 200. 작업 폴더 모드의 제목 빈칸은 고침 |
+| 8. 「+ 신규 영상 등록」 | 외부 시험 때는 없었음 → 최종.html 새 판(649f80e)에 들어감 | 실측(②: 단추 0건) · 새 판에서 단추로 실제 등록해 보지는 않음 |
+| 감시(tt_watchdog.mjs) | 고침 | 실측(②) — 작업이 끝나도 안 끝났음 → 이제 입구 작업이 끝·실패면 스스로 끝남(시험함) |
+| Chrome 임시 프로필 | 고침 | 실측(②) — tt_chrome_* 25개·207MB 남음 → 이제 찍을 때마다 지움(시험함) |
+| 같은 결과가 나오는지 | 같지 않음(②) | 실측 — 지시 없이 돌리면 두 PC 모두 페이퍼로지(실린 예전 결과는 만든 사람 지시가 들어간 판) |

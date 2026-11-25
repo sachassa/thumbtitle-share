@@ -35,7 +35,7 @@ $$('button[data-type]').forEach(b=>b.onclick=()=>{const on=!b.classList.contains
 $('[data-st=all]').onclick=()=>{$$('button[data-type]').forEach(x=>x.classList.remove('on'));F.type=null;$('#fBad').checked=false;F.bad=false;$('#q').value='';F.q='';applyF()};
 $('#fBad').onchange=e=>{F.bad=e.target.checked;applyF()};$('#q').oninput=e=>{F.q=e.target.value.trim().toLowerCase();applyF()};
 function ed(id){window.open('편집기.html?base=.'+(id?'&id='+encodeURIComponent(id):''),'tt_editor','width=1600,height=1000');}
-$('#edBtn').onclick=()=>ed('');$('#edCur').onclick=()=>window.open('편집기.html?base='+encodeURIComponent(VIDS[cur][0])+'&id='+encodeURIComponent(VIDS[cur][1]),'tt_editor','width=1600,height=1000');
+const edV=()=>window.open('편집기.html?base='+encodeURIComponent(VIDS[cur][0])+'&id='+encodeURIComponent(VIDS[cur][1]),'tt_editor','width=1600,height=1000');$('#edBtn').onclick=edV;$('#edCur').onclick=edV;   // 편집기 = 지금 고른 영상(공유 주소에도 영상 폴더째 올라가 바로 열림)
 // 신규 영상 등록: 이 화면을 도구가 설치된 컴퓨터의 편집 서버(tt_editor.py)로 열었을 때만 자동 재현이 돎
 let SRV=false;fetch('/jobs').then(r=>{SRV=r.ok&&(r.headers.get('content-type')||'').includes('json');if(SRV)jobs();}).catch(()=>{});
 const nm=t=>{$('#newMsg').textContent=t};
@@ -71,8 +71,8 @@ def build(items):
             f'aria-label="{E(x["title"])} — 누르면 아래에 상세 비교 화면이 열립니다" data-tip="누르면 아래에 이 영상의 상세 비교 화면이 열립니다">'
             f'<div class="vt">▶ {E(x["title"])}</div><div class="th"><img src="{E(x["rel"])}/그림/{E(x["vid"])}_원본.png" alt="썸네일"></div>'
             f'<div class="ft"><span class="badge b-blue">{x["kind"]}</span>{st}{mt}<span class="sp" style="flex:1"></span><span class="small">{fit}</span></div></div>')
-    # 편집기는 이 폴더(가장 새 결과)에 그 영상 결과가 있으면 여기서, 없으면 그 영상 폴더에서 읽음
-    vids = json.dumps([[(".") if os.path.exists(os.path.join(ROOT, "값", x["vid"] + ".json")) else x["rel"], x["vid"]] for x in items], ensure_ascii=False)
+    # 편집기에 줄 폴더: 영상 폴더에 값/<영상>.json 이 있으면 그 폴더(공유 주소에도 그 폴더째 올라감), 없으면 이 폴더
+    vids = json.dumps([[x["rel"] if os.path.exists(os.path.join(ROOT, x["rel"], "값", x["vid"] + ".json")) else ".", x["vid"]] for x in items], ensure_ascii=False)
     pages = json.dumps([f'{x["rel"]}/새화면.html?embed' for x in items], ensure_ascii=False)
     nk = lambda t: sum(1 for x in items if x["kind"] == t)
     chip = lambda t: (f'<button class="chip" data-type="{t}" data-tip="{t} 영상만 — 다시 누르면 풀림" '

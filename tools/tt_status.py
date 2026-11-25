@@ -76,6 +76,17 @@ if __name__ == "__main__":
         d[vid] = {"at": time.time(), "note": note}
         tmp = p + ".tmp"; json.dump(d, open(tmp, "w", encoding="utf-8"), ensure_ascii=False, indent=1); os.replace(tmp, p)
         print("눈 확인 기록:", vid)
+        # 입구 작업처럼 비교.html 이 이미 있는 폴더면 바로 다시 만듦(눈 확인 전에는 결과를 숨기므로) — 2026-11-25 외부 설치 시험에서 눈 확인 뒤에도 비교 화면이 비어 있었음(실측)
+        if os.path.exists(os.path.join(out, "비교.html")):
+            import subprocess
+            r = subprocess.run([sys.executable, "-X", "utf8", os.path.join(os.path.dirname(os.path.abspath(__file__)), "tt_compare_html3.py"), out, "--name", "비교.html"])
+            print("비교 화면 다시 만듦" if r.returncode == 0 else f"비교 화면 다시 만들기 실패(rc={r.returncode})")
+        # 입구의 「AI 확인 대기」 목록에서도 뺌
+        if os.path.exists(os.path.join(out, "입구_진행.json")):
+            try:
+                sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+                import tt_entry; tt_entry.write_ai_wait(os.path.dirname(os.path.abspath(out)))
+            except Exception as e: print("AI 확인 대기 목록 갱신 못 함:", e)
     elif sys.argv[1] == "queue":   # python tt_status.py queue <결과 폴더> "사유" id id ...
         out, why, ids = sys.argv[2], sys.argv[3], sys.argv[4:]
         p = os.path.join(out, "값", "_대기열.json"); d = _rj(p, {}) or {}

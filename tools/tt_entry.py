@@ -29,10 +29,13 @@ def vid_of(s):
 
 def get(url, timeout=20):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (thumb-title-tool)"})
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as r: return r.status, r.read()
-    except urllib.error.HTTPError as e: return e.code, b""
-    except Exception as e: raise Fail(f"인터넷에서 썸네일을 받지 못했습니다({e.__class__.__name__}). 연결을 확인하거나 그림 파일을 직접 올려 주세요.")
+    for k in range(3):   # 연결이 한 번 끊겨도 다시 해 봄(2026-11-25 재시험이 RemoteDisconnected 한 번에 실패함 — 실측)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r: return r.status, r.read()
+        except urllib.error.HTTPError as e: return e.code, b""
+        except Exception as e:
+            if k == 2: raise Fail(f"인터넷에서 썸네일을 받지 못했습니다({e.__class__.__name__}, 세 번 해 봄). 연결을 확인하거나 그림 파일을 직접 올려 주세요.")
+            time.sleep(2 + 3 * k)
 
 
 def fetch_thumb(vid, kind):
@@ -50,7 +53,8 @@ def fetch_thumb(vid, kind):
 
 
 def title_of(vid):
-    code, b = get(f"https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v={vid}", 10)
+    try: code, b = get(f"https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v={vid}", 10)
+    except Fail: return ""   # 제목을 못 받아도 재현은 함
     try: return json.loads(b.decode("utf-8")).get("title", "") if code == 200 else ""
     except Exception: return ""
 

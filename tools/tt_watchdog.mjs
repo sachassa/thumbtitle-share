@@ -22,7 +22,16 @@ const opt = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? Number
 const STALL = opt("--stall", 300), TIMEOUT = opt("--timeout", 1320), EVERY = opt("--every", 15) * 1000;
 const say = (s) => console.log(`${new Date().toTimeString().slice(0, 8)} ${s}`);
 let pos = fs.existsSync(logF) ? fs.statSync(logF).size : 0;
-let lastStage = "", warned = {};
+let lastStage = "", warned = {}, sawResult = false, endTicks = 0;
+// 스스로 끝나기(2026-11-25 외부 설치 시험: 작업이 끝나도 감시가 안 끝나 손으로 꺼야 했음 — 실측):
+//   입구_진행.json(로그 옆 또는 진행 파일 두 칸 위)의 상태가 「끝」·「실패」이거나, ■ 결과를 알린 뒤 진행 파일의 프로세스가 사라지면 한 번 더 읽고 끝냄.
+import path from "node:path";
+const entryF = [path.join(path.dirname(logF), "입구_진행.json"), path.join(path.dirname(path.dirname(stF)), "입구_진행.json")].find((f) => fs.existsSync(f)) || path.join(path.dirname(logF), "입구_진행.json");
+function finished() {
+  try { const e = JSON.parse(fs.readFileSync(entryF, "utf8")); if (e.상태 === "끝" || e.상태 === "실패") return `입구 작업 ${e.상태}${e.안내 ? " — " + String(e.안내).slice(0, 120) : ""}`; } catch {}
+  try { const st = JSON.parse(fs.readFileSync(stF, "utf8")); if (sawResult && st.pid && !alive(st.pid)) return "결과를 낸 뒤 프로세스가 끝남"; } catch {}
+  return null;
+}
 const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === "EPERM"; } };
 
 function tick() {
@@ -33,7 +42,7 @@ function tick() {
       const fd = fs.openSync(logF, "r"); const buf = Buffer.alloc(size - pos); fs.readSync(fd, buf, 0, buf.length, pos); fs.closeSync(fd); pos = size;
       for (const l of buf.toString("utf8").split(/\r?\n/)) {
         if (/^==/.test(l)) say("▶ " + l.replace(/^==\s*/, ""));
-        else if (/: (통과|못 통과) ·/.test(l)) say("■ 결과 " + l.slice(0, 140));
+        else if (/: (통과|못 통과) ·/.test(l)) { sawResult = true; say("■ 결과 " + l.slice(0, 140)); }
         else if (/Traceback|: 오류 —|Error|Killed|MemoryError|실패/.test(l) && !/RuntimeWarning/.test(l)) say("⚠오류 " + l.slice(0, 160));
         else if (/글꼴 알아내기|다시 볼 글자|Claude 정답 줄로 고침|묶음 미리 계산|전체 비교 건너뜀/.test(l)) say("▷ " + l.trim().slice(0, 150));
       }
@@ -55,4 +64,8 @@ function tick() {
   } catch {}
 }
 say(`감시 시작 — 멈춤 ${STALL}초 · 시간초과 ${TIMEOUT}초 · ${EVERY / 1000}초마다`);
-setInterval(tick, EVERY); tick();
+const timer = setInterval(() => {
+  tick();
+  const why = finished();
+  if (why && ++endTicks >= 2) { tick(); say(`□ 감시 끝 — ${why}`); clearInterval(timer); process.exit(0); }   // 두 번 연달아 끝으로 보일 때(마지막 로그 줄까지 읽고)
+}, EVERY); tick();

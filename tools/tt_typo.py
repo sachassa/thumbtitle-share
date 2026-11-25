@@ -493,9 +493,16 @@ def build_svg(vid, im, lines, bgfile, fix=None):
 
 def chrome_shot(htmlfile, png, W, H):
     prof = tempfile.mkdtemp(prefix="tt_chrome_", dir=CFG.TMP)
-    subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--renderer-process-limit=1", "--disable-extensions", "--js-flags=--max-old-space-size=128", "--hide-scrollbars", f"--user-data-dir={prof}", "--allow-file-access-from-files",
-                    "--force-device-scale-factor=1", f"--window-size={W},{H}", "--virtual-time-budget=1500", f"--screenshot={png}",
-                    "file:///" + os.path.abspath(htmlfile).replace("\\", "/")], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=60)
+    try:
+        subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--renderer-process-limit=1", "--disable-extensions", "--js-flags=--max-old-space-size=128", "--hide-scrollbars", f"--user-data-dir={prof}", "--allow-file-access-from-files",
+                        "--force-device-scale-factor=1", f"--window-size={W},{H}", "--virtual-time-budget=1500", f"--screenshot={png}",
+                        "file:///" + os.path.abspath(htmlfile).replace("\\", "/")], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=60)
+    finally:   # 찍을 때마다 만든 Chrome 임시 프로필을 지움(2026-11-25 외부 설치 시험: tt_chrome_* 25개·207MB 남음 — 실측)
+        import shutil, time as _t
+        for _k in range(5):
+            shutil.rmtree(prof, ignore_errors=True)
+            if not os.path.exists(prof): break
+            _t.sleep(0.4)
 
 def text_mask(img, bg, region):
     X0, Y0, X1, Y1 = region
