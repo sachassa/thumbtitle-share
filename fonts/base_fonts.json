@@ -1,0 +1,43 @@
+[
+ {
+  "file": "BlackHanSans-Regular.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/blackhansans/BlackHanSans-Regular.ttf",
+  "sha256": "31960809284026681774a8e52dc19ebcad26cf69b0ad9d560f288296fbb52739"
+ },
+ {
+  "file": "DoHyeon-Regular.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/dohyeon/DoHyeon-Regular.ttf",
+  "sha256": "35644be7f28e0a68a447b1f7af351dcde5674b870f24f7b5f43e26d00b4ab653"
+ },
+ {
+  "file": "Jua-Regular.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/jua/Jua-Regular.ttf",
+  "sha256": "769677aef240bfc3b9965f2b50748075bff885e6c6992fc591a3fb268279f898"
+ },
+ {
+  "file": "NanumMyeongjoExtraBold.ttf",
+  "zip": "https://hangeul.pstatic.net/hangeul_static/webfont/zips/nanum-myeongjo.zip",
+  "member": "NanumMyeongjoExtraBold.ttf",
+  "sha256": "a03d520bccc43ae1dc0bd5f64d143195a0ffce8318aacb0f3efb6117827eee14"
+ },
+ {
+  "file": "NanumGothicBold.ttf",
+  "zip": "https://hangeul.pstatic.net/hangeul_static/webfont/zips/nanum-gothic.zip",
+  "member": "NanumGothicBold.ttf",
+  "sha256": null,
+  "note": "만든 사람 PC의 판과 다름(같은 판 공개 주소 못 찾음)"
+ },
+ {
+  "file": "NanumGothicExtraBold.ttf",
+  "zip": "https://hangeul.pstatic.net/hangeul_static/webfont/zips/nanum-gothic.zip",
+  "member": "NanumGothicExtraBold.ttf",
+  "sha256": null,
+  "note": "만든 사람 PC의 판과 다름(같은 판 공개 주소 못 찾음)"
+ },
+ {
+  "file": "NotoSansKR-VF.ttf",
+  "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/Variable/TTF/Subset/NotoSansKR-VF.ttf",
+  "sha256": null,
+  "note": "만든 사람 PC의 판과 다름(같은 판 공개 주소 못 찾음)"
+ }
+]

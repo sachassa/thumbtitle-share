@@ -1,0 +1,554 @@
+[
+{
+"repo": "2403",
+"ver": "1.1"
+},
+{
+"repo": "2403-2",
+"ver": "1.0"
+},
+{
+"repo": "2404",
+"ver": "1.0"
+},
+{
+"repo": "2404-2",
+"ver": "1.0"
+},
+{
+"repo": "2405",
+"ver": "1.0"
+},
+{
+"repo": "2405-2",
+"ver": "1.0"
+},
+{
+"repo": "2405-3",
+"ver": "1.1"
+},
+{
+"repo": "2406",
+"ver": "1.0"
+},
+{
+"repo": "2406-1",
+"ver": "1.0"
+},
+{
+"repo": "2406-2",
+"ver": "1.0"
+},
+{
+"repo": "2408",
+"ver": "1.0"
+},
+{
+"repo": "2408-1",
+"ver": "1.0"
+},
+{
+"repo": "2408-2",
+"ver": "1.0"
+},
+{
+"repo": "2408-3",
+"ver": "1.0"
+},
+{
+"repo": "2408-4",
+"ver": "1.0"
+},
+{
+"repo": "2408-5",
+"ver": "1.0"
+},
+{
+"repo": "2409-1",
+"ver": "1.0"
+},
+{
+"repo": "2409-2",
+"ver": "1.0"
+},
+{
+"repo": "2410-1",
+"ver": "1.2"
+},
+{
+"repo": "2410-2",
+"ver": "1.0"
+},
+{
+"repo": "2410-3",
+"ver": "1.0"
+},
+{
+"repo": "2411-1",
+"ver": "1.0"
+},
+{
+"repo": "2411-2",
+"ver": "1.0"
+},
+{
+"repo": "2411-3",
+"ver": "1.0"
+},
+{
+"repo": "2412-1",
+"ver": "1.0"
+},
+{
+"repo": "2501-1",
+"ver": "1.1"
+},
+{
+"repo": "2502-1",
+"ver": "1.0"
+},
+{
+"repo": "2503",
+"ver": "1.0"
+},
+{
+"repo": "2503-1",
+"ver": "1.0"
+},
+{
+"repo": "2504-1",
+"ver": "1.0"
+},
+{
+"repo": "2505",
+"ver": "1.0"
+},
+{
+"repo": "2505-1",
+"ver": "1.0"
+},
+{
+"repo": "2506-1",
+"ver": "1.0"
+},
+{
+"repo": "2507-1",
+"ver": "1.0"
+},
+{
+"repo": "2507-2",
+"ver": "1.0"
+},
+{
+"repo": "2508-1",
+"ver": "1.0"
+},
+{
+"repo": "2508-2",
+"ver": "1.0"
+},
+{
+"repo": "2509-1",
+"ver": "1.0"
+},
+{
+"repo": "2510-1",
+"ver": "1.1"
+},
+{
+"repo": "2510-2",
+"ver": "1.1"
+},
+{
+"repo": "2510-3",
+"ver": "1.0"
+},
+{
+"repo": "2511-1",
+"ver": "1.0"
+},
+{
+"repo": "2511-2",
+"ver": "1.0"
+},
+{
+"repo": "2511-3",
+"ver": "1.0"
+},
+{
+"repo": "2511-Korail",
+"ver": "1.0"
+},
+{
+"repo": "2512-1",
+"ver": "1.0"
+},
+{
+"repo": "2601-1",
+"ver": "1.0"
+},
+{
+"repo": "2601-2",
+"ver": "1.0"
+},
+{
+"repo": "2601-3",
+"ver": "1.0"
+},
+{
+"repo": "2601-4",
+"ver": "1.1"
+},
+{
+"repo": "2601-5",
+"ver": "1.0"
+},
+{
+"repo": "2601-6",
+"ver": "1.0"
+},
+{
+"repo": "2603-1",
+"ver": "1.0"
+},
+{
+"repo": "2604-1",
+"ver": "1.1"
+},
+{
+"repo": "2606-1",
+"ver": "1.1"
+},
+{
+"repo": "2606-2",
+"ver": "1.2"
+},
+{
+"repo": "HangultuelGothic",
+"ver": "1.0"
+},
+{
+"repo": "nanumSqaureNeo",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_01",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_02",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_03",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_04",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_05",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_06",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_07",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_08",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_09",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_10",
+"ver": "1.0"
+},
+{
+"repo": "naverfont_11",
+"ver": "1.0"
+},
+{
+"repo": "noon-2410",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts-20-12",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts2201-3",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_11-01",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_13",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_20-04",
+"ver": "2.3"
+},
+{
+"repo": "noonfonts_20-07",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_20-10-21",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_2001",
+"ver": "1.4"
+},
+{
+"repo": "noonfonts_2102-01",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2102-02",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2103_01",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2104",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_2105",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_2105_2",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_2106",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_2108",
+"ver": "1.2"
+},
+{
+"repo": "noonfonts_2108_2",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2110",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2112",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2112-2",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2201",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2201-2",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2202",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2202-2",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2204",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2205",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2205-2",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_220508",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2206-01",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2206-02",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2207-01",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2210-2",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2210-EF",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2212",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2301-wagle",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2302",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_2302_01",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2303",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2304-01",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2304-2",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2307-1",
+"ver": "1.2"
+},
+{
+"repo": "noonfonts_2307-2",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2310",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_231029",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_2312-1",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_2402_1",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_2402_keris",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_JAMO",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_Monoplex-kr",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_Monoplex-nerd",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_Monoplex-wide",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_Monoplex-widenerd",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_eight",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_eleven",
+"ver": ".1.1"
+},
+{
+"repo": "noonfonts_elice",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_five",
+"ver": ".2.0"
+},
+{
+"repo": "noonfonts_miwon",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_nine_",
+"ver": "1.1"
+},
+{
+"repo": "noonfonts_one",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_seven",
+"ver": "1.2"
+},
+{
+"repo": "noonfonts_suit",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_ten",
+"ver": "1.2"
+},
+{
+"repo": "noonfonts_three",
+"ver": "1.6"
+},
+{
+"repo": "noonfonts_tway",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_twelve",
+"ver": "1.2"
+},
+{
+"repo": "noonfonts_two",
+"ver": "1.0"
+},
+{
+"repo": "noonfonts_yuniverse",
+"ver": "1.0"
+},
+{
+"repo": "pretendard",
+"ver": "1.0"
+}
+]

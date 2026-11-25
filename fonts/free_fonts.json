@@ -1,0 +1,316 @@
+[
+ {
+  "file": "BinggraeSamanco-Bold.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.1/BinggraeSamanco-Bold.woff",
+  "sha256": "fe5d0a725464207c17d1cd8e4e432dd99fb602fdfc42faea4abe9453c179c112"
+ },
+ {
+  "file": "BinggraeSamanco.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.1/BinggraeSamanco.woff",
+  "sha256": "dc23dbae2e5977181a9210c2e9555ee45e4d8d631ad2d3db60b14912706c9411"
+ },
+ {
+  "file": "BMEULJIRO.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.2/BMEULJIRO.woff",
+  "sha256": "974433ad86a503ad9fb351e162f5ff6b4ba2546873f34fa8b1bbfd3b6e92b7d9"
+ },
+ {
+  "file": "BMHANNA_11yrs_ttf.ttf",
+  "url": "https://woowahan-cdn.woowahan.com/static/fonts/BMHANNA_11yrs_ttf.ttf",
+  "sha256": "7abaedf3f61f1613ff8833ad6319115ea1def5a2d1b5a1203a957d6abd2f8f18"
+ },
+ {
+  "file": "BMHANNAAir.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.3/BMHANNAAir.woff",
+  "sha256": "80c284e3be1e93f54ee3b3571c274082b70a43a266f8a7543f7931443a798557"
+ },
+ {
+  "file": "BMHANNAPro.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_seven@1.2/BMHANNAPro.woff",
+  "sha256": "d462c9f271acfc448a03f047d5c6dea8c6cfb0c275a86f7fceb1a57b81992306"
+ },
+ {
+  "file": "BMYEONSUNG.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMYEONSUNG.woff",
+  "sha256": "b6659fd71ab4a0d19a3e734b7e8f5d54041893e721cb5022ee128e00989ea417"
+ },
+ {
+  "file": "Cafe24Ohsquare.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.4/Cafe24Ohsquare.woff",
+  "sha256": "1eb9a54bc973d86cbeedcc12cd4257b2d630e6787df77c2b53fd4e9cf8731941"
+ },
+ {
+  "file": "Cafe24Ssurround.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.1/Cafe24Ssurround.woff",
+  "sha256": "a23ffb04c098fba24e3e96186a9d5e4c3b9ba9b34ab0b3b91bddd9d313c6d39b"
+ },
+ {
+  "file": "CookieRun-Regular.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.4/CookieRun-Regular.woff",
+  "sha256": "90f3adc4f2450540800cf15b2f02a365b3fb766059f6362831827055a9a0bffe"
+ },
+ {
+  "file": "Dongle-Bold.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/dongle/Dongle-Bold.ttf",
+  "sha256": "944c498c0d1a1832ab36f173b1b3aa5ae77b2a914e00c4d79e05338fae36472d"
+ },
+ {
+  "file": "Giants-Bold.woff2",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.2/Giants-Bold.woff2",
+  "sha256": "d39f65a137d287dff525398b66b528ca8122c13b34606abfdc82243b137a08a0"
+ },
+ {
+  "file": "GmarketSansBold.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.4/GmarketSansBold.woff",
+  "sha256": "c9f30fc9cb858a716c07da51c5817e90c27bd7387016a2047a8b02b02fb4040d"
+ },
+ {
+  "file": "GmarketSansLight.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.4/GmarketSansLight.woff",
+  "sha256": "35dbd7fb0ee986ebaefae727cab6c12b35782ea1663e79f3db7f8f145ca5e82d"
+ },
+ {
+  "file": "GmarketSansMedium.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.4/GmarketSansMedium.woff",
+  "sha256": "747b8386133b10bffede3cedeb994fc681ad9dc424879a248d7cadf6749b2f97"
+ },
+ {
+  "file": "GodoB.ttf",
+  "zip": "https://static.cdn-nhncommerce.com/download/designCenter/free-font/godoFont.zip",
+  "member": "godoFont/GodoB.ttf",
+  "sha256": "4e84160a96f3c91b828c43230786734dc4cdc98caf03bfed3f5a6485edf422b1"
+ },
+ {
+  "file": "GodoM.ttf",
+  "zip": "https://static.cdn-nhncommerce.com/download/designCenter/free-font/godoFont.zip",
+  "member": "godoFont/GodoM.ttf",
+  "sha256": "ec31bcb72db3df8bf6eebce097529d65cf03a8ade6c0cb2fa17affa3690d7265"
+ },
+ {
+  "file": "GongGothicBold.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.1/GongGothicBold.woff",
+  "sha256": "42df60ec230c1c59d7630816d025f93c3500ec2abc17742b2f8df5dce9554a90"
+ },
+ {
+  "file": "GongGothicLight.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.1/GongGothicLight.woff",
+  "sha256": "7839d7bd7f8d43e4a1dbe25771baa10c18dd7dfe9d108081851be6b29eb06978"
+ },
+ {
+  "file": "GongGothicMedium.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.1/GongGothicMedium.woff",
+  "sha256": "8a3113590097fc34082ed90271495f1b2d5893bec686c8d02348c414c811e574"
+ },
+ {
+  "file": "GothicA1-Black.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/gothica1/GothicA1-Black.ttf",
+  "sha256": "6398ff5c6923c74cb453390892dcb982ec0a6c43b35da8590a8f32702d8c079d"
+ },
+ {
+  "file": "GothicA1-ExtraBold.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/gothica1/GothicA1-ExtraBold.ttf",
+  "sha256": "37a65353a646fea5a1ac90585d1bb8f9b997ecae0b79c4f1f187566f910e3f9d"
+ },
+ {
+  "file": "Gugi-Regular.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/gugi/Gugi-Regular.ttf",
+  "sha256": "c0b1f979979cfc309fb2438fa9464f96173353e0c4842cc7a5919658184ed9d3"
+ },
+ {
+  "file": "IBMPlexSansKR-Bold.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexsanskr/IBMPlexSansKR-Bold.ttf",
+  "sha256": "9d82a8be5330f6d7b53121262867b402baca672eb69b852928f06d185d357f7d"
+ },
+ {
+  "file": "JalnanOTF00.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.3/JalnanOTF00.woff",
+  "sha256": "46fc3434dbd3b616859b3c459aac52b60aa944f51c4860447437d1243a57da26"
+ },
+ {
+  "file": "KCC-Ganpan.woff2",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.1/KCC-Ganpan.woff2",
+  "sha256": "e65a343e42f8ea8591451d1cf5085581a46d0fe0408325dee8ccccfa644ba345"
+ },
+ {
+  "file": "LINESeedKR-Bd.woff2",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.1/LINESeedKR-Bd.woff2",
+  "sha256": "1e011314c73dc50c423c6eee5fb1418a11ec3cd391978e883f70309558bf58ec"
+ },
+ {
+  "file": "MaplestoryOTFBold.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.3/MaplestoryOTFBold.woff",
+  "sha256": "5e0926d4042b0235d23b56917753e548c6fe59d2db045725aff9e46b0709027a"
+ },
+ {
+  "file": "NanumSquareB.woff",
+  "url": "https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareB.woff",
+  "sha256": "9d2ff3cd7bcfbb1ed5a9493dd0deae23c33751e865222122a67984aba962f258"
+ },
+ {
+  "file": "NanumSquareEB.woff",
+  "url": "https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareEB.woff",
+  "sha256": "b8e3f3c56a5a0e32caf6e73d513857ef0794c915c9c83f8024e329fc00c4b6b2"
+ },
+ {
+  "file": "NanumSquareRoundB.ttf",
+  "zip": "https://hangeul.pstatic.net/hangeul_static/webfont/zips/nanum-square-round.zip",
+  "member": "NanumSquareRoundB.ttf",
+  "sha256": "61fd37816a1ee1a9336876742392d80bdafd340e5124a088aeda20446e2e15de"
+ },
+ {
+  "file": "NanumSquareRoundEB.ttf",
+  "zip": "https://hangeul.pstatic.net/hangeul_static/webfont/zips/nanum-square-round.zip",
+  "member": "NanumSquareRoundEB.ttf",
+  "sha256": "9e845fc35c5bc4a5b7ed59d85a1760059de5ce55b5e5a4d7535f7efa87695e39"
+ },
+ {
+  "file": "netmarbleB.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.3/netmarbleB.woff",
+  "sha256": "761d393ebb0205a6719f5cc43254030c37514bf8ec87956dcc3ec62e44df566a"
+ },
+ {
+  "file": "netmarbleL.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.3/netmarbleL.woff",
+  "sha256": "71ffbb97f04f6aae3f627b37d68d642189e7662289618f5bd676acfc6745406b"
+ },
+ {
+  "file": "netmarbleM.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.3/netmarbleM.woff",
+  "sha256": "a1ac6ab6ab39486ac5cea207a0945f03de28deea5fb06ccd2765859aa74efbc7"
+ },
+ {
+  "file": "NEXON_Lv1_Gothic_OTF_Bold.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.3/NEXON Lv1 Gothic OTF Bold.woff",
+  "sha256": "8df8ddf131871586be4654daca19647b1f597a385d5f8e953f659d4f5ca3edce"
+ },
+ {
+  "file": "NotoSerifKR[wght].ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifkr/NotoSerifKR[wght].ttf",
+  "sha256": "11f8d5de6f1b79195efba3828aaa2ec95c1178f5ae976fb23c8d53250a9938f3"
+ },
+ {
+  "file": "ONE-Mobile-POP.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.1/ONE-Mobile-POP.woff",
+  "sha256": "f4bee0ae05bb506744f7eda3d0ce1305f701a8dcd350f25088351fef2d1bfd48"
+ },
+ {
+  "file": "Orbit-Regular.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/orbit/Orbit-Regular.ttf",
+  "sha256": "5d0206fb0a9e3eeac51aff8d4a6dbb7613d63fc435f1a51f96dc35cefb5f9f87"
+ },
+ {
+  "file": "Pretendard-Black.otf",
+  "url": "https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/public/static/Pretendard-Black.otf",
+  "sha256": "94628b0bcea8936b6e5c30d98d685eb9bbaffb0fe2ed255542ecc656c248e021"
+ },
+ {
+  "file": "Pretendard-Bold.otf",
+  "url": "https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/public/static/Pretendard-Bold.otf",
+  "sha256": "2e91915fab54df71cc9598ebf608b2bdb54c6fe3c066ac61dff0bc44fca71cc7"
+ },
+ {
+  "file": "Pretendard-ExtraBold.otf",
+  "url": "https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/public/static/Pretendard-ExtraBold.otf",
+  "sha256": "c35fe941b7568d52a96010561540e47f9d3948dfde66ba25bc1908233e0a40cd"
+ },
+ {
+  "file": "Pretendard-SemiBold.otf",
+  "url": "https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/public/static/Pretendard-SemiBold.otf",
+  "sha256": "c89bc43027dc7cde5726e96223376f8eec09302b2fc1f8147fd5b57cfc376118"
+ },
+ {
+  "file": "S-CoreDream-6Bold.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-6Bold.woff",
+  "sha256": "e313ad29b71c447983886f038d272d4b3cdaab02ea61770fc5cc85899d103bd7"
+ },
+ {
+  "file": "S-CoreDream-7ExtraBold.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-7ExtraBold.woff",
+  "sha256": "69e36b5777b7aa4debc62522e2cfc1940496563523a56c8ceb856213541c9452"
+ },
+ {
+  "file": "S-CoreDream-8Heavy.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-8Heavy.woff",
+  "sha256": "dcea95d26655092ffb2d8c3fc216705cb90f71579a9e1d9fb9b2e4269c904874"
+ },
+ {
+  "file": "S-CoreDream-9Black.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-9Black.woff",
+  "sha256": "70686c6dfedfcf405fc94b40d2c6f52dbfa526f970d3d0727206c310a5039c98"
+ },
+ {
+  "file": "SBAggroB.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.2/SBAggroB.woff",
+  "sha256": "2aaa53a12066f3174ddbe2bc1e57726bd4b248114d226a4b21bbb5008f658e99"
+ },
+ {
+  "file": "SBAggroM.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.2/SBAggroM.woff",
+  "sha256": "652822bc990990ff48186d1984be9cb5bb93a58557a168b8dc5244432594e9fa"
+ },
+ {
+  "file": "SingleDay-Regular.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/singleday/SingleDay-Regular.ttf",
+  "sha256": "716ff67a4b0675b35c26d60a4bb83173f7d153ab754474ed36c3369593ca1ca8"
+ },
+ {
+  "file": "SUIT-ExtraBold.woff2",
+  "url": "https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT-ExtraBold.woff2",
+  "sha256": "a48987d6336e253c148243fd7b5ed3e4d86d812b3c87e600dd325059f8c31f42"
+ },
+ {
+  "file": "SUIT-Heavy.woff2",
+  "url": "https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT-Heavy.woff2",
+  "sha256": "cfba840e912b94b72d6c7ea371036ead7944c31f78651318a7efe88e4de629dc"
+ },
+ {
+  "file": "Sunflower-Bold.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/sunflower/Sunflower-Bold.ttf",
+  "sha256": "6b033627817f6619433afe82028013dc45a78ff82406b1dbe5b16e1bbc370e0a"
+ },
+ {
+  "file": "TheJamsil5Bold.woff2",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil5Bold.woff2",
+  "sha256": "3e75ed356257249dc818a00574ad7be153993701a11f33baefcdfed6fe883dab"
+ },
+ {
+  "file": "TmonMonsori.woff",
+  "url": "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/TmonMonsori.woff",
+  "sha256": "e54bb5ec021b9e94fe7557ede17a81aa70e6c049ad653f3b400047f305e4149d"
+ },
+ {
+  "file": "WantedSans-Black.ttf",
+  "zip": "https://github.com/wanteddev/wanted-sans/releases/download/v1.0.3/WantedSans-1.0.3.zip",
+  "member": "ttf/WantedSans-Black.ttf",
+  "sha256": "02092d69b9518a541eb2dd96037e50f2a2d660bbf3168f987f38fa9718cf362b"
+ },
+ {
+  "file": "WantedSans-Bold.ttf",
+  "zip": "https://github.com/wanteddev/wanted-sans/releases/download/v1.0.3/WantedSans-1.0.3.zip",
+  "member": "ttf/WantedSans-Bold.ttf",
+  "sha256": "7d97a38d0c35b2e43ff2ae47040133faf0324d1c78800a16aaaa5d276376037c"
+ },
+ {
+  "file": "WantedSans-ExtraBlack.ttf",
+  "zip": "https://github.com/wanteddev/wanted-sans/releases/download/v1.0.3/WantedSans-1.0.3.zip",
+  "member": "ttf/WantedSans-ExtraBlack.ttf",
+  "sha256": "ede63d59b0a60a07123afb84a89d1322743d358d28c8db3dbf04acd9688e1f17"
+ },
+ {
+  "file": "WantedSans-ExtraBold.ttf",
+  "zip": "https://github.com/wanteddev/wanted-sans/releases/download/v1.0.3/WantedSans-1.0.3.zip",
+  "member": "ttf/WantedSans-ExtraBold.ttf",
+  "sha256": "1614d814a293c877dc103a8751fc629cf772ddecd3ac3f26b634f529241dd47f"
+ },
+ {
+  "file": "WantedSans-SemiBold.ttf",
+  "zip": "https://github.com/wanteddev/wanted-sans/releases/download/v1.0.3/WantedSans-1.0.3.zip",
+  "member": "ttf/WantedSans-SemiBold.ttf",
+  "sha256": "1378a4914ebc4f658af9d68284048ddbc904a9704ae78fcdd84e7862bde89d70"
+ },
+ {
+  "file": "YeonSung-Regular.ttf",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/yeonsung/YeonSung-Regular.ttf",
+  "sha256": "49ac2a11009f5f58307d377911eb45d210cf4c1d379d9eca38fb4cdad5491ef6"
+ }
+]

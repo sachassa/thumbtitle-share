@@ -1,0 +1,8 @@
+# Pinned to the versions used on the original PC (Python 3.11). Built by scanning imports in tools/*.py. Keep this file ASCII-only (pip on Korean Windows reads it as cp949).
+numpy==2.4.6
+opencv-python-headless==4.14.0.94
+pillow==13.0.0
+onnxruntime==1.32.0
+rapidocr-onnxruntime==1.4.4
+fonttools==4.63.0
+brotli==1.2.0

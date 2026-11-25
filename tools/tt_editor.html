@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><title>썸네일 제목 편집 — 원본과 맞추기</title>
+<style>
+:root{--bg:#1d1f24;--pn:#262a31;--ln:#3a3f48;--tx:#e8e8e8;--dim:#9aa3ad;--ac:#4db3ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:13px 'Malgun Gothic',sans-serif;display:flex;height:100vh;overflow:hidden}
+#left{flex:1;display:flex;flex-direction:column;min-width:0}
+#bar{display:flex;gap:8px;align-items:center;padding:6px 10px;background:var(--pn);border-bottom:1px solid var(--ln);flex-wrap:wrap}
+#bar select,#bar input,#bar button{background:#14161a;color:var(--tx);border:1px solid var(--ln);border-radius:4px;padding:3px 6px;font:inherit}
+#bar button,.fbtn{cursor:pointer} .fbtn{background:#14161a;color:var(--tx);border:1px solid var(--ln);border-radius:4px;padding:3px 6px} .fbtn:hover{border-color:var(--ac)} #bar button:hover{border-color:var(--ac)}
+#score{margin-left:auto;font-weight:bold}
+#wrap{flex:1;overflow:auto;position:relative;background:#0c0d10}
+#cv{display:block;image-rendering:pixelated;cursor:default}
+#right{width:360px;background:var(--pn);border-left:1px solid var(--ln);overflow-y:auto;padding:8px 10px}
+h3{margin:12px 0 4px;font-size:13px;color:var(--ac);border-bottom:1px solid var(--ln);padding-bottom:2px}
+.row{display:flex;align-items:center;gap:6px;margin:3px 0}
+.row label{width:92px;color:var(--dim);flex:none}
+.row input[type=range]{flex:1}
+.row input[type=number]{width:64px;background:#14161a;color:var(--tx);border:1px solid var(--ln);border-radius:3px;padding:1px 3px}
+.row input[type=color]{width:34px;height:22px;border:none;background:none;padding:0}
+.row select,.row input[type=text]{flex:1;min-width:0;background:#14161a;color:var(--tx);border:1px solid var(--ln);border-radius:3px;padding:2px}
+.lines div{padding:4px 6px;border:1px solid var(--ln);border-radius:4px;margin:3px 0;cursor:pointer}
+.lines div.on{border-color:var(--ac);background:#1b2a38}
+.sub{border:1px solid var(--ln);border-radius:4px;padding:4px 6px;margin:4px 0}
+.sub .hd{display:flex;justify-content:space-between;color:var(--dim)}
+.btn{background:#14161a;color:var(--tx);border:1px solid var(--ln);border-radius:4px;padding:2px 8px;cursor:pointer;font:inherit}
+.btn:hover{border-color:var(--ac)}
+.presets{display:flex;flex-wrap:wrap;gap:4px}
+.help{color:var(--dim);font-size:12px;line-height:1.5}
+#msg{color:#fc6;padding:0 10px}
+</style></head>
+<body>
+<div id="left">
+ <div id="bar">
+  <select id="vid"></select>
+  보기 <select id="mode">
+   <option value="rep">재현만</option><option value="orig">원본만</option>
+   <option value="mix">겹쳐 보기</option><option value="diff">차이(다른 곳만 밝게)</option>
+  </select>
+  <span id="mixw">원본 비율 <input id="mix" type="range" min="0" max="100" value="50" style="width:90px"></span>
+  배율 <select id="zoom"><option>0.5</option><option selected>1</option><option>2</option><option>3</option><option>4</option></select>
+  <button id="flip" title="누르고 있는 동안 원본">누르면 원본</button>
+  <button id="save" title="이 PC 서버면 값 폴더에, 아니면 파일로 내려받기">저장</button><button id="reset">처음 값으로</button>
+  <label class="fbtn" title="재현 폴더(값·그림 폴더가 든 곳)를 골라 결과를 고침">폴더 열기<input type="file" id="openDir" webkitdirectory hidden></label>
+  <label class="fbtn" title="아무 썸네일 그림으로 시작">그림 열기<input type="file" id="openImg" accept="image/*" hidden></label>
+  <label class="fbtn" title="글자를 지운 배경 그림이 있으면">배경 바꾸기<input type="file" id="openBg" accept="image/*" hidden></label>
+  <label class="fbtn" title="내 글꼴 파일(.ttf .otf .woff2) — 이름으로 찾아 씀">글꼴 넣기<input type="file" id="addFonts" accept=".ttf,.otf,.woff,.woff2,.ttc" multiple hidden></label>
+  <button id="addLine" title="글자 줄을 새로 얹음">+ 줄</button>
+  <label class="fbtn" title="저장해 둔 편집 값(.json)을 불러옴">편집 값 불러오기<input type="file" id="loadEdit" accept=".json" hidden></label>
+  <button id="exportPng" title="지금 재현 그림을 PNG로 내려받기">그림 내보내기</button>
+  <input id="yurl" placeholder="유튜브 주소 또는 영상 번호" style="width:220px" title="watch?v= · youtu.be/ · shorts/ 주소">
+  <button id="ygo" title="썸네일을 받아 엶. 도구가 설치된 컴퓨터면 자동 재현(글꼴 찾기·맞추기)까지">주소로 시작</button>
+  <button id="autoGo" title="지금 연 그림으로 자동 재현(도구가 설치된 컴퓨터에서만)" style="display:none">이 그림 자동 재현</button>
+  <button id="jobsBtn" title="입구로 돌린 작업 목록" style="display:none">작업 목록</button>
+  <span id="score"></span>
+ </div>
+ <div id="msg"></div>
+ <div id="wrap"><canvas id="cv"></canvas></div>
+</div>
+<div id="right">
+ <div class="help">줄을 고른 뒤 그림 위에서 끌면 옮김 · 좌우 손잡이 = 옆으로 늘리기 · 위아래 손잡이 = 위로 늘리기 · 모서리 = 크기 · 방향키 = 0.1px(Shift 1px). 점수는 봐주기 없이 화소가 완전히 같은지만 셉니다.</div>
+ <h3>줄</h3><div class="lines" id="lines"></div>
+ <div id="panel"></div>
+</div>
+<script>
+// ---------- 상태 ----------
+const $ = s => document.querySelector(s);
+const cv = $('#cv'), ctx = cv.getContext('2d', {willReadFrequently: true});
+let D = null, W = 0, H = 0, ORIG = null, BG = null, ODATA = null, sel = 0, E = [], fontsLoaded = {}, flipping = false;
+const off = document.createElement('canvas'), octx = off.getContext('2d', {willReadFrequently: true});
+// 임시 캔버스는 다시 씀: 한 번 그릴 때마다 원본 크기 캔버스를 수십 개 새로 만들면 자동 맞추기 수천 번에 메모리가 바닥남
+// (2026-11-25 시험이 PC 메모리 부족으로 멈춤, 실측). 그리기 한 번(frame) 시작에 번호를 0으로 돌리고 차례로 꺼내 씀.
+const POOL = []; let PI = 0;
+function frame() { PI = 0; }
+const tmp = () => {
+  let c = POOL[PI];
+  if (!c) { c = document.createElement('canvas'); POOL[PI] = c; }
+  PI++;
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; } else { const g = c.getContext('2d'); g.reset ? g.reset() : (g.setTransform(1, 0, 0, 1, 0, 0), g.clearRect(0, 0, W, H)); }
+  return c;
+};
+
+// 줄 하나의 편집 값 — 무료·유료 편집 프로그램(포토샵 레이어 스타일·일러스트레이터 모양·Canva 글자 효과·Krita·Penpot·Figma·
+// CapCut·Fabric/Konva)의 글자 효과를 모음. 흐림 값은 모두 가우스 σ(화소)로 적는다(조사: Canvas·CSS 의 blur 숫자는 2σ, SVG 는 σ).
+function defaults(L) {
+  const st = []; if (L.outline_px > 0 && L.outline_color) st.push({color: L.outline_color, width: +L.outline_px, pos: 'out', join: 'round', opacity: 1});
+  const sh = []; if (L.shadow) sh.push({dx: +L.shadow.dx || 0, dy: +L.shadow.dy || 0, blur: 0, spread: 0, color: L.shadow.color || '#000000', opacity: 1, blend: 'source-over', withStroke: true});
+  return {dx: 0, dy: 0, scaleX: 1, scaleY: 1, spacing: 0, slant: 0, rotate: 0, bold: +L.bold_px || 0, font: '', opacity: 1, blend: 'source-over',
+    fill: {mode: 'span', c1: (L.spans[0] || {}).color || '#ffffff', c2: '#ffffff', c3: '#ffffff', use3: false, mid: 0.5, angle: 90, opacity: 1},
+    strokes: st, shadows: sh,
+    glow: {on: false, blur: 8, spread: 0, color: '#ffffff', opacity: 0.8, blend: 'screen'},
+    iglow: {on: false, blur: 4, choke: 0, color: '#ffffaa', opacity: 0.7, src: 'edge', blend: 'screen'},
+    inner: {on: false, dx: 2, dy: 2, blur: 3, choke: 0, color: '#000000', opacity: 0.6, blend: 'multiply'},
+    bevel: {on: false, style: 'inner', depth: 1, size: 4, soften: 0, angle: 120, altitude: 30, hi: '#ffffff', hiOp: 0.75, lo: '#000000', loOp: 0.75},
+    satin: {on: false, color: '#000000', opacity: 0.5, angle: 19, dist: 6, size: 6, invert: false},
+    extrude: {on: false, depth: 6, angle: 45, color: '#000000', color2: '', fade: false},
+    echo: {on: false, n: 2, dx: 4, dy: 4, color: '#ff4d4d', opacity: 0.6},
+    glitch: {on: false, dx: 3, dy: 0, c1: '#00ffff', c2: '#ff00ff'},
+    warp: {style: 'none', bend: 0},
+    box: {on: false, color: '#000000', padX: 10, padY: 6, radius: 0, opacity: 1},
+    gl: L.glyphs.map(() => ({dx: 0, dy: 0, rot: 0, sc: 1}))};
+}
+
+// ---------- 불러오기: 세 가지로 열림 ----------
+// ① 이 PC 서버(tt_editor.py) — 결과·그림·글꼴 다 자동
+// ② 공유 주소처럼 웹에 올린 폴더(?base=<폴더>&id=<영상>) — 결과·그림은 자동, 글꼴은 받는 사람 것(파일 넣기 또는 컴퓨터에 깔린 글꼴)
+// ③ 파일 하나만(서버 없음) — 「폴더 열기」(재현 폴더) 또는 「그림 열기」(아무 그림)로 시작. 저장은 파일 내려받기
+const Q = new URLSearchParams(location.search);
+const RQ = Q.get('r') ? 'r=' + encodeURIComponent(Q.get('r')) : '';   // 입구 작업 폴더를 볼 때
+let MODE = 'local', BASE = '', LOCALF = new Map(), FONTF = new Map(), LIST = [];
+const okJSON = r => r.ok && (r.headers.get('content-type') || '').includes('json');
+async function start() {
+  try { const r = await fetch('/list?' + RQ); if (okJSON(r)) { MODE = 'server'; LIST = await r.json(); $('#jobsBtn').style.display = ''; if (Q.get('job')) return watchJob(Q.get('job')); return fillList(); } } catch (e) {}
+  if (Q.get('base') != null && location.protocol.startsWith('http')) {
+    MODE = 'static'; BASE = Q.get('base').replace(/\/$/, '') || '.';
+    try { LIST = await (await fetch(`${BASE}/편집기_목록.json`)).json(); } catch (e) { LIST = []; }   // 최종 화면 만들 때 같이 만드는 영상 목록
+    if (Q.get('id') && !LIST.some(x => x.id === Q.get('id'))) LIST.unshift({id: Q.get('id'), title: Q.get('t') || Q.get('id')});
+    if (!LIST.length) return showOpen('영상 목록(편집기_목록.json)을 못 읽었습니다. 「폴더 열기」나 「그림 열기」로 시작하세요.');
+    return fillList();
+  }
+  MODE = 'local'; showOpen(location.protocol === 'file:' && Q.get('base') != null
+    ? '파일로 열어서 결과를 바로 읽을 수 없습니다(브라우저 보안). 위 「폴더 열기」로 재현 폴더(값·그림이 든 폴더)를 고르세요.' : '');
+}
+function fillList() {
+  $('#vid').innerHTML = LIST.map(x => `<option value="${x.id}">${(x.title || x.id).slice(0, 40)}</option>`).join('');
+  const want = Q.get('id'); if (want && LIST.some(x => x.id === want)) $('#vid').value = want;
+  return loadVid($('#vid').value);
+}
+function showOpen(note) {
+  D = null; $('#vid').innerHTML = '<option>(열린 그림 없음)</option>';
+  $('#panel').innerHTML = '<h3>시작하기</h3><div class="help">위 막대의 <b>폴더 열기</b> = 재현 폴더(값·그림 폴더가 든 곳)를 골라 재현 결과를 고침<br><b>그림 열기</b> = 아무 썸네일 그림으로 시작해 <b>+ 줄</b>로 글자를 얹고 효과를 줌<br><b>글꼴 넣기</b> = 내 글꼴 파일(.ttf .otf .woff2)을 넣으면 이름으로 찾아 씀<br>그림·글꼴은 이 브라우저 안에서만 쓰고 어디로도 보내지 않습니다.</div>';
+  $('#lines').innerHTML = ''; msg(note || '');
+}
+const imgFromFile = f => img(URL.createObjectURL(f));
+function img(src) { return new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; }); }
+async function getData(id) {
+  if (MODE === 'server') return (await fetch('/data/' + id + '?' + RQ)).json();
+  if (MODE === 'static') {
+    const d = await (await fetch(`${BASE}/값/${id}.json`)).json(); let edit = null;
+    try { const r = await fetch(`${BASE}/값/${id}_편집.json`); if (r.ok) edit = await r.json(); } catch (e) {}
+    return {id, canvas: d.canvas, lines: d.lines, edit};
+  }
+  const f = LOCALF.get(`값/${id}.json`), fe = LOCALF.get(`값/${id}_편집.json`);
+  const d = JSON.parse(await f.text()); return {id, canvas: d.canvas, lines: d.lines, edit: fe ? JSON.parse(await fe.text()) : null};
+}
+async function getImg(id, kind) {
+  if (MODE === 'server') return img(`/img/${id}/${kind}?${RQ}&t=` + Date.now());
+  if (MODE === 'static') return img(`${BASE}/그림/${id}_${kind}.png`);
+  const f = LOCALF.get(`그림/${id}_${kind}.png`); if (!f) throw new Error('없음'); return imgFromFile(f);
+}
+// 글꼴: 서버 → 내가 넣은 글꼴 파일(이름 같음) → 컴퓨터에 깔린 같은 이름 글꼴 순서
+async function font(file, name) {
+  if (!file && !name) return null; const key = file || name, fam = 'F_' + key.replace(/[^A-Za-z0-9가-힣]/g, '_');
+  if (fontsLoaded[fam]) return fam;
+  const tries = [];
+  if (MODE === 'server' && (file || name)) tries.push(`url(/font?f=${encodeURIComponent(file || '')}&n=${encodeURIComponent(name || '')})`);
+  if (file && FONTF.has(file.toLowerCase())) tries.push(`url(${URL.createObjectURL(FONTF.get(file.toLowerCase()))})`);
+  const stem = file ? file.replace(/\.[^.]+$/, '') : '';
+  for (const n of [name, stem, stem.replace(/[-_]/g, ' ')]) if (n) tries.push(`local("${n}")`);
+  for (const src of tries) {
+    try { const f = new FontFace(fam, src); await f.load(); document.fonts.add(f); fontsLoaded[fam] = true; return fam; } catch (e) {}
+  }
+  if (name && document.fonts.check(`20px "${name}"`)) return name;   // 시스템 글꼴 이름 그대로
+  MISSING.add(name || file); return null;
+}
+const MISSING = new Set();
+async function loadVid(id) {
+  msg('불러오는 중…'); MISSING.clear();
+  D = await getData(id); D.lines = normLines(D.lines);
+  ORIG = await getImg(id, '원본');
+  try { BG = await getImg(id, '배경'); } catch (e) { BG = null; }
+  await openCanvas();
+  E = D.lines.map((L, i) => Object.assign(defaults(L), (D.edit && D.edit.lines && D.edit.lines[i]) || {}));
+  for (const L of D.lines) L._fam = await font(L.font && L.font.file, L.font && L.font.best);
+  for (const L of D.lines) if (L._noGlyph) {   // 글자 자리가 없는 줄: 잉크 상자에 맞춰 놓음
+    const k = L.ink; layoutLine(L, L.text, k[0], k[3]); const w = Math.max(1, octx.measureText(L.text).width), sx = (k[2] - k[0]) / w;
+    L.glyphs.forEach(g => { g.x = k[0] + (g.x - k[0]) * sx; g.sx = sx; });
+  }
+  E = D.lines.map((L, i) => Object.assign(defaults(L), (D.edit && D.edit.lines && D.edit.lines[i]) || {}));
+  for (const e of E) if (e.font) e._fam = await font(e.font);
+  sel = 0; drawLines(); panel(); setZoom(); render();
+  msg([BG ? '' : '배경 그림(글자 지운 것)이 없어 원본 위에 그립니다.', MISSING.size ? `글꼴을 못 찾음: ${[...MISSING].join(', ')} — 「글꼴 넣기」로 그 글꼴 파일을 넣으면 맞게 그려집니다(지금은 대신 글꼴).` : ''].join(' '));
+}
+// 결과 파일마다 생김새가 조금 다름(롱폼 시험판: 글꼴이 이름 글자 하나, 글자 자리 없이 잉크 상자만) — 편집기가 쓰는 꼴로 맞춤
+function normLines(lines) {
+  return (lines || []).filter(L => L && L.text).map(L => {
+    if (typeof L.font === 'string') L.font = {best: L.font, file: ''};
+    L.font = L.font || {best: '', file: ''}; L.slant = L.slant || 0;
+    if (!L.spans || !L.spans.length) L.spans = [{i0: 0, i1: [...L.text].length - 1, color: '#ffffff'}];
+    if (!L.glyphs || !L.glyphs.length) {
+      const k = L.ink || [0, 0, 100, 40]; L.ink = k; L.size_px = L.size_px || Math.round((k[3] - k[1]) * 1.25); L._noGlyph = true; L.glyphs = [];
+    }
+    return L;
+  });
+}
+async function openCanvas() {
+  W = ORIG.width; H = ORIG.height; cv.width = W; cv.height = H; off.width = W; off.height = H;
+  octx.drawImage(ORIG, 0, 0); ODATA = octx.getImageData(0, 0, W, H).data;
+}
+// 폴더 열기(재현 폴더): 값/<영상>.json 과 그림/<영상>_원본.png 가 있는 영상을 목록으로
+$('#openDir').onchange = async ev => {
+  LOCALF = new Map(); let titles = {};
+  for (const f of ev.target.files) {
+    const parts = f.webkitRelativePath.split('/'), rel = parts.slice(-2).join('/');
+    LOCALF.set(rel, f);
+    if (f.name === '영상목록.json') try { let L = JSON.parse(await f.text()); L = Array.isArray(L) ? L : (L.vids || L.videos || []); for (const x of L) titles[x.id || x.video_id] = x.t || x.title; } catch (e) {}
+    if (/\.(ttf|otf|woff2?|ttc)$/i.test(f.name)) FONTF.set(f.name.toLowerCase(), f);
+  }
+  LIST = [...LOCALF.keys()].filter(k => /^값\/[A-Za-z0-9_-]{11}\.json$/.test(k)).map(k => k.slice(2, 13)).filter(id => LOCALF.has(`그림/${id}_원본.png`)).map(id => ({id, title: titles[id] || id}));
+  if (!LIST.length) return msg('그 폴더에 재현 결과(값/<영상>.json + 그림/<영상>_원본.png)가 없습니다.');
+  MODE = 'local'; fillList();
+};
+// 그림 열기: 아무 그림으로 시작(줄은 + 줄 로 더함)
+$('#openImg').onchange = ev => { if (ev.target.files[0]) openImageFile(ev.target.files[0]); };
+async function openImageFile(f) {
+  ORIG = await imgFromFile(f); BG = null; MODE = 'local';
+  D = {id: f.name.replace(/\.[^.]+$/, ''), canvas: [ORIG.width, ORIG.height], lines: [], edit: null};
+  $('#vid').innerHTML = `<option>${f.name}</option>`; await openCanvas(); E = []; sel = 0; drawLines(); panel(); setZoom(); render();
+  UPFILE = f; if (MODE === 'server') $('#autoGo').style.display = '';
+  msg(MODE === 'server' ? '그림을 열었습니다. 「이 그림 자동 재현」을 누르면 글꼴 찾기·맞추기까지 돌고, 손으로 하려면 「+ 줄」.' : '그림을 열었습니다. 「+ 줄」로 글자를 얹으세요(자동 재현은 도구가 설치된 컴퓨터에서).');
+}
+$('#openBg').onchange = async ev => { const f = ev.target.files[0]; if (!f || !D) return; BG = await imgFromFile(f); render(); msg('배경 그림을 바꿈: ' + f.name); };
+$('#addFonts').onchange = async ev => {
+  for (const f of ev.target.files) FONTF.set(f.name.toLowerCase(), f);
+  msg(`글꼴 파일 ${ev.target.files.length}개를 넣음`); if (D && D.lines.length) { for (const k in fontsLoaded) delete fontsLoaded[k]; await reloadFonts(); }
+};
+async function reloadFonts() { MISSING.clear(); for (const L of D.lines) L._fam = await font(L.font && L.font.file, L.font && L.font.best); for (const e of E) if (e.font) e._fam = await font(e.font); render(); msg(MISSING.size ? `아직 못 찾은 글꼴: ${[...MISSING].join(', ')}` : '글꼴을 다 찾음'); }
+// ---------- 입구: 주소 넣기·그림 올리기 → (도구 설치된 컴퓨터면) 자동 재현 ----------
+function ytId(s) { s = (s || '').trim(); if (/^[A-Za-z0-9_-]{11}$/.test(s)) return s; const m = s.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/); return m ? m[1] : null; }
+let UPFILE = null;
+async function openThumbOnly(id, isShort) {   // 도구 없이: 공개 썸네일을 받아 편집만(그림은 이 브라우저 안에서만)
+  for (const n of (isShort === false ? [] : ['oardefault']).concat(['maxresdefault', 'sddefault', 'hqdefault'])) {
+    try {
+      const i = new Image(); i.crossOrigin = 'anonymous';
+      await new Promise((ok, no) => { i.onload = ok; i.onerror = no; i.src = `https://i.ytimg.com/vi/${id}/${n}.jpg`; });
+      if (i.width < 200) continue; if (n === 'oardefault' && i.width >= i.height && isShort !== true) continue;
+      ORIG = i; BG = null; D = {id, canvas: [i.width, i.height], lines: [], edit: null}; $('#vid').innerHTML = `<option>${id}</option>`;
+      await openCanvas(); E = []; sel = 0; drawLines(); panel(); setZoom(); render(); return true;
+    } catch (e) {}
+  }
+  return false;
+}
+async function startJob(body, headers) {
+  const r = await (await fetch('/entry', {method: 'POST', body, headers})).json();
+  if (!r.job) return msg('시작 못 함: ' + JSON.stringify(r)); watchJob(r.job);
+}
+const esc = t => String(t || '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+function jobPanel(j, job) {
+  const st = (j.단계 || []).map(s => `<tr><td>${s.이름}</td><td>${s.상태}${s.걸린초 != null ? ` · ${s.걸린초}초` : ''}</td><td class="help">${esc(s.메모).slice(0, 90)}</td></tr>`).join('');
+  $('#panel').innerHTML = `<h3>자동 재현 — ${esc(j.제목 || job)}</h3><div class="help">상태: <b>${j.상태}</b> · 경과 ${j.경과초 || 0}초 (시작 ${j.시작 || ''})</div><table class="help" style="width:100%">${st}</table>`
+    + (j.안내 ? `<div class="help" style="color:#fc6">${esc(j.안내)}</div>` : '')
+    + (j.상태 === '끝' ? `<p><button class="btn" id="openRes">결과를 편집기로 열기</button> <a class="btn" href="/view/${encodeURIComponent(job)}/비교.html" target="_blank">비교 화면</a></p>` : '');
+  const o = $('#openRes'); if (o) o.onclick = () => { location.href = `?r=${encodeURIComponent(job)}&id=${encodeURIComponent(j.영상)}`; };
+}
+async function watchJob(job) {
+  msg('자동 재현 — 오른쪽에 단계·걸린 시간이 보입니다(무거운 일이라 몇 분~수십 분).');
+  while (true) {
+    let j = null; try { j = await (await fetch('/job/' + encodeURIComponent(job))).json(); } catch (e) {}
+    if (j) { jobPanel(j, job); if (j.상태 !== '진행 중') { msg(j.상태 === '끝' ? '자동 재현 끝 — 「결과를 편집기로 열기」' : '자동 재현 실패: ' + (j.안내 || '')); return; } }
+    await new Promise(r => setTimeout(r, 3000));
+  }
+}
+$('#ygo').onclick = async () => {
+  const s = $('#yurl').value, id = ytId(s); if (!id) return msg('유튜브 주소(watch?v= · youtu.be/ · shorts/)나 영상 번호 11자를 넣어 주세요.');
+  if (MODE === 'server') return startJob(JSON.stringify({url: s}), {'Content-Type': 'application/json'});
+  msg('썸네일 받는 중…'); const ok = await openThumbOnly(id, /\/shorts\//.test(s) ? true : undefined);
+  msg(ok ? '썸네일을 열었습니다. 이 컴퓨터에는 자동 재현 도구가 없어 「+ 줄」로 글자를 얹어 맞춰 보세요(자동 재현은 도구 설치 후).' : '이 영상의 썸네일을 받지 못했습니다(주소가 틀렸거나 비공개·삭제된 영상일 수 있음).');
+};
+$('#autoGo').onclick = () => { if (UPFILE) startJob(UPFILE, {'Content-Type': UPFILE.type || 'image/jpeg', 'X-Name': encodeURIComponent(UPFILE.name)}); };
+$('#jobsBtn').onclick = async () => {
+  const L = await (await fetch('/jobs')).json();
+  $('#panel').innerHTML = '<h3>작업 목록</h3>' + (L.length ? L.map(j => `<div class="sub"><div class="hd"><span>${esc(j.제목 || j.job).slice(0, 30)}</span><span>${j.상태} · ${j.경과초 || 0}초</span></div><button class="btn" data-job="${esc(j.job)}">보기</button></div>`).join('') : '<div class="help">아직 없음</div>');
+  $('#panel').querySelectorAll('[data-job]').forEach(b => b.onclick = () => watchJob(b.dataset.job));
+};
+// 그림 끌어 놓기 = 그림 열기와 같음
+window.addEventListener('dragover', ev => ev.preventDefault());
+window.addEventListener('drop', ev => { ev.preventDefault(); const f = [...ev.dataTransfer.files].find(f => f.type.startsWith('image/')); if (f) openImageFile(f); });
+// + 줄: 글자를 새로 얹음(가운데에, 그림 높이의 1/12 크기)
+function layoutLine(L, text, x0, base) {   // 글자 자리를 글꼴 폭대로 다시 놓음
+  octx.font = `${L.size_px}px "${L._fam || 'sans-serif'}"`; let x = x0; L.text = text;
+  L.glyphs = [...text].map(ch => { const g = {ch, x, y: base, sx: 1, sy: 1}; x += octx.measureText(ch).width; return g; });
+  L.spans = [{i0: 0, i1: Math.max(0, L.glyphs.length - 1), color: (L.spans && L.spans[0] && L.spans[0].color) || '#ffffff'}];
+}
+$('#addLine').onclick = async () => {
+  if (!D) return msg('먼저 그림이나 폴더를 여세요.');
+  const text = prompt('얹을 글자', '여기에 제목') || ''; if (!text) return;
+  const L = {text, size_px: Math.round(H / 12), slant: 0, font: {best: '', file: ''}, spans: [{i0: 0, i1: 0, color: '#ffffff'}], outline_px: 0, glyphs: []};
+  layoutLine(L, text, W * 0.1, H * 0.5); D.lines.push(L);
+  const e = defaults(L); e.strokes = [{color: '#000000', width: Math.round(L.size_px / 12), pos: 'out', join: 'round', opacity: 1}]; E.push(e);
+  sel = D.lines.length - 1; drawLines(); panel(); render();
+};
+// 저장: 서버면 값/<영상>_편집.json, 아니면 파일로 내려받기 / 그림 내보내기 = 지금 재현 그림 PNG
+function download(name, blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); }
+function editJSON() { return {saved: new Date().toISOString(), lines: E.map(e => { const o = JSON.parse(JSON.stringify(e)); delete o._fam; return o; }),
+  textLines: D.lines.map(L => ({text: L.text, size_px: L.size_px, font: L.font, glyphs: L.glyphs, spans: L.spans}))}; }   // 글자 줄도 함께(그림 열기로 새로 얹은 줄을 다시 열 때)
+$('#exportPng').onclick = () => { if (!D) return; frame(); octx.clearRect(0, 0, W, H); octx.drawImage(BG || ORIG, 0, 0); D.lines.forEach((L, i) => drawLine(octx, i)); off.toBlob(b => download(`${D.id}_편집.png`, b), 'image/png'); };
+$('#loadEdit').onchange = async ev => { const f = ev.target.files[0]; if (!f || !D) return; const j = JSON.parse(await f.text()); E = D.lines.map((L, i) => Object.assign(defaults(L), (j.lines || [])[i] || {})); for (const e of E) if (e.font) e._fam = await font(e.font); panel(); render(); msg('편집 값을 불러옴: ' + f.name); };
+
+function msg(t) { $('#msg').textContent = t || ''; }
+
+// ---------- 그리기 ----------
+function lineBox(i) {   // 편집 전 줄 상자(그림 좌표)
+  const L = D.lines[i], fam = L._fam || 'sans-serif'; let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  octx.font = `${L.size_px}px "${fam}"`;
+  for (const g of L.glyphs) {
+    const m = octx.measureText(g.ch);
+    x0 = Math.min(x0, g.x - m.actualBoundingBoxLeft * g.sx); x1 = Math.max(x1, g.x + m.actualBoundingBoxRight * g.sx);
+    y0 = Math.min(y0, g.y - m.actualBoundingBoxAscent * g.sy); y1 = Math.max(y1, g.y + m.actualBoundingBoxDescent * g.sy);
+  }
+  return {x0, x1, y0, y1, cx: (x0 + x1) / 2, cy: (y0 + y1) / 2};
+}
+function editedBox(i) {
+  const b = lineBox(i), e = E[i], n = D.lines[i].glyphs.length;
+  const w = (b.x1 - b.x0) * e.scaleX + e.spacing * (n - 1), h = (b.y1 - b.y0) * e.scaleY;
+  const cx = b.cx + e.dx + e.spacing * (n - 1) / 2, cy = b.cy + e.dy;
+  return {x0: cx - w / 2, x1: cx + w / 2, y0: cy - h / 2, y1: cy + h / 2, cx, cy, b};
+}
+// 글자들을 그린다: paint(c, 글자번호, 굵기 보정, 글자) 안에서 fill/stroke 를 부른다.
+// 「곡선」 휘기(Canva·Polotno 의 curve)는 글자마다 원 위에 놓고 돌린다 — 나머지 휘기는 다 그린 뒤 화소를 옮긴다(warpLayer).
+function glyphs(c, i, paint) {
+  const L = D.lines[i], e = E[i], b = lineBox(i), fam = e._fam || L._fam || 'sans-serif', sh = (L.slant || 0) + e.slant;
+  const curve = e.warp && e.warp.style === 'curve' && Math.abs(+e.warp.bend) > 0.001;
+  const R = curve ? ((b.x1 - b.x0) * e.scaleX) / (Math.PI * +e.warp.bend) : 0;
+  c.save();
+  if (e.rotate) { c.translate(b.cx + e.dx, b.cy + e.dy); c.rotate(e.rotate * Math.PI / 180); c.translate(-(b.cx + e.dx), -(b.cy + e.dy)); }
+  c.font = `${L.size_px}px "${fam}"`; c.textBaseline = 'alphabetic'; c.lineJoin = 'round'; c.miterLimit = 2;
+  L.glyphs.forEach((g, k) => {
+    const q = (e.gl && e.gl[k]) || {dx: 0, dy: 0, rot: 0, sc: 1};
+    let x = b.cx + (g.x - b.cx) * e.scaleX + k * e.spacing + e.dx + (+q.dx || 0), y = b.cy + (g.y - b.cy) * e.scaleY + e.dy + (+q.dy || 0), th = 0;
+    if (curve) { const u = x - (b.cx + e.dx), t = u / R; th = t; x = b.cx + e.dx + R * Math.sin(t); y = y + R * (1 - Math.cos(t)); }
+    const s = +q.sc || 1;
+    c.save(); c.translate(x, y); if (th || q.rot) c.rotate(th + (+q.rot || 0) * Math.PI / 180);
+    c.transform(1, 0, -sh, 1, 0, 0); c.scale(g.sx * e.scaleX * s, g.sy * e.scaleY * s);
+    paint(c, k, 2 / ((g.sx * e.scaleX + g.sy * e.scaleY) * s), g.ch); c.restore();
+  });
+  c.restore();
+}
+function spanColor(L, k) { const s = L.spans.find(s => s.i0 <= k && k <= s.i1) || L.spans[L.spans.length - 1]; return s; }
+function fillStyle(c, i, k) {
+  const L = D.lines[i], e = E[i], f = e.fill;
+  if (f.mode === 'solid') return f.c1;
+  if (f.mode === 'grad' || f.mode === 'radial') {   // 줄 상자 기준. 선형 각도: 90 = 위→아래. 색 3개면 가운데 멈춤점 = mid
+    const B = editedBox(i), a = f.angle * Math.PI / 180, r = Math.max(B.x1 - B.x0, B.y1 - B.y0) / 2;
+    const gr = f.mode === 'radial' ? c.createRadialGradient(B.cx, B.cy, 0, B.cx, B.cy, r)
+      : c.createLinearGradient(B.cx - Math.cos(a) * r, B.cy - Math.sin(a) * r, B.cx + Math.cos(a) * r, B.cy + Math.sin(a) * r);
+    gr.addColorStop(0, f.c1); if (f.use3) gr.addColorStop(Math.min(1, Math.max(0, +f.mid)), f.c3); gr.addColorStop(1, f.c2); return gr;
+  }
+  const s = spanColor(L, k);
+  if (s.grad) { const B = editedBox(i); const gr = c.createLinearGradient(0, B.y0, 0, B.y1); gr.addColorStop(0.15, s.grad.start); gr.addColorStop(0.85, s.grad.end); return gr; }
+  return s.color;
+}
+const outW = e => e.strokes.reduce((a, s) => a + ((s.pos || 'out') === 'out' ? (+s.width || 0) : (s.pos === 'center' ? (+s.width || 0) / 2 : 0)), 0);
+// 모양을 한 색으로(채움+덧굵기, withStroke 면 바깥 테두리까지) — 그림자·광선·입체·에코에 씀. extra = 더 넓힐 px(퍼짐), 음수 = 줄임
+function shape(i, color, extra, withStroke) {
+  const c = tmp().getContext('2d'), e = E[i], w = e.bold + (withStroke === false ? 0 : outW(e)) + (extra || 0);
+  glyphs(c, i, (c, k, kk, ch) => { c.fillStyle = color; c.strokeStyle = color; c.fillText(ch, 0, 0);
+    if (w > 0.01) { c.lineWidth = 2 * w * kk; c.strokeText(ch, 0, 0); } });
+  if (w < -0.01) {   // 줄이기(경계 감소·choke): 글자 가장자리를 -w 만큼 깎음
+    c.globalCompositeOperation = 'destination-out';
+    glyphs(c, i, (c, k, kk, ch) => { c.strokeStyle = '#000'; c.lineWidth = -2 * w * kk; c.strokeText(ch, 0, 0); });
+  }
+  return c.canvas;
+}
+function blurred(src, sigma) { if (!(sigma > 0)) return src; const c = tmp().getContext('2d'); c.filter = `blur(${sigma}px)`; c.drawImage(src, 0, 0); return c.canvas; }
+function tinted(src, color) { const c = tmp().getContext('2d'); c.drawImage(src, 0, 0); c.globalCompositeOperation = 'source-in'; c.fillStyle = color; c.fillRect(0, 0, W, H); return c.canvas; }
+function masked(src, mask, out) { const c = tmp().getContext('2d'); c.drawImage(src, 0, 0); c.globalCompositeOperation = out ? 'destination-out' : 'destination-in'; c.drawImage(mask, 0, 0); return c.canvas; }
+function hexRGB(h) { const n = parseInt((h || '#000000').slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+
+// 비스듬·엠보스(포토샵 「경사와 엠보스」): 모양 알파를 흐려 높이지도로 → 기울기로 빛을 비춰 밝은 곳·어두운 곳
+function bevelLayer(i, fillMask) {
+  const e = E[i], bv = e.bevel, B = editedBox(i), m = Math.ceil(+bv.size * 3 + 4);
+  const x0 = Math.max(0, Math.floor(B.x0 - m - 40)), y0 = Math.max(0, Math.floor(B.y0 - m - 40)), x1 = Math.min(W, Math.ceil(B.x1 + m + 40)), y1 = Math.min(H, Math.ceil(B.y1 + m + 40));
+  const w = x1 - x0, h = y1 - y0; if (w <= 2 || h <= 2) return null;
+  const A = fillMask.getContext('2d').getImageData(x0, y0, w, h).data;
+  const hm = blurred(fillMask, Math.max(0.5, +bv.size / 2)).getContext('2d').getImageData(x0, y0, w, h).data;
+  const az = bv.angle * Math.PI / 180, al = bv.altitude * Math.PI / 180;
+  const Lx = Math.cos(az) * Math.cos(al), Ly = -Math.sin(az) * Math.cos(al), Lz = Math.sin(al);   // 그림 y 는 아래로
+  const k = +bv.depth * +bv.size * 2, hiC = hexRGB(bv.hi), loC = hexRGB(bv.lo);
+  const hi = new ImageData(w, h), lo = new ImageData(w, h);
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const p = (y * w + x) * 4, a = A[p + 3] / 255;
+    let zone;   // 효과가 들어갈 자리
+    if (bv.style === 'outer') zone = (1 - a) * (hm[p + 3] > 2 ? 1 : 0);
+    else if (bv.style === 'emboss' || bv.style === 'pillow') zone = hm[p + 3] > 2 ? 1 : 0;
+    else zone = a;
+    if (zone <= 0) continue;
+    let gx = (hm[p + 7] - hm[p - 1]) / 510, gy = (hm[p + w * 4 + 3] - hm[p - w * 4 + 3]) / 510;
+    if (bv.style === 'pillow' && a < 0.5) { gx = -gx; gy = -gy; }
+    const nx = -gx * k, ny = -gy * k, nz = 1, nl = Math.hypot(nx, ny, nz);
+    const d = (nx * Lx + ny * Ly + nz * Lz) / nl - Lz;
+    if (d > 0) { const v = Math.min(1, d / (1 - Lz + 1e-6)) * zone; hi.data[p] = hiC[0]; hi.data[p + 1] = hiC[1]; hi.data[p + 2] = hiC[2]; hi.data[p + 3] = 255 * v * bv.hiOp; }
+    else if (d < 0) { const v = Math.min(1, -d / (Lz + 1e-6)) * zone; lo.data[p] = loC[0]; lo.data[p + 1] = loC[1]; lo.data[p + 2] = loC[2]; lo.data[p + 3] = 255 * v * bv.loOp; }
+  }
+  const mk = d => { const c = tmp().getContext('2d'); c.putImageData(d, x0, y0); return blurred(c.canvas, +bv.soften); };
+  return {hi: mk(hi), lo: mk(lo)};
+}
+// 휘기(포토샵 「글자 뒤틀기」 가로 스타일 몇 가지): 다 그린 줄 그림의 화소를 세로로 옮기거나 늘림. bend = -1~1
+function warpLayer(i, layer) {
+  const e = E[i], st = e.warp && e.warp.style, b = +(e.warp && e.warp.bend) || 0;
+  if (!st || st === 'none' || st === 'curve' || Math.abs(b) < 0.001) return layer;
+  const B = editedBox(i), hw = (B.x1 - B.x0) / 2 + 30, h0 = B.y1 - B.y0, cy = B.cy;
+  const x0 = Math.max(0, Math.floor(B.cx - hw)), x1 = Math.min(W, Math.ceil(B.cx + hw));
+  const src = layer.getContext('2d').getImageData(0, 0, W, H), out = new ImageData(W, H);
+  out.data.set(src.data);
+  for (let x = x0; x < x1; x++) {
+    const u = (x - B.cx) / hw; let sh = 0, sc = 1, top = 0, bot = 0;
+    if (st === 'arc') sh = -b * h0 * (1 - u * u);                 // 부채꼴: 가운데가 올라감
+    else if (st === 'arcLower') bot = b * h0 * (1 - u * u);       // 아래 부채꼴: 아랫변만 볼록
+    else if (st === 'arcUpper') top = b * h0 * (1 - u * u);       // 위 부채꼴: 윗변만 볼록
+    else if (st === 'bulge') sc = 1 + b * (1 - u * u);            // 부풀리기
+    else if (st === 'squeeze') sc = 1 / (1 + b * (1 - u * u));    // 양쪽 누르기 반대(가운데 줄어듦)
+    else if (st === 'flag') sh = b * h0 * 0.5 * Math.sin(Math.PI * u);   // 깃발
+    else if (st === 'wave') { sh = b * h0 * 0.35 * Math.sin(2 * Math.PI * u); sc = 1 + b * 0.25 * Math.cos(2 * Math.PI * u); }  // 파형
+    else if (st === 'rise') sh = -b * h0 * 0.5 * u;               // 상승
+    for (let y = 0; y < H; y++) {
+      // 위·아래 변만 볼록: 줄 위쪽/아래쪽 절반을 따로 늘림
+      let sy;
+      if (top || bot) { const yt = B.y0, yb = B.y1; if (y < cy) sy = cy - (cy - y) * (cy - yt) / (cy - yt + top); else sy = cy + (y - cy) * (yb - cy) / (yb - cy + bot); }
+      else sy = cy + (y - sh - cy) / sc;
+      const p = (y * W + x) * 4, y0 = Math.floor(sy), f = sy - y0;
+      if (y0 < 0 || y0 + 1 >= H) { out.data[p + 3] = 0; continue; }
+      const q0 = (y0 * W + x) * 4, q1 = q0 + W * 4;
+      for (let ch = 0; ch < 4; ch++) out.data[p + ch] = src.data[q0 + ch] * (1 - f) + src.data[q1 + ch] * f;
+    }
+  }
+  const c = tmp().getContext('2d'); c.putImageData(out, 0, 0); return c.canvas;
+}
+function put(lc, src, op, alpha, dx, dy) { lc.save(); lc.globalCompositeOperation = op || 'source-over'; lc.globalAlpha = alpha == null ? 1 : +alpha; lc.drawImage(src, dx || 0, dy || 0); lc.restore(); }
+
+function drawLine(c, i) {
+  const e = E[i], L = D.lines[i];
+  const layer = tmp(), lc = layer.getContext('2d');
+  if (e.box.on) {   // 배경 상자(포토샵 없음 · 프리미어 「배경」·Canva 「배경」·Polotno background)
+    const B = editedBox(i); lc.save(); lc.globalAlpha = e.box.opacity; lc.fillStyle = e.box.color;
+    lc.beginPath(); lc.roundRect(B.x0 - e.box.padX, B.y0 - e.box.padY, B.x1 - B.x0 + 2 * e.box.padX, B.y1 - B.y0 + 2 * e.box.padY, +e.box.radius); lc.fill(); lc.restore();
+  }
+  if (e.extrude.on) {   // 입체(돌출·긴 그림자): 같은 모양을 한 방향으로 1px씩 겹쳐 찍음. 끝색이 있으면 점점 바뀜
+    const a = e.extrude.angle * Math.PI / 180, n = Math.max(1, Math.round(+e.extrude.depth));
+    const c1 = hexRGB(e.extrude.color), c2 = e.extrude.color2 ? hexRGB(e.extrude.color2) : c1, base = shape(i, '#000');
+    for (let d = n; d >= 1; d--) { const t = n > 1 ? (d - 1) / (n - 1) : 0, col = `rgb(${c1.map((v, j) => Math.round(v + (c2[j] - v) * t)).join(',')})`;
+      put(lc, tinted(base, col), 'source-over', e.extrude.fade ? 1 - t * 0.9 : 1, Math.cos(a) * d, Math.sin(a) * d); }
+  }
+  if (e.echo.on) {   // 에코(Canva): 뒤로 몇 겹 같은 모양을 옮겨 찍음, 멀수록 옅게
+    const base = shape(i, e.echo.color, 0, true);
+    for (let k = +e.echo.n; k >= 1; k--) put(lc, base, 'source-over', +e.echo.opacity * (1 - (k - 1) / (+e.echo.n + 1)), e.echo.dx * k, e.echo.dy * k);
+  }
+  if (e.glitch.on) {   // 글리치(Canva): 두 색 모양을 반대로 어긋나게
+    put(lc, shape(i, e.glitch.c1, 0, true), 'source-over', 1, -e.glitch.dx, -e.glitch.dy);
+    put(lc, shape(i, e.glitch.c2, 0, true), 'source-over', 1, +e.glitch.dx, +e.glitch.dy);
+  }
+  for (const s of e.shadows) {   // 그림자: 옮기기·퍼짐(흐리기 전 넓힘)·흐림 σ·불투명·섞기. 여러 개면 위 목록 것이 아래에 깔림
+    put(lc, blurred(shape(i, s.color, +s.spread || 0, s.withStroke !== false), +s.blur), s.blend, s.opacity, +s.dx, +s.dy);
+  }
+  if (e.glow.on) put(lc, blurred(shape(i, e.glow.color, +e.glow.spread), +e.glow.blur), e.glow.blend || 'source-over', e.glow.opacity);
+  // 테두리. 바깥(out): 앞 것이 가장 바깥, 칠 아래 · 가운데(center): 가장자리 걸쳐 칠 위 · 안(in): 글자 안쪽 가장자리, 칠 위
+  const outs = e.strokes.filter(s => (s.pos || 'out') === 'out');
+  let acc = outs.reduce((a, s) => a + (+s.width || 0), 0) + e.strokes.filter(s => s.pos === 'center').reduce((a, s) => a + (+s.width || 0) / 2, 0);
+  for (const s of outs) {
+    const w = acc, t = tmp(), tc = t.getContext('2d');
+    glyphs(tc, i, (c, k, kk, ch) => { c.lineJoin = s.join || 'round'; c.miterLimit = s.join === 'miter' ? 10 : 2; c.fillStyle = s.color; c.strokeStyle = s.color; c.lineWidth = 2 * (e.bold + w) * kk; c.fillText(ch, 0, 0); c.strokeText(ch, 0, 0); });
+    put(lc, t, 'source-over', s.opacity == null ? 1 : s.opacity); acc -= +s.width || 0;
+  }
+  // 채움(+덧굵기)
+  const fl = tmp(), fc = fl.getContext('2d'), solid = shape(i, '#000', 0, false);
+  if (e.fill.mode !== 'none') {
+    glyphs(fc, i, (c, k, kk, ch) => { const st = fillStyle(fc, i, k); c.fillStyle = st; c.strokeStyle = st; c.fillText(ch, 0, 0); if (e.bold > 0.01) { c.lineWidth = 2 * e.bold * kk; c.strokeText(ch, 0, 0); } });
+    if (e.fill.opacity != null && +e.fill.opacity < 1) { const t = tmp().getContext('2d'); t.globalAlpha = +e.fill.opacity; t.drawImage(fl, 0, 0); fc.clearRect(0, 0, W, H); fc.drawImage(t.canvas, 0, 0); }
+  }
+  if (e.satin.on) {   // 새틴: 모양을 두 방향으로 어긋나게 겹친 차이를 흐려 안쪽에
+    const a = e.satin.angle * Math.PI / 180, d = +e.satin.dist, s1 = tmp().getContext('2d');
+    s1.drawImage(solid, Math.cos(a) * d, -Math.sin(a) * d); s1.globalCompositeOperation = 'xor'; s1.drawImage(solid, -Math.cos(a) * d, Math.sin(a) * d);
+    let sat = blurred(s1.canvas, +e.satin.size / 2); if (e.satin.invert) sat = masked(solid, sat, true);
+    put(fc, masked(tinted(sat, e.satin.color), solid), 'multiply', e.satin.opacity);
+  }
+  if (e.inner.on) {   // 안쪽 그림자: 글자 밖을 칠해 옮기고(경계 감소 choke 만큼 넓혀) 흐린 뒤 글자 안쪽만 남김
+    const ic = tmp().getContext('2d'); ic.fillStyle = e.inner.color; ic.fillRect(0, 0, W, H); ic.globalCompositeOperation = 'destination-out'; ic.drawImage(shape(i, '#000', -(+e.inner.choke || 0), false), +e.inner.dx, +e.inner.dy);
+    put(fc, masked(blurred(ic.canvas, +e.inner.blur), solid), e.inner.blend || 'source-atop', e.inner.opacity);
+  }
+  if (e.iglow.on) {   // 안쪽 광선: 가장자리에서(edge) 또는 가운데에서(center)
+    let g;
+    if (e.iglow.src === 'center') g = masked(tinted(blurred(shape(i, '#000', -(+e.iglow.choke || 0) - +e.iglow.blur, false), +e.iglow.blur), e.iglow.color), solid);
+    else { const ic = tmp().getContext('2d'); ic.fillStyle = e.iglow.color; ic.fillRect(0, 0, W, H); ic.globalCompositeOperation = 'destination-out'; ic.drawImage(shape(i, '#000', -(+e.iglow.choke || 0), false), 0, 0); g = masked(blurred(ic.canvas, +e.iglow.blur), solid); }
+    put(fc, g, e.iglow.blend || 'screen', e.iglow.opacity);
+  }
+  if (e.bevel.on && e.bevel.style !== 'outer') { const bv = bevelLayer(i, solid); if (bv) { put(fc, masked(bv.hi, solid), 'screen', 1); put(fc, masked(bv.lo, solid), 'multiply', 1); } }
+  // 가운데·안 테두리는 칠 위
+  for (const s of e.strokes.filter(s => s.pos === 'center' || s.pos === 'in')) {
+    const t = tmp(), tc = t.getContext('2d');
+    glyphs(tc, i, (c, k, kk, ch) => { c.lineJoin = s.join || 'round'; c.miterLimit = s.join === 'miter' ? 10 : 2; c.strokeStyle = s.color; c.lineWidth = (s.pos === 'in' ? 2 : 1) * (+s.width) * kk; c.strokeText(ch, 0, 0); });
+    put(fc, s.pos === 'in' ? masked(t, solid) : t, 'source-over', s.opacity == null ? 1 : s.opacity);
+  }
+  lc.drawImage(fl, 0, 0);
+  if (e.bevel.on && (e.bevel.style === 'outer' || e.bevel.style === 'emboss' || e.bevel.style === 'pillow')) {
+    const bv = bevelLayer(i, solid); if (bv) { put(lc, masked(bv.hi, solid, true), 'screen', 1); put(lc, masked(bv.lo, solid, true), 'multiply', 1); }
+  }
+  c.save(); c.globalAlpha = +e.opacity; c.globalCompositeOperation = e.blend || 'source-over'; c.drawImage(warpLayer(i, layer), 0, 0); c.restore();
+}
+let RDATA = null;
+function render() {
+  if (!D) return; frame(); if (!D.lines.length) { ctx.clearRect(0, 0, W, H); ctx.drawImage(ORIG, 0, 0); $('#score').textContent = ''; return; }
+  octx.clearRect(0, 0, W, H); octx.drawImage(BG || ORIG, 0, 0);
+  D.lines.forEach((L, i) => drawLine(octx, i));
+  RDATA = octx.getImageData(0, 0, W, H);
+  const mode = flipping ? 'orig' : $('#mode').value;
+  ctx.clearRect(0, 0, W, H);
+  if (mode === 'orig') ctx.drawImage(ORIG, 0, 0);
+  else if (mode === 'rep') ctx.drawImage(off, 0, 0);
+  else if (mode === 'mix') { ctx.drawImage(off, 0, 0); ctx.globalAlpha = $('#mix').value / 100; ctx.drawImage(ORIG, 0, 0); ctx.globalAlpha = 1; }
+  else { const out = ctx.createImageData(W, H), r = RDATA.data, o = ODATA, d = out.data;
+    for (let p = 0; p < r.length; p += 4) { const v = Math.min(255, 4 * Math.max(Math.abs(r[p] - o[p]), Math.abs(r[p + 1] - o[p + 1]), Math.abs(r[p + 2] - o[p + 2]))); d[p] = d[p + 1] = d[p + 2] = v; d[p + 3] = 255; }
+    ctx.putImageData(out, 0, 0); }
+  // 고른 줄 상자와 손잡이
+  const B = editedBox(sel), z = +$('#zoom').value, hs = 6 / z;
+  ctx.save(); ctx.strokeStyle = '#4db3ff'; ctx.lineWidth = 1 / z; ctx.setLineDash([4 / z, 3 / z]); ctx.strokeRect(B.x0, B.y0, B.x1 - B.x0, B.y1 - B.y0); ctx.setLineDash([]);
+  ctx.fillStyle = '#4db3ff'; for (const [x, y] of handles(B)) ctx.fillRect(x - hs, y - hs, 2 * hs, 2 * hs); ctx.restore();
+  score();
+}
+function handles(B) { return [[B.x0, B.cy], [B.x1, B.cy], [B.cx, B.y0], [B.cx, B.y1], [B.x0, B.y0], [B.x1, B.y0], [B.x0, B.y1], [B.x1, B.y1]]; }
+// 점수: 봐주기 없음 — 화소의 세 색 값이 모두 같아야 「같음」
+function score() {
+  const r = RDATA.data, o = ODATA; const B = editedBox(sel);
+  const cnt = (x0, y0, x1, y1) => { let n = 0, same = 0, sum = 0;
+    x0 = Math.max(0, Math.floor(x0)); y0 = Math.max(0, Math.floor(y0)); x1 = Math.min(W, Math.ceil(x1)); y1 = Math.min(H, Math.ceil(y1));
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) { const p = (y * W + x) * 4; const d = Math.abs(r[p] - o[p]) + Math.abs(r[p + 1] - o[p + 1]) + Math.abs(r[p + 2] - o[p + 2]); n++; if (d === 0) same++; sum += d / 3; }
+    return {n, same, mean: n ? sum / n : 0}; };
+  const a = cnt(B.x0 - 20, B.y0 - 20, B.x1 + 20, B.y1 + 20);
+  $('#score').textContent = `고른 줄 둘레: 같은 화소 ${a.same.toLocaleString()} / ${a.n.toLocaleString()} (${(100 * a.same / Math.max(1, a.n)).toFixed(2)}%) · 평균 차이 ${a.mean.toFixed(2)}` + (a.same === a.n ? ' · 100% 일치' : '');
+}
+
+// ---------- 끌기 ----------
+let drag = null;
+function pt(ev) { const r = cv.getBoundingClientRect(), z = +$('#zoom').value; return [(ev.clientX - r.left) / z, (ev.clientY - r.top) / z]; }
+cv.addEventListener('mousedown', ev => {
+  if (!D || !D.lines.length) return;
+  const [x, y] = pt(ev), z = +$('#zoom').value, B = editedBox(sel), tol = 8 / z, e = E[sel];
+  const hi = handles(B).findIndex(([hx, hy]) => Math.abs(hx - x) < tol && Math.abs(hy - y) < tol);
+  if (hi < 0) {   // 다른 줄을 눌렀으면 그 줄로
+    const j = D.lines.findIndex((L, i) => { const b = editedBox(i); return x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1; });
+    if (j >= 0 && j !== sel) { sel = j; drawLines(); panel(); render(); }
+  }
+  drag = {hi, x, y, s: JSON.parse(JSON.stringify(E[sel])), B: editedBox(sel)};
+});
+window.addEventListener('mousemove', ev => {
+  if (!D || !D.lines.length) return;
+  const [x, y] = pt(ev); const B = drag ? null : editedBox(sel), z = +$('#zoom').value;
+  if (!drag) { const hi = handles(B).findIndex(([hx, hy]) => Math.abs(hx - x) < 8 / z && Math.abs(hy - y) < 8 / z);
+    cv.style.cursor = ['ew-resize', 'ew-resize', 'ns-resize', 'ns-resize', 'nwse-resize', 'nesw-resize', 'nesw-resize', 'nwse-resize'][hi] || 'move'; return; }
+  const e = E[sel], s = drag.s, b = drag.B, w = b.x1 - b.x0, h = b.y1 - b.y0, dx = x - drag.x, dy = y - drag.y;
+  const n = D.lines[sel].glyphs.length, base = w - s.spacing * (n - 1);
+  if (drag.hi < 0) { e.dx = s.dx + dx; e.dy = s.dy + dy; }
+  else {
+    const sxn = [-1, 1, 0, 0, -1, 1, -1, 1][drag.hi], syn = [0, 0, -1, 1, -1, -1, 1, 1][drag.hi];
+    if (sxn) { const nw = Math.max(5, w + sxn * dx); e.scaleX = s.scaleX * (nw - s.spacing * (n - 1)) / base; e.dx = s.dx + sxn * (nw - w) / 2; }
+    if (syn) { const nh = Math.max(5, h + syn * dy); e.scaleY = s.scaleY * nh / h; e.dy = s.dy + syn * (nh - h) / 2; }
+    if (sxn && syn && ev.shiftKey) { e.scaleY = s.scaleY * e.scaleX / s.scaleX; }
+  }
+  panel(true); render();
+});
+window.addEventListener('mouseup', () => drag = null);
+window.addEventListener('keydown', ev => {
+  if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'SELECT' || !D || !D.lines.length) return;
+  const st = ev.shiftKey ? 1 : 0.1, e = E[sel];
+  if (ev.key === 'ArrowLeft') e.dx -= st; else if (ev.key === 'ArrowRight') e.dx += st; else if (ev.key === 'ArrowUp') e.dy -= st; else if (ev.key === 'ArrowDown') e.dy += st;
+  else if (ev.key === ' ') { flipping = true; render(); ev.preventDefault(); return; } else return;
+  ev.preventDefault(); panel(true); render();
+});
+window.addEventListener('keyup', ev => { if (ev.key === ' ') { flipping = false; render(); } });
+$('#flip').addEventListener('mousedown', () => { flipping = true; render(); });
+$('#flip').addEventListener('mouseup', () => { flipping = false; render(); });
+
+// ---------- 오른쪽 판 ----------
+function drawLines() { $('#lines').innerHTML = D.lines.map((L, i) => `<div class="${i === sel ? 'on' : ''}" data-i="${i}">${i + 1}. ${L.text} <span style="color:#9aa3ad">· ${(L.font && L.font.best) || ''}</span></div>`).join('');
+  document.querySelectorAll('#lines div').forEach(d => d.onclick = () => { sel = +d.dataset.i; drawLines(); panel(); render(); }); }
+function num(path, label, min, max, step) { return `<div class="row"><label>${label}</label><input type="range" data-p="${path}" min="${min}" max="${max}" step="${step}"><input type="number" data-p="${path}" step="${step}"></div>`; }
+function col(path, label) { return `<div class="row"><label>${label}</label><input type="color" data-p="${path}"><input type="text" data-p="${path}" style="flex:0 0 80px"></div>`; }
+function chk(path, label) { return `<div class="row"><label>${label}</label><input type="checkbox" data-p="${path}"></div>`; }
+function get(o, p) { return p.split('.').reduce((a, k) => a == null ? a : a[k], o); }
+function set(o, p, v) { const ks = p.split('.'), last = ks.pop(); ks.reduce((a, k) => a[k], o)[last] = v; }
+function sel_(path, label, opts) { return `<div class="row"><label>${label}</label><select data-p="${path}">${opts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></div>`; }
+const BLENDS = [['source-over', '보통'], ['multiply', '곱하기'], ['screen', '스크린'], ['overlay', '오버레이'], ['darken', '어둡게'], ['lighten', '밝게'], ['color-dodge', '닷지'], ['color-burn', '번'], ['hard-light', '하드 라이트'], ['soft-light', '소프트 라이트'], ['difference', '차이'], ['source-atop', '안쪽에만']];
+// 한 번 누르기 효과(Canva 「글자 효과」 이름을 따름). 지금 줄의 값 위에 덮어씀
+const PRESETS = {
+  '그림자': e => { e.shadows = [{dx: 4, dy: 4, blur: 3, spread: 0, color: '#000000', opacity: 0.6, blend: 'source-over', withStroke: true}]; },
+  '들어올리기': e => { e.shadows = [{dx: 0, dy: 6, blur: 8, spread: 0, color: '#000000', opacity: 0.45, blend: 'source-over', withStroke: true}]; },
+  '속 비우기': e => { e.fill.mode = 'none'; e.strokes = [{color: e.fill.c1 || '#ffffff', width: 2, pos: 'center', join: 'round', opacity: 1}]; },
+  '스플라이스': e => { e.fill.mode = 'none'; e.strokes = [{color: '#000000', width: 2, pos: 'center', join: 'round', opacity: 1}]; Object.assign(e.echo, {on: true, n: 1, dx: 4, dy: 4, color: '#ffb000', opacity: 1}); },
+  '외곽선': e => { e.strokes = [{color: '#000000', width: 4, pos: 'out', join: 'round', opacity: 1}]; },
+  '겹 테두리': e => { e.strokes = [{color: '#ffe500', width: 4, pos: 'out', join: 'round', opacity: 1}, {color: '#000000', width: 4, pos: 'out', join: 'round', opacity: 1}]; },
+  '에코': e => { Object.assign(e.echo, {on: true, n: 2, dx: 4, dy: 4, color: '#ff4d4d', opacity: 0.6}); },
+  '글리치': e => { Object.assign(e.glitch, {on: true, dx: 3, dy: 0, c1: '#00ffff', c2: '#ff00ff'}); },
+  '네온': e => { Object.assign(e.glow, {on: true, blur: 6, spread: 1, color: e.fill.c1 || '#ff3cff', opacity: 0.9, blend: 'screen'}); },
+  '입체': e => { Object.assign(e.extrude, {on: true, depth: 8, angle: 45, color: '#000000', color2: '', fade: false}); },
+  '엠보스': e => { Object.assign(e.bevel, {on: true, style: 'inner', depth: 1, size: 4, soften: 0, angle: 120, altitude: 30}); },
+  '배경 띠': e => { Object.assign(e.box, {on: true, color: '#000000', padX: 14, padY: 8, radius: 6, opacity: 1}); },
+  '곡선': e => { e.warp = {style: 'curve', bend: 0.25}; },
+  '효과 모두 끄기': e => { e.shadows = []; e.strokes = []; for (const k of ['glow', 'iglow', 'inner', 'bevel', 'satin', 'extrude', 'echo', 'glitch', 'box']) e[k].on = false; e.warp = {style: 'none', bend: 0}; if (e.fill.mode === 'none') e.fill.mode = 'span'; },
+};
+let gsel = 0;
+function panel(onlyValues) {
+  if (!D || !D.lines.length) { $('#panel').innerHTML = '<div class="help">줄이 없습니다. 위 「+ 줄」로 글자를 얹으세요.</div>'; return; }
+  const e = E[sel];
+  if (!onlyValues) {
+    const n = D.lines[sel].glyphs.length; if (!e.gl || e.gl.length !== n) e.gl = D.lines[sel].glyphs.map((g, k) => (e.gl && e.gl[k]) || {dx: 0, dy: 0, rot: 0, sc: 1});
+    if (gsel >= n) gsel = 0;
+    let h = '<h3>줄 글자</h3>' + `<div class="row"><label>글자</label><input type="text" id="ltext" value="${D.lines[sel].text.replace(/"/g, '&quot;')}"></div>`
+      + `<div class="row"><label>깔린 글꼴 이름</label><input type="text" id="lsys" placeholder="예: Malgun Gothic"><button class="btn" id="lsysb">쓰기</button></div>`
+      + `<div class="row"><label>글자 크기 px</label><input type="number" id="lsize" value="${D.lines[sel].size_px}" step="1"></div>`
+      + '<h3>한 번 누르기 효과</h3><div class="presets">' + Object.keys(PRESETS).map(k => `<button class="btn" data-pre="${k}">${k}</button>`).join(' ') + '</div>'
+      + `<h3>자동 맞추기 <button class="btn" id="fit">원본에 맞추기</button></h3><div class="help" id="fitmsg">켜 둔 효과의 숫자를 조금씩 바꿔 가며 원본과 차이가 가장 작은 값을 찾습니다(고른 줄만).</div>`
+      + '<h3>옮기기·늘리기</h3>' + num('dx', '가로 옮김 px', -200, 200, 0.1) + num('dy', '세로 옮김 px', -200, 200, 0.1)
+      + num('scaleX', '옆으로 늘리기 ×', 0.5, 1.8, 0.001) + num('scaleY', '위로 늘리기 ×', 0.5, 1.8, 0.001) + num('spacing', '자간 더하기 px', -30, 30, 0.1)
+      + num('slant', '기울기 더하기', -0.5, 0.5, 0.005) + num('rotate', '회전 °', -30, 30, 0.1) + num('bold', '덧굵기 px', 0, 10, 0.05) + num('opacity', '불투명', 0, 1, 0.01)
+      + sel_('blend', '섞기', BLENDS)
+      + `<div class="row"><label>글꼴 바꾸기</label><input type="text" id="fsearch" placeholder="이름 일부" style="flex:0 0 80px"><select id="fsel"><option value="">(처음 글꼴)</option></select></div>`
+      + '<h3>글자 하나 고치기</h3>' + `<div class="row"><label>글자</label><select id="gsel">${D.lines[sel].glyphs.map((g, k) => `<option value="${k}"${k === gsel ? ' selected' : ''}>${k + 1}: ${g.ch}</option>`).join('')}</select></div>`
+      + num(`gl.${gsel}.dx`, '가로 px', -40, 40, 0.1) + num(`gl.${gsel}.dy`, '세로 px', -40, 40, 0.1) + num(`gl.${gsel}.rot`, '회전 °', -45, 45, 0.1) + num(`gl.${gsel}.sc`, '크기 ×', 0.5, 2, 0.001)
+      + '<h3>휘기</h3>' + sel_('warp.style', '모양', [['none', '없음'], ['curve', '곡선(글자를 원 위에)'], ['arc', '부채꼴'], ['arcLower', '아래 부채꼴'], ['arcUpper', '위 부채꼴'], ['bulge', '부풀리기'], ['squeeze', '가운데 줄이기'], ['flag', '깃발'], ['wave', '파형'], ['rise', '상승']]) + num('warp.bend', '구부리기', -1, 1, 0.005)
+      + '<h3>채움</h3>' + sel_('fill.mode', '방식', [['span', '처음 색(덩어리별)'], ['solid', '한 색'], ['grad', '선형 그라데이션'], ['radial', '원형 그라데이션'], ['none', '없음(속 비우기)']])
+      + col('fill.c1', '색 1') + col('fill.c2', '색 2(끝)') + chk('fill.use3', '가운데 색 쓰기') + col('fill.c3', '가운데 색') + num('fill.mid', '가운데 자리', 0, 1, 0.01) + num('fill.angle', '그라데이션 각도', 0, 360, 1) + num('fill.opacity', '채움 불투명', 0, 1, 0.01)
+      + `<h3>테두리 <button class="btn" id="addS">+ 한 겹</button></h3>` + e.strokes.map((s, j) => `<div class="sub"><div class="hd">${j + 1}겹 <button class="btn" data-del="strokes.${j}">빼기</button></div>${sel_(`strokes.${j}.pos`, '자리', [['out', '바깥(칠 아래)'], ['center', '가운데(가장자리 걸침)'], ['in', '안쪽']])}${col(`strokes.${j}.color`, '색')}${num(`strokes.${j}.width`, '두께 px', 0, 30, 0.1)}${sel_(`strokes.${j}.join`, '모서리', [['round', '둥글게'], ['miter', '뾰족하게'], ['bevel', '깎아서']])}${num(`strokes.${j}.opacity`, '불투명', 0, 1, 0.01)}</div>`).join('')
+      + `<h3>그림자 <button class="btn" id="addH">+ 하나</button></h3>` + e.shadows.map((s, j) => `<div class="sub"><div class="hd">그림자 ${j + 1} <button class="btn" data-del="shadows.${j}">빼기</button></div>${num(`shadows.${j}.dx`, '가로 px', -40, 40, 0.1)}${num(`shadows.${j}.dy`, '세로 px', -40, 40, 0.1)}<div class="row"><label>각도·거리</label><input type="number" data-ang="${j}" placeholder="각도°" style="width:64px"><input type="number" data-dist="${j}" placeholder="거리" style="width:64px"><span class="help">포토샵식</span></div>${num(`shadows.${j}.blur`, '흐림 σ px', 0, 40, 0.1)}${num(`shadows.${j}.spread`, '퍼짐 px', 0, 30, 0.1)}${col(`shadows.${j}.color`, '색')}${num(`shadows.${j}.opacity`, '불투명', 0, 1, 0.01)}${sel_(`shadows.${j}.blend`, '섞기', BLENDS)}${chk(`shadows.${j}.withStroke`, '테두리까지')}</div>`).join('')
+      + '<h3>바깥 광선</h3>' + chk('glow.on', '켜기') + num('glow.blur', '흐림 σ px', 0, 60, 0.1) + num('glow.spread', '퍼짐 px', 0, 30, 0.1) + col('glow.color', '색') + num('glow.opacity', '불투명', 0, 1, 0.01) + sel_('glow.blend', '섞기', BLENDS)
+      + '<h3>안쪽 광선</h3>' + chk('iglow.on', '켜기') + sel_('iglow.src', '어디서', [['edge', '가장자리에서'], ['center', '가운데에서']]) + num('iglow.blur', '흐림 σ px', 0, 30, 0.1) + num('iglow.choke', '경계 감소 px', 0, 20, 0.1) + col('iglow.color', '색') + num('iglow.opacity', '불투명', 0, 1, 0.01) + sel_('iglow.blend', '섞기', BLENDS)
+      + '<h3>안쪽 그림자(음영)</h3>' + chk('inner.on', '켜기') + num('inner.dx', '가로 px', -20, 20, 0.1) + num('inner.dy', '세로 px', -20, 20, 0.1) + num('inner.blur', '흐림 σ px', 0, 30, 0.1) + num('inner.choke', '경계 감소 px', 0, 20, 0.1) + col('inner.color', '색') + num('inner.opacity', '불투명', 0, 1, 0.01) + sel_('inner.blend', '섞기', BLENDS)
+      + '<h3>경사와 엠보스</h3>' + chk('bevel.on', '켜기') + sel_('bevel.style', '모양', [['inner', '안쪽 경사'], ['outer', '바깥 경사'], ['emboss', '엠보스'], ['pillow', '베개 엠보스']]) + num('bevel.depth', '깊이', 0.1, 10, 0.05) + num('bevel.size', '크기 px', 0.5, 40, 0.1) + num('bevel.soften', '부드럽게 σ', 0, 10, 0.1) + num('bevel.angle', '빛 각도 °', 0, 360, 1) + num('bevel.altitude', '빛 높이 °', 0, 90, 1) + col('bevel.hi', '밝은 색') + num('bevel.hiOp', '밝은 불투명', 0, 1, 0.01) + col('bevel.lo', '어두운 색') + num('bevel.loOp', '어두운 불투명', 0, 1, 0.01)
+      + '<h3>새틴</h3>' + chk('satin.on', '켜기') + col('satin.color', '색') + num('satin.opacity', '불투명', 0, 1, 0.01) + num('satin.angle', '각도 °', 0, 360, 1) + num('satin.dist', '거리 px', 0, 40, 0.1) + num('satin.size', '크기 px', 0, 40, 0.1) + chk('satin.invert', '반전')
+      + '<h3>입체(돌출·긴 그림자)</h3>' + chk('extrude.on', '켜기') + num('extrude.depth', '깊이 px', 1, 80, 1) + num('extrude.angle', '방향 °', 0, 360, 1) + col('extrude.color', '앞 색') + col('extrude.color2', '끝 색(비우면 같음)') + chk('extrude.fade', '끝으로 옅게')
+      + '<h3>에코</h3>' + chk('echo.on', '켜기') + num('echo.n', '겹 수', 1, 6, 1) + num('echo.dx', '가로 px', -30, 30, 0.1) + num('echo.dy', '세로 px', -30, 30, 0.1) + col('echo.color', '색') + num('echo.opacity', '불투명', 0, 1, 0.01)
+      + '<h3>글리치</h3>' + chk('glitch.on', '켜기') + num('glitch.dx', '가로 px', -20, 20, 0.1) + num('glitch.dy', '세로 px', -20, 20, 0.1) + col('glitch.c1', '색 1') + col('glitch.c2', '색 2')
+      + '<h3>배경 상자</h3>' + chk('box.on', '켜기') + col('box.color', '색') + num('box.padX', '좌우 여백', 0, 80, 0.5) + num('box.padY', '위아래 여백', 0, 80, 0.5) + num('box.radius', '모서리 둥글기', 0, 80, 0.5) + num('box.opacity', '불투명', 0, 1, 0.01);
+    $('#panel').innerHTML = h;
+    $('#panel').querySelectorAll('[data-p]').forEach(el => el.addEventListener('input', () => {
+      let v = el.type === 'checkbox' ? el.checked : el.value; if (el.type === 'range' || el.type === 'number') v = +v;
+      set(E[sel], el.dataset.p, v); panel(true); render(); }));
+    $('#panel').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { const [k, j] = b.dataset.del.split('.'); E[sel][k].splice(+j, 1); panel(); render(); });
+    $('#panel').querySelectorAll('[data-pre]').forEach(b => b.onclick = () => { PRESETS[b.dataset.pre](E[sel]); panel(); render(); });
+    // 포토샵식 각도·거리 → 가로·세로(빛이 오는 각도라 그림자는 반대쪽, 각도는 위가 +)
+    $('#panel').querySelectorAll('[data-ang],[data-dist]').forEach(el => el.addEventListener('input', () => {
+      const j = +(el.dataset.ang || el.dataset.dist), s = E[sel].shadows[j];
+      const a = +$(`[data-ang="${j}"]`).value || 0, d = +$(`[data-dist="${j}"]`).value || 0;
+      s.dx = -d * Math.cos(a * Math.PI / 180); s.dy = d * Math.sin(a * Math.PI / 180); panel(true); render(); }));
+    $('#gsel').onchange = () => { gsel = +$('#gsel').value; panel(); };
+    $('#addS').onclick = () => { E[sel].strokes.push({color: '#000000', width: 3, pos: 'out', join: 'round', opacity: 1}); panel(); render(); };
+    $('#addH').onclick = () => { E[sel].shadows.push({dx: 3, dy: 3, blur: 4, spread: 0, color: '#000000', opacity: 0.7, blend: 'source-over', withStroke: true}); panel(); render(); };
+    $('#fit').onclick = () => autoFit();
+    const relay = () => { const L = D.lines[sel], g = L.glyphs[0] || {x: W * 0.1, y: H * 0.5}; layoutLine(L, $('#ltext').value, g.x, g.y); const n = L.glyphs.length; E[sel].gl = L.glyphs.map((x, k) => (E[sel].gl && E[sel].gl[k]) || {dx: 0, dy: 0, rot: 0, sc: 1}); drawLines(); render(); };
+    $('#ltext').onchange = relay;
+    $('#lsize').onchange = () => { const L = D.lines[sel], k = +$('#lsize').value / L.size_px; if (!(k > 0)) return; const g0 = L.glyphs[0]; L.glyphs.forEach(g => { g.x = g0.x + (g.x - g0.x) * k; }); L.size_px = +$('#lsize').value; render(); };
+    $('#lsysb').onclick = async () => { const n = $('#lsys').value.trim(); if (!n) return; const fam = await font('', n); if (!fam) return msg(`「${n}」 글꼴이 이 컴퓨터에 없거나 이름이 다릅니다`); D.lines[sel].font = {best: n, file: ''}; D.lines[sel]._fam = fam; E[sel].font = ''; E[sel]._fam = null; relay(); drawLines(); msg(`「${n}」으로 바꿈`); };
+    (MODE === 'server' ? fetch('/fontlist').then(r => r.json()) : Promise.resolve([...FONTF.values()].map(f => f.name))).then(L => {
+      const fill = q => { $('#fsel').innerHTML = '<option value="">(처음 글꼴)</option>' + L.filter(f => !q || f.toLowerCase().includes(q.toLowerCase())).slice(0, 300).map(f => `<option${f === E[sel].font ? ' selected' : ''}>${f}</option>`).join(''); };
+      fill(''); $('#fsearch').oninput = () => fill($('#fsearch').value);
+      $('#fsel').onchange = async () => { const f = $('#fsel').value; E[sel].font = f; E[sel]._fam = f ? await font(f) : null; render(); };
+    });
+  }
+  $('#panel').querySelectorAll('[data-p]').forEach(el => { const v = get(e, el.dataset.p); if (v === undefined) return;
+    if (el.type === 'checkbox') el.checked = !!v; else if (el === document.activeElement) return; else el.value = (typeof v === 'number') ? +v.toFixed(4) : v; });
+}
+
+// ---------- 자동 맞추기: 켜 둔 효과의 숫자만, 좌표 하강(한 값씩 ± 걸음, 나아지지 않으면 걸음 반으로) ----------
+const BASEP = [['dx', 1], ['dy', 1], ['scaleX', 0.01], ['scaleY', 0.01], ['spacing', 0.5], ['bold', 0.3]];
+function fitParams(e, effectsOnly) {
+  const P = effectsOnly ? [] : BASEP.slice();
+  e.strokes.forEach((s, j) => P.push([`strokes.${j}.width`, 0.5]));
+  e.shadows.forEach((s, j) => { P.push([`shadows.${j}.dx`, 1], [`shadows.${j}.dy`, 1], [`shadows.${j}.blur`, 1], [`shadows.${j}.opacity`, 0.1], [`shadows.${j}.spread`, 0.5]); });
+  if (e.glow.on) P.push(['glow.blur', 1], ['glow.spread', 0.5], ['glow.opacity', 0.1]);
+  if (e.inner.on) P.push(['inner.dx', 1], ['inner.dy', 1], ['inner.blur', 1], ['inner.opacity', 0.1]);
+  if (e.iglow.on) P.push(['iglow.blur', 1], ['iglow.opacity', 0.1]);
+  if (e.extrude.on) P.push(['extrude.depth', 1], ['extrude.angle', 5]);
+  if (e.bevel.on) P.push(['bevel.size', 1], ['bevel.depth', 0.2], ['bevel.angle', 10]);
+  if (e.box.on) P.push(['box.padX', 1], ['box.padY', 1], ['box.radius', 1]);
+  if (e.warp.style !== 'none') P.push(['warp.bend', 0.05]);
+  return P;
+}
+const LIMITS = {opacity: [0, 1], blur: [0, 60], spread: [0, 30], width: [0, 40], bold: [0, 10], depth: [0, 80], size: [0.5, 40], padX: [0, 80], padY: [0, 80], radius: [0, 80], scaleX: [0.3, 3], scaleY: [0.3, 3], bend: [-1, 1]};
+let FITBOX = null, BLURC = {};   // 자동 맞추기 동안 재는 자리를 고정(값을 바꿀 때마다 자리가 따라 움직이면 잣대가 바뀜 — 2026-11-25 시험에서 위치가 엉뚱하게 감, 실측)
+const RDC = document.createElement('canvas');
+function regionData(src, x0, y0, w, h, sig) {   // src = 캔버스, sig > 0 이면 흐린 뒤
+  const c = RDC; if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } const g = c.getContext('2d', {willReadFrequently: true}); g.reset ? g.reset() : g.clearRect(0, 0, w, h);
+  if (sig > 0) g.filter = `blur(${sig}px)`; g.drawImage(src, x0, y0, w, h, 0, 0, w, h); return g.getImageData(0, 0, w, h).data;
+}
+function lineDiff(i, sig) {
+  frame(); octx.clearRect(0, 0, W, H); octx.drawImage(BG || ORIG, 0, 0); D.lines.forEach((L, k) => drawLine(octx, k));
+  const B = FITBOX || editedBox(i), m = FITBOX ? 0 : 30;
+  const x0 = Math.max(0, Math.floor(B.x0 - m)), y0 = Math.max(0, Math.floor(B.y0 - m)), x1 = Math.min(W, Math.ceil(B.x1 + m)), y1 = Math.min(H, Math.ceil(B.y1 + m)), w = x1 - x0, h = y1 - y0;
+  let O;
+  if (sig > 0) {   // 흐린 비교: 원본 쪽도 같은 자리를 같은 흐림으로(한 번 만들어 둠)
+    const k = `${sig}|${x0}|${y0}|${w}|${h}`;
+    if (!BLURC[k]) { const oc = document.createElement('canvas'); oc.width = W; oc.height = H; const id = new ImageData(new Uint8ClampedArray(ODATA), W, H); oc.getContext('2d').putImageData(id, 0, 0); BLURC[k] = regionData(oc, x0, y0, w, h, sig); }
+    O = BLURC[k];
+  }
+  const r = sig > 0 ? regionData(off, x0, y0, w, h, sig) : octx.getImageData(x0, y0, w, h).data; let s = 0, same = 0, n = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = (y * w + x) * 4, o = sig > 0 ? p : ((y + y0) * W + x + x0) * 4, Q = sig > 0 ? O : ODATA;
+    const d = Math.abs(r[p] - Q[o]) + Math.abs(r[p + 1] - Q[o + 1]) + Math.abs(r[p + 2] - Q[o + 2]); s += d; n++; if (!d) same++; }
+  return {mean: s / Math.max(1, n) / 3, same, n};
+}
+// 좌표 하강 + 줄 따라 찾기: 한 값씩 ± 로 움직여 나아지면 같은 쪽으로 걸음을 두 배씩 더 가 봄. 한 바퀴 동안 아무것도 안 나아지면 걸음 반.
+// 단계: ① 효과 값만 흐리게(σ3) 비교 ② 효과 값만 선명하게 ③ 전부 흐리게 ④ 전부 선명하게.
+// (한 번에 다 맞추면 테두리 두께 대신 덧굵기가 늘어나는 식으로 값끼리 서로 대신해 엉뚱한 데서 멈춤 — 2026-11-25 시험, 실측)
+async function descend(e, P, sig, maxRounds, say, tag, fine) {
+  const st0 = Object.fromEntries(P), steps = Object.assign({}, st0), stopAt = fine || 256;
+  let best = lineDiff(sel, sig).mean, evals = 1;
+  const clamp = (p, v) => { const lim = LIMITS[p.split('.').pop()]; return lim ? Math.min(lim[1], Math.max(lim[0], v)) : v; };
+  for (let round = 0; round < maxRounds; round++) {
+    let moved = false;
+    for (const [p] of P) {
+      for (const sgn of [1, -1]) {
+        let v0 = get(e, p), mult = 1, ok = false;
+        while (true) {
+          const v = clamp(p, v0 + sgn * steps[p] * mult); if (v === v0) break;
+          set(e, p, v); const d = lineDiff(sel, sig).mean; evals++;
+          if (d < best - 1e-9) { best = d; v0 = v; ok = true; mult *= 2; } else { set(e, p, v0); break; }
+        }
+        if (ok) { moved = true; break; }
+      }
+    }
+    if (!moved) { for (const k in steps) steps[k] /= 2; if (Object.keys(steps).every(k => steps[k] < st0[k] / stopAt)) break; }
+    if (best === 0) break;
+    say(`${tag} ${round + 1}바퀴 · 차이 ${best.toFixed(3)}`); await new Promise(r => setTimeout(r, 0));
+  }
+  return evals;
+}
+// 두 값 같이 움직이기: 흐림↔불투명처럼 하나만 움직이면 나빠지지만 둘을 같이 움직이면 나아지는 경우(2026-11-25 광선 시험, 실측)
+async function pairs(e, P, sig, say, tag) {
+  const clamp = (p, v) => { const lim = LIMITS[p.split('.').pop()]; return lim ? Math.min(lim[1], Math.max(lim[0], v)) : v; };
+  let best = lineDiff(sel, sig).mean, evals = 1;
+  for (let sc = 1; sc >= 1 / 512; sc /= 2) {
+    let any = true;
+    while (any) { any = false;
+      for (let a = 0; a < P.length; a++) for (let b = a + 1; b < P.length; b++) {
+        const [pa, sa] = P[a], [pb, sb] = P[b];
+        for (const [ga, gb] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+          const va = get(e, pa), vb = get(e, pb); set(e, pa, clamp(pa, va + ga * sa * sc)); set(e, pb, clamp(pb, vb + gb * sb * sc));
+          const d = lineDiff(sel, sig).mean; evals++;
+          if (d < best - 1e-9) { best = d; any = true; } else { set(e, pa, va); set(e, pb, vb); }
+        }
+      }
+      if (best === 0) return evals;
+    }
+    say(`${tag} 걸음 ${sc} · 차이 ${best.toFixed(4)}`); await new Promise(r => setTimeout(r, 0));
+  }
+  return evals;
+}
+async function autoFit(maxRounds) {
+  const e = E[sel], B = editedBox(sel), M = 80; FITBOX = {x0: B.x0 - M, y0: B.y0 - M, x1: B.x1 + M, y1: B.y1 + M}; BLURC = {};
+  const say = t => { const m = $('#fitmsg'); if (m) m.textContent = t; };
+  const n0 = lineDiff(sel).mean; let evals = 0;
+  const PE = fitParams(e, true), PA = fitParams(e, false), R = maxRounds || 60;
+  // 단계마다 선명한 차이로 가장 좋았던 값을 기억 — 흐린 비교에서 움직인 값이 선명하게 보면 더 나쁠 수 있음(2026-11-25 흐린 그림자 시험, 실측)
+  const strip = o => JSON.parse(JSON.stringify(o, (k, v) => k === '_fam' ? undefined : v));
+  let keep = strip(e), keepD = n0;
+  const mark = () => { const d = lineDiff(sel).mean; if (d < keepD) { keepD = d; keep = strip(e); } else Object.assign(e, strip(keep), {_fam: e._fam}); };
+  // 순서: 효과 값 먼저(①②) → 넓게 훑기(⓪) → 전부. 훑기를 맨 앞에 두면 늘리기가 효과 몫을 대신 메워 입체·상자·휘기가 틀어짐(2026-11-25 시험, 실측)
+  if (PE.length) { evals += await descend(e, PE, 3, R, say, '① 효과만·흐리게'); mark(); evals += await descend(e, PE, 0, R, say, '② 효과만'); mark(); }
+  // ⓪ 넓게 훑기: 옮기기(가로·세로 ±30px)와 늘리기(0.8~1.25)를 많이 흐린 비교로 하나씩 다 대 봄 — 7px 옮김을 자간·늘리기로
+  //    대신 맞춰 엉뚱한 데서 멈춤(2026-11-25 시험, 실측)
+  for (const [p, lo, hi, st] of [['dx', -30, 30, 1], ['dy', -30, 30, 1], ['scaleX', 0.8, 1.25, 0.01], ['scaleY', 0.8, 1.25, 0.01], ['dx', -4, 4, 0.25]]) {
+    const v0 = get(e, p), base = p === 'dx' && lo === -4 ? v0 : (p.startsWith('scale') ? 0 : v0); let bv = v0, bd = lineDiff(sel, 8).mean; evals++;
+    for (let t = lo; t <= hi + 1e-9; t += st) { const v = p.startsWith('scale') ? +(v0 * t).toFixed(5) : base + t; set(e, p, v); const d = lineDiff(sel, 8).mean; evals++; if (d < bd - 1e-9) { bd = d; bv = v; } }
+    set(e, p, bv); say(`⓪ 넓게 훑기 ${p} → ${(+bv).toFixed(3)}`); await new Promise(r => setTimeout(r, 0));
+  }
+  mark();
+  const steps = [];
+  steps.push([PA, 8, '③ 전부·많이 흐리게'], [PA, 3, '④ 전부·흐리게'], [PA, 0, '⑤ 전부']);
+  for (const [P, sg, tag] of steps) { evals += await descend(e, P, sg, R, say, tag); mark(); if (keepD === 0) break; }
+  if (keepD > 0) { evals += await pairs(e, PE.length ? PE : PA, 0, say, '⑥ 두 값 같이'); mark(); }
+  // ⑥-2 0으로 되돌려 보기: 퍼짐·덧굵기·경계 감소·자간은 「없음(0)」이 흔한데, 조금 넣고 다른 값을 낮춰 서로 메우는 자리에 멈추기 쉬움
+  //   (2026-11-25 바깥 광선 시험: 정답 퍼짐 0 → 0.105 + 불투명 0.74 로 멈춤, 실측). 0으로 두고 나머지를 다시 맞춰 더 나으면 씀.
+  for (const [p] of PA) {
+    if (keepD === 0) break;
+    const last = p.split('.').pop(); if (!['spread', 'bold', 'choke', 'spacing'].includes(last) || Math.abs(get(e, p)) < 1e-9) continue;
+    set(e, p, 0); const rest = (PE.length ? PE : PA).filter(([q]) => q !== p);
+    evals += await descend(e, rest, 0, R, say, `⑥-2 ${p} 0으로`); mark();
+  }
+  if (keepD > 0) { evals += await descend(e, PA, 0, R * 2, say, '⑦ 마무리', 4096); mark(); }
+  FITBOX = null; panel(true); render();
+  say(`끝 · 평균 차이 ${n0.toFixed(3)} → ${keepD.toFixed(4)} (${evals}번 그림). 숫자는 오른쪽 칸에 들어감 — 저장을 눌러야 파일에 남음`);
+  return {before: n0, after: keepD, evals};
+}
+
+// ---------- 스스로 시험(?test=1): 정답 값을 아는 가짜 원본을 만들고, 다른 값에서 출발해 자동 맞추기가 정답을 되찾는지 ----------
+const TESTS = [
+  ['위치·늘리기', e => { e.dx = 7; e.scaleX = 1.1; }, e => { e.dx = 0; e.scaleX = 1; }, ['dx', 'scaleX']],
+  ['바깥 테두리', e => { e.strokes = [{color: '#000000', width: 6, pos: 'out', join: 'round', opacity: 1}]; }, e => { e.strokes[0].width = 3; }, ['strokes.0.width']],
+  ['흐린 그림자', e => { e.shadows = [{dx: 5, dy: 4, blur: 3, spread: 0, color: '#000000', opacity: 0.6, blend: 'source-over', withStroke: true}]; }, e => Object.assign(e.shadows[0], {dx: 3, dy: 2, blur: 1, opacity: 0.4}), ['shadows.0.dx', 'shadows.0.dy', 'shadows.0.blur', 'shadows.0.opacity']],
+  ['바깥 광선', e => Object.assign(e.glow, {on: true, blur: 6, spread: 0, color: '#ffff00', opacity: 0.8, blend: 'source-over'}), e => Object.assign(e.glow, {blur: 3, opacity: 0.5}), ['glow.blur', 'glow.opacity']],
+  ['안쪽 그림자', e => Object.assign(e.inner, {on: true, dx: 3, dy: 3, blur: 2, choke: 0, color: '#000000', opacity: 0.6}), e => Object.assign(e.inner, {dx: 1, dy: 1, blur: 1, opacity: 0.3}), ['inner.dx', 'inner.dy', 'inner.blur', 'inner.opacity']],
+  ['입체', e => Object.assign(e.extrude, {on: true, depth: 8, angle: 45, color: '#000000'}), e => Object.assign(e.extrude, {depth: 5, angle: 30}), ['extrude.depth', 'extrude.angle']],
+  ['엠보스', e => Object.assign(e.bevel, {on: true, style: 'inner', depth: 2, size: 5, soften: 0, angle: 120, altitude: 30}), e => Object.assign(e.bevel, {depth: 1, size: 3, angle: 90}), ['bevel.size', 'bevel.depth', 'bevel.angle']],
+  ['배경 상자', e => Object.assign(e.box, {on: true, color: '#202020', padX: 12, padY: 8, radius: 6, opacity: 1}), e => Object.assign(e.box, {padX: 6, padY: 4, radius: 0}), ['box.padX', 'box.padY', 'box.radius']],
+  ['휘기(부채꼴)', e => { e.warp = {style: 'arc', bend: 0.2}; }, e => { e.warp.bend = 0.1; }, ['warp.bend']],
+];
+async function selfTest() {
+  const out = [], real = ODATA, clean = () => { const e = defaults(D.lines[sel]); PRESETS['효과 모두 끄기'](e); return e; };
+  const want = new URLSearchParams(location.search).get('test');
+  if (want === 'probe') {   // 바깥 광선 차이 지형: 정답(흐림 6, 불투명 0.8) 둘레에서 값마다 차이를 잼
+    E = D.lines.map(L => { const e = defaults(L); PRESETS['효과 모두 끄기'](e); return e; }); const e = E[sel];
+    Object.assign(e.glow, {on: true, blur: 6, spread: 0, color: '#ffff00', opacity: 0.8, blend: 'source-over'});
+    frame(); octx.clearRect(0, 0, W, H); octx.drawImage(BG || ORIG, 0, 0); D.lines.forEach((L, k) => drawLine(octx, k)); ODATA = octx.getImageData(0, 0, W, H).data;
+    const B = editedBox(sel); FITBOX = {x0: B.x0 - 80, y0: B.y0 - 80, x1: B.x1 + 80, y1: B.y1 + 80};
+    const rows = [];
+    for (const b of [5.5, 5.75, 5.9, 5.95, 6, 6.05, 6.1, 6.25, 6.5]) { const r = [b]; for (const o of [0.7, 0.74, 0.78, 0.8, 0.82, 0.86]) { e.glow.blur = b; e.glow.opacity = o; r.push(+lineDiff(sel).mean.toFixed(4)); } rows.push(r); }
+    // 같은 값으로 두 번 그려도 똑같은가(흐림이 매번 같은지)
+    e.glow.blur = 6; e.glow.opacity = 0.8; const a1 = lineDiff(sel), a2 = lineDiff(sel); FITBOX = null;
+    const pre = document.createElement('pre'); pre.id = 'testout'; pre.textContent = JSON.stringify({cols: [0.7, 0.74, 0.78, 0.8, 0.82, 0.86], rows, again: [a1.mean, a1.same, a1.n, a2.mean]}); document.body.appendChild(pre); return;
+  }
+  for (const [name, setT, setS, keys] of TESTS) {
+    if (want && want !== '1' && !name.includes(want)) continue;
+    const t0 = performance.now(); E = D.lines.map(L => { const e = defaults(L); PRESETS['효과 모두 끄기'](e); return e; });
+    const e = E[sel]; setT(e); const truth = keys.map(k => get(e, k));
+    frame(); octx.clearRect(0, 0, W, H); octx.drawImage(BG || ORIG, 0, 0); D.lines.forEach((L, k) => drawLine(octx, k));
+    ODATA = octx.getImageData(0, 0, W, H).data;           // 가짜 원본 = 정답 값으로 그린 그림
+    setS(e); const start = keys.map(k => get(e, k));
+    const r = await autoFit(); const got = keys.map(k => get(e, k)); const B0 = editedBox(sel); FITBOX = {x0: B0.x0 - 80, y0: B0.y0 - 80, x1: B0.x1 + 80, y1: B0.y1 + 80}; const dd = lineDiff(sel); FITBOX = null;
+    const ev = {}; for (const k of ['dx','dy','scaleX','scaleY','spacing','bold','slant']) if (Math.abs(get(e, k) - get(defaults(D.lines[sel]), k)) > 1e-9 && !keys.includes(k)) ev[k] = +get(e, k).toFixed(4);
+    const grp = keys[0].includes('.') ? keys[0].split('.')[0] : null;
+    out.push({name, keys, truth, start, drift: ev, whole: grp ? JSON.parse(JSON.stringify(e[grp])) : null, got: got.map(v => +v.toFixed(4)), same: dd.same, n: dd.n, before: +r.before.toFixed(3), after: +r.after.toFixed(4), evals: r.evals, sec: +((performance.now() - t0) / 1000).toFixed(1)});
+    ODATA = real;
+  }
+  const pre = document.createElement('pre'); pre.id = 'testout'; pre.textContent = JSON.stringify(out); document.body.appendChild(pre);
+}
+
+// ---------- 저장·처음 값 ----------
+$('#save').onclick = async () => {
+  if (!D) return; const body = editJSON();
+  if (MODE === 'server') { const r = await (await fetch('/save/' + D.id + '?' + RQ, {method: 'POST', body: JSON.stringify(body)})).json(); return msg(r['저장'] ? '저장함: ' + r['저장'] : '저장 못 함: ' + JSON.stringify(r)); }
+  download(`${D.id}_편집.json`, new Blob([JSON.stringify(body, null, 1)], {type: 'application/json'})); msg(`${D.id}_편집.json 으로 내려받음(서버 없이 열어서 파일로 저장)`);
+};
+$('#reset').onclick = () => { if (!D) return; E = D.lines.map(L => defaults(L)); panel(); render(); msg('처음 값으로 돌림(저장 전까지 파일은 그대로)'); };
+function setZoom() { const z = +$('#zoom').value; cv.style.width = W * z + 'px'; cv.style.height = H * z + 'px'; render(); }
+$('#zoom').onchange = setZoom; $('#mode').onchange = () => { $('#mixw').style.display = $('#mode').value === 'mix' ? '' : 'none'; render(); };
+$('#mix').oninput = render; $('#vid').onchange = () => loadVid($('#vid').value);
+$('#mixw').style.display = 'none';
+start().then(async () => { const q = Q;
+  if (q.get('test')) return selfTest();
+  if (q.get('fit') != null) {   // 시험용: ?fit=<줄 번호> — 그 줄을 원본에 맞춰 보고 결과를 글로 남김(저장은 안 함)
+    sel = +q.get('fit'); drawLines(); panel(); const before = lineDiff(sel); const r = await autoFit(); const after = lineDiff(sel);
+    const strip = o => JSON.parse(JSON.stringify(o, (k, v) => k === '_fam' || k === 'gl' ? undefined : v));
+    const pre = document.createElement('pre'); pre.id = 'testout'; pre.textContent = JSON.stringify({line: sel, before: [before.same, before.n, before.mean], after: [after.same, after.n, after.mean], evals: r.evals, edit: strip(E[sel])}); document.body.appendChild(pre);
+  } }).catch(e => msg('불러오기 오류: ' + e));
+</script>
+</body></html>

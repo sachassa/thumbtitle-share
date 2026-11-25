@@ -1,0 +1,8 @@
+tt_config.json
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.sqlite
+thumbs/
