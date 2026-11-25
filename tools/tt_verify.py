@@ -503,6 +503,24 @@ def _med_color(img_band, m):
     return hexc(np.median(img_band[m], axis=0))
 
 
+def _cedge(prof, th=0.5, reach=3):
+    """덮임 단면(prof)에서 앞/뒤 가장자리를 이어지게 잰다: 바깥에서 안으로 누적 최댓값(단조 포락선)이 그 글자 가장 큰 값의 절반을
+    넘는 자리를 두 칸 사이 직선으로 이어 소수로 찾음. 값이 조금 바뀌면 자리도 조금만 바뀜.
+    전에는 0.5에서 가른 칸 + 바깥 한 칸 덮임이라, 가장자리 칸이 0.49↔0.51로 바뀌면 값이 0.5px 뛰었음
+    (2026-11-25 실측: 정답 그림을 JPEG 압축만 해도 「만」「챙」「뎁」 상자 0.54~0.59px). 덮임이 1까지 안 차는 글자(「뎁」 0.83)도 있어 그 글자 최댓값 기준."""
+    prof = np.asarray(prof, np.float64)
+    pm_ = float(prof.max()) if prof.size else 0.0
+    if pm_ < 0.3: return None
+    h = th * pm_
+    fw = np.maximum.accumulate(prof); bw = np.maximum.accumulate(prof[::-1])
+    def cross(e):
+        i = int(np.argmax(e >= h))
+        if i == 0: return 0.0
+        return (i - 1) + (h - e[i - 1]) / max(e[i] - e[i - 1], 1e-9)
+    lo = cross(fw) + 0.5          # 칸 가운데 표본 → 칸 경계 좌표로
+    hi = len(prof) - (cross(bw) + 0.5)
+    return lo, hi
+
 def measure_image(img, line_regions, texts, params_list):
     """한 장을 잰다. params_list 는 원본에서 정한 색 기준(두 그림에 같은 것)."""
     out = []
@@ -522,19 +540,42 @@ def measure_image(img, line_regions, texts, params_list):
         if not gm:
             out.append(L)
             continue
-        for m in gm:
+        bd = p["bounds"]
+        for k, m in enumerate(gm):
             if not m.any():
                 L["glyphs"].append({"box": None})
                 continue
             pm = part * (cv2.dilate(m.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0)
             l, r = _edges(m, pm, 1)
+            # 이어지는 가장자리(_cedge): 이 글자 둘레(3x3 넓힘)·자른 칸 안의 덮임 단면으로
+            near_ = cv2.dilate(m.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0; near_[:, :max(0, bd[k])] = False; near_[:, bd[k + 1]:] = False
+            cg_ = np.where(near_, cov, 0.0)
+            ex_, ey_ = _cedge(cg_.max(0)), _cedge(cg_.max(1))
+            if ex_: l, r = ex_
+            # 자르는 줄이 잉크를 지나면 그쪽은 글자 가장자리가 아니라 자른 자리 — 이웃 글자의 반쯤 칠한 칸이 더해져 0.5px 넘게 튀던 것을 막음
+            # (2026-11-25 TitleMatch 실측: 정답 그림에서도 「억」「리」「뒤」 상자·자간 0.55~0.58px 튐). 자른 자리 그대로 둠(두 그림 같은 값).
+            # 「자른 줄이 잉크를 지나나」는 처음 재는 그림(= 원본, run_one 이 원본을 먼저 잼)에서 한 번 정해 두 그림에 같이 씀 —
+            # 그림마다 정하면 압축 잡음으로 켜졌다 꺼졌다 해 상자가 0.9px 튐(2026-11-25 바닥 시험 실측)
+            cf_ = p.setdefault("_cut", {})
+            if k not in cf_:
+                cf_[k] = (bool(0 <= bd[k] < m.shape[1] and m[:, bd[k]].any()), bool(0 < bd[k + 1] <= m.shape[1] and m[:, bd[k + 1] - 1].any()))
+            if cf_[k][0]: l = float(bd[k])
+            if cf_[k][1]: r = float(bd[k + 1])
             t, b = _edges(m, pm, 0)
+            if ey_: t, b = ey_
             L["glyphs"].append({"box": [l, t + y0, r, b + y0]})
         if not allg.any():  # 글자 조각이 모두 비었음 — 이 줄 못 잼(멈추지 않음)
             out.append(L)
             continue
         top, bot = _edges(allg, part, 0)
+        cga_ = np.where(cv2.dilate(allg.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0, cov, 0.0); ea_ = _cedge(cga_.max(1))
+        if ea_: top, bot = ea_
         L["top"], L["bottom"] = top + y0, bot + y0
+        # 가장자리 흐림 폭: 글자 둘레의 반쯤 칠한 칸(덮임 0.05~0.95) 수 ÷ 글자 둘레 길이 — 흐림·안티에일리어싱이 다르면 달라짐
+        # (2026-11-25: 이 값이 없어 「흐림을 더한 틀린 그림」이 바닥 판정에서 안 떨어짐, 실측)
+        ring_ = cv2.dilate(allg.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
+        per_ = int((allg & ~(cv2.erode(allg.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0)).sum())
+        L["edge_w"] = float(((cov > 0.05) & (cov < 0.95) & ring_).sum()) / per_ if per_ else None
         bx = [g["box"] for g in L["glyphs"] if g["box"]]
         L["baseline"] = float(np.median([q[3] for q in bx]))
         L["glyph_h"] = float(np.median([q[3] - q[1] for q in bx]))
@@ -616,9 +657,21 @@ def _item(o, r):
             a = [int(o[k:k + 2], 16) for k in (1, 3, 5)]
             b = [int(r[k:k + 2], 16) for k in (1, 3, 5)]
             d = "RGB차 " + ",".join("%+d" % (y - x) for x, y in zip(a, b))
-        return {"o": o, "r": r, "d": d, "ok": bool(ok)}
+        out = {"o": o, "r": r, "d": d, "ok": bool(ok)}
+        if isinstance(o, str) and isinstance(r, str) and o.startswith("#") and r.startswith("#"):
+            # 밝기 차·채도 차를 따로 적음(운영자 2026-11-25 「명암인지 농도인지」, OP-014). 판정에는 안 씀 — 판정은 RGB 차.
+            lo, co = _lc(o); lr, cr = _lc(r)
+            out["밝기차"] = round(lr - lo, 2); out["채도차"] = round(cr - co, 2)
+        return out
     o2, rr = r2(o), r2(r)
     return {"o": o2, "r": rr, "d": r2(rr - o2), "ok": bool(o2 == rr)}
+
+
+def _lc(h):
+    """#RRGGBB → (밝기 L* 0~100, 채도 C* = 색의 진하기). CIE Lab(sRGB, D65)."""
+    px = np.float32([[[int(h[k:k + 2], 16) / 255.0 for k in (5, 3, 1)]]])   # BGR
+    L, a, b = cv2.cvtColor(px, cv2.COLOR_BGR2Lab)[0, 0]
+    return float(L), float(np.hypot(a, b))
 
 
 def _f1(a, b):
@@ -652,7 +705,7 @@ def compare(mo, mr, texts):
         for k, name in [("top", "줄 위"), ("bottom", "줄 아래"), ("baseline", "기준선(글자 아래 중앙값)"),
                         ("glyph_h", "글자 높이(중앙값)"), ("glyph_w", "글자 너비(평균)"),
                         ("spacing_mean", "자간 평균(낱말 사이 뺌)"), ("line_gap_next", "행간(다음 줄 위 - 이 줄 아래)"),
-                        ("stroke", "획 굵기"), ("slant", "기울기(가로밀림/높이)"),
+                        ("stroke", "획 굵기"), ("slant", "기울기(가로밀림/높이)"), ("edge_w", "가장자리 흐림 폭(px)"),
                         ("outline_color", "테두리 색"), ("outline_px", "테두리 굵기")]:
             items[name] = _item(A.get(k), B.get(k))
         ga, gb = A.get("gaps", []), B.get("gaps", [])
@@ -692,7 +745,7 @@ def find_source_jpeg(folder, vid, o):
     from glob import glob
     d = os.path.abspath(folder)
     for _ in range(4):
-        for p in glob(os.path.join(d, "thumbs*", "*", vid + ".jpg")):
+        for p in glob(os.path.join(d, "thumbs*", "*", vid + ".jpg")) + glob(os.path.join(d, "thumbs*", vid + ".jpg")):
             a = load_img(p, tries=1)
             if a.shape == o.shape and np.array_equal(a, o):
                 return p
@@ -749,6 +802,22 @@ def run_one(folder, vid, self_test=False):
                        "outline_idx": p["outline_idx"], "bg_ring_diff": p.get("bg_ring_diff"), "per_pixel_bg": p.get("bgimg") is not None, "band": list(rg["band"]), "glyph_bounds_x": p.get("bounds")} for p, rg in zip(params, regs)],
            "jpeg": (None if self_test else (os.path.basename(src) if src else None)),
            "lines": lines, "all_ok": n_diff == 0, "n_items": n_items, "n_diff": n_diff}
+    # 판정(docs/검수기준.md, 운영자 확인 2026-11-25): 완전히 같으면 「100% 일치」, 아니면 원본 JPEG 바닥으로 「일치(JPEG 바닥)」/「일치 안 됨」/「판정 못 함」.
+    # all_ok 는 엄격(완전히 같음) 그대로 두고, 판정은 match·판정 에 따로 적는다.
+    if not self_test and not os.environ.get("TT_NOFLOOR"):
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import tt_floor
+        try: fs = find_source_jpeg(folder, vid, o)
+        except Exception: fs = None
+        thin = tt_floor.thin_wrong(folder, vid) if (fs and n_diff) else None
+    out["floor"] = tt_floor.judge(sys.modules[__name__], o, r, regs, texts, params, fs, n_diff == 0,
+                                  extra_wrongs={"덧굵기 −0.10px": thin} if thin is not None else None)
+    if fs:   # 보는 화면 참고용 「JPEG로 저장해 본 재현」(원본과 같은 압축 표·색 줄임). 판정에는 안 씀(Central DEC-20261125-005)
+        try:
+            from PIL import Image as _I
+            _I.fromarray(tt_floor.jpeg_phase(r, _I.open(fs), 0, 0)).save(os.path.join(folder, "그림", vid + "_재현_JPEG.png"))
+        except Exception as e_:
+            print("  JPEG 참고 그림 못 만듦:", e_)
+        out["match"] = out["floor"]["match"]; out["판정"] = out["floor"]["판정"]
     return out, mo, mr
 
 

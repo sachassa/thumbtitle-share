@@ -45,7 +45,7 @@ def status(out, vid):
     eye = (_rj(os.path.join(V, "눈확인.json"), {}) or {}).get(vid)
     if not isinstance(eye, dict) or eye.get("at", 0) < run_t: why.append("Claude 눈 확인 안 함(새 결과)")
     if why: return dict(state="완료 안 됨", match=None, why=why, vr=vr)
-    return dict(state="완료", match=bool(vr.get("all_ok")), why=[], vr=vr, eye=eye.get("note", ""))
+    return dict(state="완료", match=bool(vr.get("match", vr.get("all_ok"))), verdict=vr.get("판정") or ("100% 일치" if vr.get("all_ok") else "일치 안 됨"), why=[], vr=vr, eye=eye.get("note", ""))
 
 def all_vids(out, meta_ids=()):
     V = os.path.join(out, "값"); ids = set(meta_ids)
@@ -95,4 +95,4 @@ if __name__ == "__main__":
     else:
         out = sys.argv[1]
         for v in all_vids(out):
-            s = status(out, v); print(v, s["state"], "" if s["match"] is None else ("100% 일치" if s["match"] else "일치 안 됨"), " · ".join(s["why"]))
+            s = status(out, v); print(v, s["state"], "" if s["match"] is None else (s.get("verdict") or ("100% 일치" if s["match"] else "일치 안 됨")), " · ".join(s["why"]))

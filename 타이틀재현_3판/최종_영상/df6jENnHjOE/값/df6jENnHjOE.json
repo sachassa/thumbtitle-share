@@ -6,7 +6,7 @@
  ],
  "lines_max_px": 0.6,
  "color_max_dE": 0.0,
- "glyph_min_iou": 0.848,
+ "glyph_min_iou": 0.859,
  "font_confirmed": false,
  "passed": false,
  "color_over_noise": -1.0,
@@ -713,7 +713,7 @@
   {
    "line": 1,
    "ch": "스",
-   "iou": 0.874
+   "iou": 0.873
   },
   {
    "line": 1,
@@ -723,7 +723,7 @@
   {
    "line": 1,
    "ch": "리",
-   "iou": 0.866
+   "iou": 0.865
   },
   {
    "line": 1,
@@ -733,12 +733,12 @@
   {
    "line": 1,
    "ch": "반",
-   "iou": 0.848
+   "iou": 0.871
   },
   {
    "line": 1,
    "ch": "응",
-   "iou": 0.863
+   "iou": 0.862
   }
  ],
  "rounds": [
@@ -904,20 +904,24 @@
  ],
  "log": [
   "「역전 금빛섬광'」 채움을 글자 한가운데 색 가까운 화소로 좁힘(번짐·이웃 색 뺌): 31734→27101화소",
-  "글꼴 고르기 58개 1.8초",
+  "글꼴 고르기 76개 1.2초",
   "「역전 금빛섬광'」 줄 앞뒤 문장부호를 모양으로 고침 → 「역전 ‘금빛섬광’」",
-  "글꼴 고르기 58개 1.2초",
+  "글꼴 고르기 76개 1.2초",
+  "「0910」 줄은 제목이 아니라 비교하지 않음(제목 줄과 닮음 0.00)",
   "「됐어!」 줄은 제목이 아니라 비교하지 않음(제목 줄과 닮음 0.00)",
   "「레고를」 줄은 제목이 아니라 비교하지 않음(제목 줄과 닮음 0.00)",
   "「밟았네」 줄은 제목이 아니라 비교하지 않음(제목 줄과 닮음 0.00)",
   "「김민교 칸 운타라 이상호 울프 얀코스 뱅 강퀴」 줄은 제목이 아니라 비교하지 않음(제목 줄과 닮음 0.08)",
-  "제목 글꼴을 찾을 줄: 「역전 ‘금빛섬광’」(효과 적고 글자 많은 줄)",
+  "기준 줄 고르기(글자 모양 1등 점수 = 글자가 깨끗하게 잘린 정도, 41초): 「역전 ‘금빛섬광’」 0.891 · 「스트리머 반응」 0.922",
+  "제목 글꼴을 찾을 줄: 「스트리머 반응」(글자가 가장 깨끗하게 잘린 줄)",
+  "다른 제목 줄 글자까지 다 있는 글꼴만 후보로: 1641 → 1597개",
   "줄 기울기 0.175 (가로 밀림/높이)",
-  "글자 모양 견주기: 1579개 45.8초(새로 그린 글꼴 1579개, 나머지는 저장한 모양)",
+  "글자 모양 견주기: 1597개 0.1초(새로 그린 글꼴 0개, 나머지는 저장한 모양)",
   "추천 글꼴 찾기: 못 찾음이라 후보 25개 더 자세히 맞춤",
-  "글꼴 알아내기 「역전 ‘금빛섬광’」: 후보 1579개(그 줄 글자가 다 있는 것) 66.1초 → 프리젠테이션 8 ExtraBold 글자 겹침 평균 0.964·최소 0.936 · 못 찾음",
+  "글꼴 알아내기 「스트리머 반응」: 후보 1597개(그 줄 글자가 다 있는 것) 19.3초 → 프리젠테이션 8 ExtraBold 글자 겹침 평균 0.976·최소 0.967 · 못 찾음",
   "줄 기울기 0.175 (가로 밀림/높이)",
-  "글꼴 알아내기 「스트리머 반응」: 제목 글꼴 하나(프리젠테이션 8 ExtraBold)로만 맞춤(0.3초) → 평균 0.977·최소 0.965",
+  "「역전 ‘금빛섬광’」 같은 글꼴 굵기 9개 대 봄: 프리젠테이션 8 ExtraBold 0.972 · 프리젠테이션 6 SemiBold 0.965 · 프리젠테이션 7 Bold 0.962 · 프리젠테이션 5 Medium 0.94",
+  "글꼴 알아내기 「역전 ‘금빛섬광’」: 제목 글꼴 하나(프리젠테이션 8 ExtraBold)로만 맞춤(4.1초) → 평균 0.972·최소 0.968",
   "되풀이 1: 선 최대 2.4px · 평균 1.03px",
   "되풀이 2: 선 최대 0.63px · 평균 0.16px",
   "되풀이 3: 선 최대 0.62px · 평균 0.16px",
@@ -929,7 +933,7 @@
   "되풀이 9: 선 최대 0.61px · 평균 0.17px",
   "되풀이 10: 선 최대 0.63px · 평균 0.16px"
  ],
- "secs": 234,
+ "secs": 218,
  "lines": [
   {
    "text": "역전 ‘금빛섬광’",
@@ -945,82 +949,82 @@
     "top": [
      {
       "text": "역전 금빛섬광'",
-      "score": 0.591
-     },
-     {
-      "text": "역전 빛섬섬광'",
-      "score": 0.574
+      "score": 0.593
      },
      {
       "text": "역전 금섬광광'",
-      "score": 0.568
+      "score": 0.57
      },
      {
-      "text": "역전 빛섬광광'",
-      "score": 0.556
+      "text": "역전 빛섬섬광'",
+      "score": 0.564
      },
      {
       "text": "역전 금금빛광'",
-      "score": 0.551
+      "score": 0.547
+     },
+     {
+      "text": "역전 빛섬광광'",
+      "score": 0.54
      },
      {
       "text": "역전 금빛빛섬'",
-      "score": 0.545
+      "score": 0.535
      }
     ],
-    "base": 0.591,
+    "base": 0.593,
     "_cands": [
      "역전 금빛섬광'",
-     "역전 빛섬섬광'",
      "역전 금섬광광'",
-     "역전 빛섬광광'",
+     "역전 빛섬섬광'",
      "역전 금금빛광'",
+     "역전 빛섬광광'",
      "역전 금빛빛섬'",
-     "역전 금금빛섬'",
      "역전 금빛섬섬광",
-     "역전 금금빛섬광",
      "역전 금빛빛섬광",
+     "역전 금금빛섬'",
+     "역전 금금빛섬광",
      "리아금빛섬광",
-     "금빛섬광스트"
+     "아금빛섬광스"
     ],
     "confirmed_top": [
      {
       "text": "역전 금빛섬광'",
-      "score": 0.591
+      "score": 0.593
      },
      {
       "text": "리아금빛섬광",
-      "score": 0.436
-     },
-     {
-      "text": "금빛섬광스트",
-      "score": 0.413
+      "score": 0.453
      },
      {
       "text": "아금빛섬광스",
-      "score": 0.412
+      "score": 0.434
+     },
+     {
+      "text": "금빛섬광스트",
+      "score": 0.409
      }
     ],
     "punct": [
      {
       "text": "역전 ‘금빛섬광’",
-      "score": 0.718
+      "score": 0.837
      },
      {
       "text": "역전 '금빛섬광'",
-      "score": 0.706
-     },
-     {
-      "text": "역전 금빛섬광",
-      "score": 0.625
-     },
-     {
-      "text": "역전 금빛섬광'",
-      "score": 0.591
+      "score": 0.81
      },
      {
       "text": "‘역전 금빛섬광’",
-      "score": 0.571
+      "score": 0.633
+     },
+     {
+      "text": "역전 금빛섬광",
+      "score": 0.605
+     },
+     {
+      "text": "역전 금빛섬광'",
+      "score": 0.593
      }
     ],
     "claude": "역전 ‘금빛섬광’"
@@ -1029,11 +1033,11 @@
     "best": "프리젠테이션 8 ExtraBold",
     "file": "Freesentation-8ExtraBold.woff2",
     "weight": null,
-    "score": 0.964,
-    "gmin": 0.936,
+    "score": 0.972,
+    "gmin": 0.968,
     "confirmed": false,
-    "why": "글자마다 겹침 최소 0.936 < 1.0",
-    "gap": 0.024,
+    "why": "제목 글꼴 하나로 맞춤 — 글자마다 겹침 1.00 못 됨",
+    "gap": 0.0,
     "glyphs": [
      [
       "역",
@@ -1068,219 +1072,16 @@
       0.949
      ]
     ],
-    "second": {
-     "name": "Spoqa Han Sans Neo Bold",
-     "score": 0.94
-    },
+    "second": null,
     "top": [
      {
       "name": "프리젠테이션 8 ExtraBold",
-      "score": 0.964,
-      "gmin": 0.936
-     },
-     {
-      "name": "프리젠테이션 6 SemiBold",
-      "score": 0.961,
-      "gmin": 0.944
-     },
-     {
-      "name": "프리젠테이션 7 Bold",
-      "score": 0.958,
-      "gmin": 0.944
-     },
-     {
-      "name": "Spoqa Han Sans Neo Bold",
-      "score": 0.94,
-      "gmin": 0.871
-     },
-     {
-      "name": "SUIT ExtraBold",
-      "score": 0.929,
-      "gmin": 0.821
-     },
-     {
-      "name": "SUIT ExtraBold",
-      "score": 0.926,
-      "gmin": 0.82
-     },
-     {
-      "name": "프리젠테이션 9 Black",
-      "score": 0.921,
-      "gmin": 0.868
-     },
-     {
-      "name": "SUIT Bold",
-      "score": 0.918,
-      "gmin": 0.831
-     },
-     {
-      "name": "Min Sans ExtraBold",
-      "score": 0.916,
-      "gmin": 0.796
-     },
-     {
-      "name": "나눔휴먼TTF Heavy",
-      "score": 0.912,
-      "gmin": 0.787
-     },
-     {
-      "name": "SUIT Heavy",
-      "score": 0.911,
-      "gmin": 0.818
-     },
-     {
-      "name": "나눔휴먼TTF ExtraBold",
-      "score": 0.91,
-      "gmin": 0.791
-     },
-     {
-      "name": "Noto Sans KR 700",
-      "score": 0.908,
-      "gmin": 0.782
-     },
-     {
-      "name": "Min Sans Bold",
-      "score": 0.908,
-      "gmin": 0.776
-     },
-     {
-      "name": "SUIT Heavy",
-      "score": 0.906,
-      "gmin": 0.802
-     },
-     {
-      "name": "Min Sans Black",
-      "score": 0.901,
-      "gmin": 0.782
-     },
-     {
-      "name": "Pretendard ExtraBold",
-      "score": 0.898,
-      "gmin": 0.738
-     },
-     {
-      "name": "Pretendard Bold",
-      "score": 0.894,
-      "gmin": 0.752
-     },
-     {
-      "name": "Pretendard ExtraBold",
-      "score": 0.893,
-      "gmin": 0.735
-     },
-     {
-      "name": "워헤이븐 Bold",
-      "score": 0.891,
-      "gmin": 0.873
-     },
-     {
-      "name": "Pretendard Bold",
-      "score": 0.89,
-      "gmin": 0.734
-     },
-     {
-      "name": "Pretendard Black",
-      "score": 0.889,
-      "gmin": 0.725
-     },
-     {
-      "name": "Pyeojin Gothic Bold",
-      "score": 0.888,
-      "gmin": 0.734
-     },
-     {
-      "name": "Pretendard Black",
-      "score": 0.887,
-      "gmin": 0.708
-     },
-     {
-      "name": "Min Sans Black",
-      "score": 0.883,
-      "gmin": 0.796
-     },
-     {
-      "name": "Noto Sans KR 900",
-      "score": 0.879,
-      "gmin": 0.642
-     },
-     {
-      "name": "사천항공 Regular",
-      "score": 0.872,
-      "gmin": 0.822
-     },
-     {
-      "name": "TJ 노래하는즐거움체 EB TTF EB",
-      "score": 0.864,
-      "gmin": 0.797
-     },
-     {
-      "name": "Monoplex KR SemiBold Italic",
-      "score": 0.855,
-      "gmin": 0.746
-     },
-     {
-      "name": "Monoplex KR Nerd SemiBold Italic",
-      "score": 0.855,
-      "gmin": 0.746
-     },
-     {
-      "name": "Monoplex KR Bold Italic",
-      "score": 0.848,
-      "gmin": 0.716
-     },
-     {
-      "name": "Monoplex KR Nerd Bold Italic",
-      "score": 0.848,
-      "gmin": 0.716
-     },
-     {
-      "name": "HFC:배민 도현체(산돌 1등)",
-      "score": 0.839,
-      "gmin": 0.771
-     },
-     {
-      "name": "Monoplex KR Wide Bold Italic",
-      "score": 0.839,
-      "gmin": 0.642
-     },
-     {
-      "name": "Monoplex KR Wide Nerd Bold Italic",
-      "score": 0.839,
-      "gmin": 0.642
-     },
-     {
-      "name": "Monoplex KR Wide SemiBold Italic",
-      "score": 0.831,
-      "gmin": 0.644
-     },
-     {
-      "name": "Monoplex KR Wide Nerd SemiBold Italic",
-      "score": 0.831,
-      "gmin": 0.644
-     },
-     {
-      "name": "함렡 Black",
-      "score": 0.827,
-      "gmin": 0.73
-     },
-     {
-      "name": "Casquare Code 1080 Bold Italic",
-      "score": 0.801,
-      "gmin": 0.467
-     },
-     {
-      "name": "Casquare Code 1080 SemiBold Italic",
-      "score": 0.787,
-      "gmin": 0.47
-     },
-     {
-      "name": "Casquare Code 1080 Italic",
-      "score": 0.786,
-      "gmin": 0.479
+      "score": 0.972,
+      "gmin": 0.968
      }
     ],
-    "tried": 1579,
-    "secs": 66.1
+    "tried": 9,
+    "secs": 4.1
    },
    "size_px": 117.65,
    "size_1080": 119.6,
@@ -1375,30 +1176,30 @@
     "top": [
      {
       "text": "스트리머 반응",
-      "score": 0.886
+      "score": 0.865
      },
      {
       "text": "스트리아 반응",
-      "score": 0.847
+      "score": 0.822
      },
      {
       "text": "스트리매 반응",
-      "score": 0.806
+      "score": 0.807
      },
      {
       "text": "스트케리 반응",
-      "score": 0.769
+      "score": 0.748
      },
      {
       "text": "스케리머 반응",
-      "score": 0.768
+      "score": 0.746
      },
      {
       "text": "스트트리 반응",
-      "score": 0.728
+      "score": 0.714
      }
     ],
-    "base": 0.886,
+    "base": 0.865,
     "_cands": [
      "스트리머 반응",
      "스트리아 반응",
@@ -1407,42 +1208,42 @@
      "스케리머 반응",
      "스트트리 반응",
      "스리머머 반응",
-     "트리리머 반응",
      "스케리매 반응",
-     "스리아머 반응",
+     "트리리머 반응",
      "스스트머 반응",
+     "스리아머 반응",
      "트리머머 반응"
     ],
     "confirmed_top": [
      {
       "text": "스트리머 반응",
-      "score": 0.886
+      "score": 0.865
      },
      {
       "text": "스트리머반응",
-      "score": 0.601
-     },
-     {
-      "text": "광스트리머반",
-      "score": 0.441
+      "score": 0.604
      },
      {
       "text": "광스트리머반응",
-      "score": 0.439
+      "score": 0.444
+     },
+     {
+      "text": "광스트리머반",
+      "score": 0.437
      }
     ],
     "punct": [
      {
       "text": "스트리머 반응",
-      "score": 0.886
+      "score": 0.865
      },
      {
       "text": "스트리머 반응!",
-      "score": 0.782
+      "score": 0.762
      },
      {
       "text": "스트리머 반응?",
-      "score": 0.467
+      "score": 0.475
      }
     ],
     "claude": "스트리머 반응"
@@ -1451,47 +1252,250 @@
     "best": "프리젠테이션 8 ExtraBold",
     "file": "Freesentation-8ExtraBold.woff2",
     "weight": null,
-    "score": 0.977,
-    "gmin": 0.965,
+    "score": 0.976,
+    "gmin": 0.967,
     "confirmed": false,
-    "why": "제목 글꼴 하나로 맞춤 — 글자마다 겹침 1.00 못 됨",
-    "gap": 0.0,
+    "why": "글자마다 겹침 최소 0.967 < 1.0",
+    "gap": 0.006,
     "glyphs": [
      [
       "스",
-      0.984
+      0.983
      ],
      [
       "트",
-      0.968
+      0.967
      ],
      [
       "리",
-      0.985
+      0.984
      ],
      [
       "머",
-      0.99
+      0.989
      ],
      [
       "반",
-      0.965
+      0.967
      ],
      [
       "응",
-      0.97
+      0.968
      ]
     ],
-    "second": null,
+    "second": {
+     "name": "SUIT Heavy",
+     "score": 0.97
+    },
     "top": [
      {
       "name": "프리젠테이션 8 ExtraBold",
-      "score": 0.977,
+      "score": 0.976,
+      "gmin": 0.967
+     },
+     {
+      "name": "SUIT Heavy",
+      "score": 0.97,
       "gmin": 0.965
+     },
+     {
+      "name": "Min Sans Black",
+      "score": 0.968,
+      "gmin": 0.961
+     },
+     {
+      "name": "Min Sans Black",
+      "score": 0.966,
+      "gmin": 0.957
+     },
+     {
+      "name": "SUIT ExtraBold",
+      "score": 0.965,
+      "gmin": 0.949
+     },
+     {
+      "name": "Pretendard Black",
+      "score": 0.964,
+      "gmin": 0.954
+     },
+     {
+      "name": "Wanted Sans ExtraBold",
+      "score": 0.963,
+      "gmin": 0.958
+     },
+     {
+      "name": "SUIT Heavy",
+      "score": 0.963,
+      "gmin": 0.954
+     },
+     {
+      "name": "Pretendard Black",
+      "score": 0.963,
+      "gmin": 0.953
+     },
+     {
+      "name": "Pretendard ExtraBold",
+      "score": 0.962,
+      "gmin": 0.949
+     },
+     {
+      "name": "프리젠테이션 9 Black",
+      "score": 0.962,
+      "gmin": 0.941
+     },
+     {
+      "name": "Noto Sans KR 900",
+      "score": 0.961,
+      "gmin": 0.956
+     },
+     {
+      "name": "Wanted Sans Black",
+      "score": 0.961,
+      "gmin": 0.952
+     },
+     {
+      "name": "Min Sans ExtraBold",
+      "score": 0.96,
+      "gmin": 0.951
+     },
+     {
+      "name": "Pretendard ExtraBold",
+      "score": 0.958,
+      "gmin": 0.949
+     },
+     {
+      "name": "조선견고딕 Regular",
+      "score": 0.928,
+      "gmin": 0.882
+     },
+     {
+      "name": "Bold00",
+      "score": 0.926,
+      "gmin": 0.906
+     },
+     {
+      "name": "HangamePoker Bold",
+      "score": 0.926,
+      "gmin": 0.905
+     },
+     {
+      "name": "Monoplex KR Medium Italic",
+      "score": 0.923,
+      "gmin": 0.905
+     },
+     {
+      "name": "Monoplex KR Nerd Medium Italic",
+      "score": 0.923,
+      "gmin": 0.905
+     },
+     {
+      "name": "Monoplex KR SemiBold Italic",
+      "score": 0.922,
+      "gmin": 0.901
+     },
+     {
+      "name": "Monoplex KR Nerd SemiBold Italic",
+      "score": 0.922,
+      "gmin": 0.901
+     },
+     {
+      "name": "Wanted Sans ExtraBlack",
+      "score": 0.92,
+      "gmin": 0.895
+     },
+     {
+      "name": "EASTARJET Heavy",
+      "score": 0.92,
+      "gmin": 0.858
+     },
+     {
+      "name": "넥슨 카트 고딕 ExtraBold",
+      "score": 0.919,
+      "gmin": 0.882
+     },
+     {
+      "name": "Monoplex KR Bold Italic",
+      "score": 0.914,
+      "gmin": 0.893
+     },
+     {
+      "name": "Monoplex KR Nerd Bold Italic",
+      "score": 0.914,
+      "gmin": 0.893
+     },
+     {
+      "name": "Monoplex KR Wide Medium Italic",
+      "score": 0.912,
+      "gmin": 0.887
+     },
+     {
+      "name": "Monoplex KR Wide Nerd Medium Italic",
+      "score": 0.912,
+      "gmin": 0.887
+     },
+     {
+      "name": "수성돋움체 Regular",
+      "score": 0.911,
+      "gmin": 0.882
+     },
+     {
+      "name": "Monoplex KR Wide Bold Italic",
+      "score": 0.908,
+      "gmin": 0.88
+     },
+     {
+      "name": "Monoplex KR Wide Nerd Bold Italic",
+      "score": 0.908,
+      "gmin": 0.88
+     },
+     {
+      "name": "Monoplex KR Wide SemiBold Italic",
+      "score": 0.894,
+      "gmin": 0.871
+     },
+     {
+      "name": "Monoplex KR Wide Nerd SemiBold Italic",
+      "score": 0.894,
+      "gmin": 0.871
+     },
+     {
+      "name": "강한육군 Bold",
+      "score": 0.888,
+      "gmin": 0.815
+     },
+     {
+      "name": "사천항공 Regular",
+      "score": 0.879,
+      "gmin": 0.844
+     },
+     {
+      "name": "Casquare Code 1080 Bold Italic",
+      "score": 0.878,
+      "gmin": 0.835
+     },
+     {
+      "name": "Casquare Code 1080 Italic",
+      "score": 0.872,
+      "gmin": 0.845
+     },
+     {
+      "name": "Casquare Code 1080 SemiBold Italic",
+      "score": 0.867,
+      "gmin": 0.828
+     },
+     {
+      "name": "자이언츠 Inline",
+      "score": 0.853,
+      "gmin": 0.813
+     },
+     {
+      "name": "HFC:배민 도현체(산돌 1등)",
+      "score": 0.712,
+      "gmin": 0.61
      }
     ],
-    "tried": 1,
-    "secs": 0.3
+    "tried": 1597,
+    "secs": 19.3
    },
    "size_px": 117.65,
    "size_1080": 119.6,
@@ -1560,8 +1564,8 @@
   }
  ],
  "why": [
-  "「역전 ‘금빛섬광’」 글꼴 못 찾음 — 가장 가까운 프리젠테이션 8 ExtraBold 글자 겹침 평균 0.964·최소 0.936 (글자마다 겹침 최소 0.936 < 1.0), 후보 1579개",
-  "「스트리머 반응」 글꼴 못 찾음 — 가장 가까운 프리젠테이션 8 ExtraBold 글자 겹침 평균 0.977·최소 0.965 (제목 글꼴 하나로 맞춤 — 글자마다 겹침 1.00 못 됨), 후보 1개",
+  "「역전 ‘금빛섬광’」 글꼴 못 찾음 — 가장 가까운 프리젠테이션 8 ExtraBold 글자 겹침 평균 0.972·최소 0.968 (제목 글꼴 하나로 맞춤 — 글자마다 겹침 1.00 못 됨), 후보 9개",
+  "「스트리머 반응」 글꼴 못 찾음 — 가장 가까운 프리젠테이션 8 ExtraBold 글자 겹침 평균 0.976·최소 0.967 (글자마다 겹침 최소 0.967 < 1.0), 후보 1597개",
   "선 어긋남 남음: 1줄 「‘」 오른 -1px, 1줄 「’」 왼 +1px, 1줄 「’」 오른 -1px"
  ]
 }

@@ -153,12 +153,12 @@ def main():
         V = {}
         try: V = json.load(open(os.path.join(job, "값", vid + "_검수.json"), encoding="utf-8"))
         except Exception: pass
-        prog.stage(3, "끝", "100% 일치" if V.get("all_ok") else "일치 안 됨")
+        prog.stage(3, "끝", (V.get("판정") or ("100% 일치" if V.get("all_ok") else "일치 안 됨")))
         prog.stage(4, "진행 중")
         rc, last = run(PY + ["tt_compare_html3.py", job, "--name", "비교.html"], prog, 4, log, 300)
         if rc != 0 or not os.path.exists(os.path.join(job, "비교.html")): raise Fail(f"비교 화면을 만들지 못했습니다 — {last}")   # 오류를 「끝」으로 적던 것 고침(2026-11-25, 실측)
         prog.stage(4, "끝", "비교.html")
-        prog.end("끝", ("100% 일치" if V.get("all_ok") else "일치 안 됨") + " — 비교 화면: " + os.path.join(job, "비교.html")
+        prog.end("끝", (V.get("판정") or ("100% 일치" if V.get("all_ok") else "일치 안 됨")) + " — 비교 화면: " + os.path.join(job, "비교.html")
                  + (f" · 글꼴 못 찾은 줄: {', '.join(nofont)}" if nofont else ""))
         write_ai_wait(os.path.dirname(job))
     except Fail as e:

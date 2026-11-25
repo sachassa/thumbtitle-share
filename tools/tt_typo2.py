@@ -47,7 +47,11 @@ def glyph(c, size, ch):
     if k not in _GC:
         adv = ft.getlength(ch)
         l, t, r, b = ft.getbbox(ch, anchor="ls")
-        if r <= l or b <= t: _GC[k] = (None, 0, 0, adv)
+        if ch.isspace():   # 빈칸: 잉크 없음. 빈칸 글자가 없는 글꼴(눈누 G마켓 산스 woff — PIL이 빈 글자 상자 0.92em을 그림, 2026-11-25 실측)은
+            # 빈칸 폭을 0.25em으로 두고(추정 시작값 — 줄 맞춤의 글자마다 옮김 dx가 원본 자리로 맞춤) 상자를 그리지 않는다
+            if r > l and b > t: adv = 0.25 * key[2]
+            _GC[k] = (None, 0, 0, adv)
+        elif r <= l or b <= t: _GC[k] = (None, 0, 0, adv)
         else:
             im = Image.new("L", (r - l + 2, b - t + 2), 0)
             ImageDraw.Draw(im).text((1 - l, 1 - t), ch, font=ft, fill=255, anchor="ls")

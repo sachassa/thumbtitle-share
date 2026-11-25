@@ -90,6 +90,7 @@ for v in vals:
     _ms_bad = sum(1 for row in (_ms or []) for x in row.values() if x.get("ok") is False)
     r_all = " · ".join(n for n, r in zip(["글꼴 못 찾음", "자리", "모양", "색", "읽기"], [r_font, r_pos if mxp else "", r_shape if worst else "", r_col, r_read]) if r)
     if _ms_bad: r_all += (" · " if r_all else "") + f"실측 {_ms_bad}개 다름(아래 표)"
+    if _vr and _vr.get("floor"): r_all = (f'판정 {_vr["floor"]["판정"]}: {_vr["floor"]["까닭"]}' + (" · " if r_all else "") + r_all)   # docs/검수기준.md
     if _vr and not _vr.get("all_ok"): r_all += (" · " if r_all else "") + f'독립 검수 {_vr["n_items"]}개 중 {_vr["n_diff"]}개 다름(아래 표)'
     if not _vr: r_all += (" · " if r_all else "") + "독립 검수 아직 안 함"
     def srow(th, okv, txt, why): return f'<tr><th>{th}</th><td>{okv}{txt}</td><td class="why">{why}</td></tr>'
@@ -178,13 +179,13 @@ for v in vals:
                 f'<details open><summary>검수 표 펼치기/접기</summary><table class="ms"><tr><th rowspan="2">항목</th>{vhd}</tr><tr>{vhd2}</tr>{vbody}</table></details>')
     ov = ('<figure><figcaption>겹쳐 보기 — 재현 투명도 <input type="range" min="0" max="100" value="50" oninput="this.closest(&quot;figure&quot;).querySelector(&quot;.top&quot;).style.opacity=this.value/100;this.nextElementSibling.textContent=this.value"> <span>50</span>%</figcaption>'
           + strip(f'<img src="그림/{vid}_원본.png"><img class="top" src="그림/{vid}_재현.png" style="opacity:.5">{gsvg}') + '</figure>')
-    npass += STRICT
+    npass += bool(STRICT or (_vr and _vr.get("match")))
     # 완료(100% 일치)가 아닌 장은 화면에 내지 않는다(운영자 2026-11-24 「다 안 끝난 거면 그냥 안 보이게 해, 헷갈리잖아」) — 상태 줄만
     if TS.status(OUT, vid)["state"] != "완료" and not os.environ.get("TT_SHOW_ALL"):   # 할 일 다 안 한 것은 목록으로만(운영자 2026-11-24)
         continue
     secs.append(f'''<section id="{e(vid)}"><h2>{e(m.get("title") or vid)} <small><a href="https://www.youtube.com/watch?v={e(vid)}" target="_blank">{e(vid)}</a></small></h2>
 <div class="doc">{summ}{ltab}</div>{vtab}<details><summary>만든 쪽이 스스로 잰 값(견주기용, 판정에 안 씀)</summary>{mtab}</details>
-<div class="four">{fig(f"그림/{vid}_원본.png", f'원본 — <a href="그림/{vid}_원본.png" target="_blank">썸네일 전체</a>', base=True)}{fig(f"그림/{vid}_재현.png", f'재현 — <a href="그림/{vid}_재현.png" target="_blank">썸네일 전체</a>')}{ov}{fig(f"그림/{vid}_색겹침.png", '색으로 겹침 — <b style="color:#f0f">자홍</b> 원본에만 · <b style="color:#0a0">초록</b> 재현에만 · 흰색 둘 다 · 테두리 <b style="color:#f80">주황</b> 원본에만 · <b style="color:#05f">파랑</b> 재현에만 · 회색 둘 다') if os.path.exists(os.path.join(OUT, "그림", f"{vid}_색겹침.png")) else ""}</div></section>''')
+<div class="four">{fig(f"그림/{vid}_원본.png", f'원본 — <a href="그림/{vid}_원본.png" target="_blank">썸네일 전체</a>', base=True)}{fig(f"그림/{vid}_재현.png", f'재현 — <a href="그림/{vid}_재현.png" target="_blank">썸네일 전체</a>')}{fig(f"그림/{vid}_재현_JPEG.png", '참고 — 재현을 원본과 같은 JPEG로 저장해 본 것(판정에는 안 씀, 색 번짐 견주기용)') if os.path.exists(os.path.join(OUT, "그림", f"{vid}_재현_JPEG.png")) else ""}{ov}{fig(f"그림/{vid}_색겹침.png", '색으로 겹침 — <b style="color:#f0f">자홍</b> 원본에만 · <b style="color:#0a0">초록</b> 재현에만 · 흰색 둘 다 · 테두리 <b style="color:#f80">주황</b> 원본에만 · <b style="color:#05f">파랑</b> 재현에만 · 회색 둘 다') if os.path.exists(os.path.join(OUT, "그림", f"{vid}_색겹침.png")) else ""}</div></section>''')
 
 _tt = lambda v: (META.get(v) or {}).get("title") or v
 n_ov, OV_HTML = OVW.overview_block(OUT, [v_["video_id"] for v_ in vals], _tt)
@@ -197,7 +198,7 @@ main{{padding:12px 16px}} section{{background:#fff;border:1px solid #ddd;border-
 .guide{{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}} body.nogrid .guide{{display:none}}
 .guide line{{stroke-width:1;vector-effect:non-scaling-stroke}} .guide line.ok{{stroke:#00e5ff}} .guide line.touch{{stroke:#bbb;stroke-dasharray:4 3}} .guide.src line{{stroke:#ffd400 !important;stroke-width:1 !important}} .guide line.bad{{stroke:#ff1744;stroke-width:2}}
 .ok{{color:#047857}} .doc{{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:6px 0 10px}} table{{border-collapse:collapse}} td,th{{border:1px solid #ddd;padding:4px 8px;text-align:left;vertical-align:middle}} th{{background:#f3f4f6;white-space:nowrap}} .sum th{{width:90px}} .ms td,.ms th{{font-size:13px;padding:3px 6px}} .ms tr th:first-child{{text-align:left}} h3{{font-size:14px;margin:10px 0 4px}} .lines td{{white-space:nowrap}} .lines td.big{{font-size:16px;font-weight:bold}} .sw{{display:inline-block;width:12px;height:12px;border:1px solid #999;vertical-align:middle;margin-right:3px}} .bad{{color:#b91c1c}} td.why{{font-size:12px;color:#7f1d1d;white-space:normal;min-width:200px;max-width:520px}} .sum td.why{{min-width:420px}} .bar label{{margin-right:14px}} .bar input[type=range]{{width:220px;vertical-align:middle}} small{{color:#666}}
-</style></head><body><header><h1>썸네일 속 타이틀 재현 — 완료 {n_ov}편 (그중 100% 일치 {npass}편) / 전체 {len(vals)}편 <small>({datetime.now():%m-%d %H:%M} · 내부용)</small></h1>
+</style></head><body><header><h1>썸네일 속 타이틀 재현 — 완료 {n_ov}편 (그중 일치 {npass}편 — 100% 또는 JPEG 바닥) / 전체 {len(vals)}편 <small>({datetime.now():%m-%d %H:%M} · 내부용)</small></h1>
 <div class="bar"><label><input type="checkbox" id="g" checked> 격자 선</label>
 <label>보기 크기 <select id="z"><option value="600">작게</option><option value="900" selected>보통</option><option value="1080">원본 크기(1:1)</option><option value="1600">크게</option></select></label></div>
 <small>선: 원본 글자 끝 자리를 원본(노랑)·재현에 같은 자리로 그음 — 하늘 = 똑같음(0px), 빨강 = 조금이라도 어긋남, 회색 점선 = 옆 글자와 붙어 잴 수 없음</small><div>{OVW.CONTROLS}</div></header>{TS.list_html(OUT, _tt, e)}<main>{OV_HTML}{"<h2 style='margin:16px 0 8px'>영상별 자세한 표</h2>" if secs else ""}{"".join(secs) or "<p><b>아직 할 일을 다 마친 영상이 없습니다.</b> 재현·독립 검수·색 겹침·Claude 눈 확인을 다 마친 영상만 나옵니다(일치 안 됨도 나옴).</p>"}</main>

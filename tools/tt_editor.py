@@ -142,7 +142,8 @@ class H(BaseHTTPRequestHandler):
             else:
                 try: src = json.loads(body.decode("utf-8"))["url"].strip()
                 except Exception: return self._send(400, json.dumps({"오류": "주소를 못 읽음"}, ensure_ascii=False))
-            job = time.strftime("%Y%m%d_%H%M%S") + "_" + re.sub(r"[^A-Za-z0-9_-]", "", os.path.basename(src))[-11:]
+            job = time.strftime("%Y%m%d_%H%M%S") + "_" + (re.sub(r"[^A-Za-z0-9_-]", "", os.path.splitext(os.path.basename(src))[0])[:20] or "upload"
+                                                         if os.path.isfile(src) else re.sub(r"[^A-Za-z0-9_-]", "", src)[-11:])   # 올린 그림 = 파일 이름 앞부분, 주소 = 영상 번호
             jp = os.path.join(self.jobs, job); os.makedirs(jp, exist_ok=True)
             subprocess.Popen([sys.executable, "-X", "utf8", os.path.join(HERE, "tt_entry.py"), src, "--job", jp],
                              cwd=HERE, stdout=open(os.path.join(jp, "입구.log"), "w", encoding="utf-8"), stderr=subprocess.STDOUT)

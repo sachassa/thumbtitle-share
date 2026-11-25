@@ -213,7 +213,7 @@ def build(D, vid, title):
     mean_f1 = sum(g["f1"] for g in allg) / len(allg) if allg else None
     n_items = sum(len(L["items"]) for L in title_lines); n_diff = sum(1 for L in title_lines for x in L["items"].values() if not x["ok"])
     done_all = bool(V) and bool(eye)
-    match = bool(V.get("all_ok"))
+    match = bool(V.get("match", V.get("all_ok"))); verdict = V.get("판정") or ("100% 일치" if V.get("all_ok") else "일치 안 됨")
     upd = time.strftime("%m-%d %H:%M", time.localtime(os.path.getmtime(os.path.join(D, "값", f"{vid}_검수.json")))) if V else "—"
     fit_by = {d["text"]: d for d in FIT}
 
@@ -298,7 +298,7 @@ def build(D, vid, title):
     px = UI.get("pixels", {})
 
     state_badge = ('<span class="badge b-ok">● 완료</span>' if done_all else '<span class="badge b-warn">● 완료 안 됨</span>')
-    match_badge = ('<span class="badge b-ok">✓ 100% 일치</span>' if match else '<span class="badge b-err">✕ 일치 안 됨</span>')
+    match_badge = (f'<span class="badge b-ok">✓ {verdict}</span>' if match else f'<span class="badge b-err">✕ {verdict}</span>')
     font_state = "unk"   # 글자마다 겹침 1.00 이 아니면 원본 글꼴은 미확인
     thumb = f"그림/{vid}_원본.png"
     titleE = E(title)

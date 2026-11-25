@@ -27,7 +27,7 @@ class Line:
             for i in range(s["i0"], min(len(text) - 1, s["i1"]) + 1): cols[i] = s["color"]
         self.chars = [g["ch"] for g in G]; self.cols = [cols[i] for i in idx]
         self.P = dict(sz=float(ln["size_px"]), e=float(ln.get("bold_px") or 0.0), sh=float(ln.get("slant") or 0.0), kx=1.0, ky=1.0,
-                      sx=[float(g["sx"]) for g in G], sy=[float(g["sy"]) for g in G], pens=[(g["x"] - X, g["y"] - Y) for g in G])
+                      sx=[float(g["sx"]) for g in G], sy=[float(g["sy"]) for g in G], pens=[(g["x"] - X, g["y"] - Y) for g in G], bl=0.4)
         self._f = {}; self._g = {}
 
     def font(self, sz):
@@ -62,7 +62,10 @@ class Line:
         out = []
         for i, ch in enumerate(self.chars):
             g, ox, oy = self.glyph(ch, P["sz"], P["sx"][i] * P["kx"], P["sy"][i] * P["ky"], P["e"], P["sh"])
-            x = int(round(P["pens"][i][0] * SS + ox)); y = int(round(P["pens"][i][1] * SS + oy)); h, w = g.shape
+            fx = P["pens"][i][0] * SS + ox; fy = P["pens"][i][1] * SS + oy; x = int(np.floor(fx)); y = int(np.floor(fy))
+            if fx - x > 1e-3 or fy - y > 1e-3:   # 1/8px 아래 소수 자리도 그대로(2026-11-25 TitleMatch 모형과 실측 비교 뒤)
+                g = cv2.warpAffine(g, np.float32([[1, 0, fx - x], [0, 1, fy - y]]), (g.shape[1] + 1, g.shape[0] + 1), flags=cv2.INTER_LINEAR)
+            h, w = g.shape
             bx, by = x // SS, y // SS; px_, py_ = x - bx * SS, y - by * SS
             hh = -(-(py_ + h) // SS) * SS; ww = -(-(px_ + w) // SS) * SS
             loc = np.zeros((hh, ww), np.float32); loc[py_:py_ + h, px_:px_ + w] = g
@@ -71,6 +74,9 @@ class Line:
             a0, b0, a1, b1 = max(0, by), max(0, bx), min(self.H, by + blk.shape[0]), min(self.W, bx + blk.shape[1])
             if a1 > a0 and b1 > b0: cov[a0:a1, b0:b1] = blk[a0 - by:a1 - by, b0 - bx:b1 - bx]
             out.append(cov)
+        bl = float(P.get("bl") or 0.0)
+        if bl > 0.03:   # 흐림: 원본 글자 가장자리는 0.4px 안팎 번져 있음(TitleMatch 실측 σ 0.41, ThumbTitle 다시 잼 — 흐림 넣으면 원본 진하기와 차 줄어듦)
+            out = [cv2.GaussianBlur(c, (0, 0), bl, borderType=cv2.BORDER_REPLICATE) for c in out]
         return out
 
     def measure(self, back):
@@ -94,9 +100,9 @@ class Line:
         for step in (1.0, 0.5, 0.25, 0.125):
             for _ in range(5):
                 moved = False
-                for k, st in (("e", step * 0.2), ("sz", step * 0.5), ("kx", step * 0.01), ("ky", step * 0.01)):
+                for k, st in (("e", step * 0.2), ("sz", step * 0.5), ("kx", step * 0.01), ("ky", step * 0.01), ("bl", step * 0.1)):
                     for d in (st, -st):
-                        Q = dict(P); Q[k] = P[k] + d; s = self.err(Q)
+                        Q = dict(P); Q[k] = max(0.0, P[k] + d) if k == "bl" else P[k] + d; s = self.err(Q)
                         if s < best - 1e-7: P, best, moved = Q, s, True
                 for i in range(len(self.chars)):
                     for dx, dy in ((step, 0), (-step, 0), (0, step), (0, -step)):
@@ -111,9 +117,9 @@ class Line:
         for step in (0.25, 0.125, 0.0625):
             for _ in range(6):
                 moved = False
-                for k, st in (("e", step * 0.2), ("sz", step * 0.4), ("kx", step * 0.004), ("ky", step * 0.004)):
+                for k, st in (("e", step * 0.2), ("sz", step * 0.4), ("kx", step * 0.004), ("ky", step * 0.004), ("bl", step * 0.1)):
                     for d in (st, -st):
-                        Q = dict(P); Q[k] = P[k] + d; s = berr(Q)
+                        Q = dict(P); Q[k] = max(0.0, P[k] + d) if k == "bl" else P[k] + d; s = berr(Q)
                         if s < bb: P, bb, moved = Q, s, True
                 for i in range(len(self.chars)):
                     for dx, dy in ((step, 0), (-step, 0), (0, step), (0, -step)):
@@ -127,7 +133,7 @@ class Line:
         for i, ch in enumerate(self.chars):
             a = M & (self.own == i); b = R & (self.own == i); n = a.sum() + b.sum(); gl.append((ch, round(float(2 * (a & b).sum() / n), 4) if n else 0.0))
         self.glyphs = gl
-        log.append(f"「{self.ln['text']}」 진하기 맞춤 {time.time() - t0:.0f}초: 덧굵기 {e0:+.2f}→{P['e']:+.3f}px · 크기 {P['sz']:.2f} · 가로 ×{P['kx']:.3f} · 세로 ×{P['ky']:.3f} · 진하기 오차 {best:.5f} · 글자 겹침 최소 {min(v for _, v in gl):.4f}")
+        log.append(f"「{self.ln['text']}」 진하기 맞춤 {time.time() - t0:.0f}초: 덧굵기 {e0:+.2f}→{P['e']:+.3f}px · 크기 {P['sz']:.2f} · 가로 ×{P['kx']:.3f} · 세로 ×{P['ky']:.3f} · 흐림 {P.get('bl', 0):.3f}px · 진하기 오차 {best:.5f} · 글자 겹침 최소 {min(v for _, v in gl):.4f}")
 
 
 def run(out, vid, log):

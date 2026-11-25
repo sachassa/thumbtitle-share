@@ -18,7 +18,7 @@ def info(R, rel, vid, title):
     fits = [c["fit"] for c in UI.get("cards", []) if c.get("fit") is not None]
     up = os.path.getmtime(os.path.join(D, "값", f"{vid}_검수.json")) if V else 0
     return dict(rel=rel.replace("\\", "/"), vid=vid, title=title, kind="롱폼" if W > H else "쇼츠",
-                done=bool(V) and bool(eye), match=bool(V.get("all_ok")),
+                done=bool(V) and bool(eye), match=bool(V.get("match", V.get("all_ok"))), verdict=V.get("판정") or ("100% 일치" if V.get("all_ok") else "일치 안 됨"),
                 fit=sum(fits) / len(fits) if fits else None, up=up)
 
 
@@ -63,7 +63,7 @@ def build(items):
     cards = []
     for k, x in enumerate(items):
         st = '<span class="badge b-ok">● 완료</span>' if x["done"] else '<span class="badge b-warn">● 완료 안 됨</span>'
-        mt = '<span class="badge b-ok">✓ 100% 일치</span>' if x["match"] else '<span class="badge b-err">✕ 일치 안 됨</span>'
+        mt = f'<span class="badge b-ok">✓ {x["verdict"]}</span>' if x["match"] else f'<span class="badge b-err">✕ {x["verdict"]}</span>'
         fit = f'겹침 {x["fit"]:.3f}' if x["fit"] is not None else ""
         cards.append(
             f'<div class="card vcard{" sel" if k == 0 else ""}" data-i="{k}" data-kind="{x["kind"]}" '
